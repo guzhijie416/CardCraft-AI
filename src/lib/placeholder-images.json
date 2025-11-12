@@ -1,3 +1,208 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero",
+      "description": "A vibrant collection of digital cards spreading out",
+      "imageUrl": "https://picsum.photos/seed/hero/1200/600",
+      "imageHint": "digital cards celebration"
+    },
+    {
+      "id": "template-birthday-1",
+      "description": "Birthday card with a colorful cake and candles",
+      "imageUrl": "https://picsum.photos/seed/tb1/400/500",
+      "imageHint": "birthday cake"
+    },
+    {
+      "id": "template-birthday-2",
+      "description": "Birthday card with festive balloons and confetti",
+      "imageUrl": "https://picsum.photos/seed/tb2/400/500",
+      "imageHint": "birthday balloons"
+    },
+    {
+      "id": "template-birthday-3",
+      "description": "Elegant birthday card with gold lettering",
+      "imageUrl": "https://picsum.photos/seed/tb3/400/500",
+      "imageHint": "elegant typography"
+    },
+    {
+      "id": "template-birthday-4",
+      "description": "Minimalist birthday card with a single flower",
+      "imageUrl": "https://picsum.photos/seed/tb4/400/500",
+      "imageHint": "minimalist flower"
+    },
+    {
+      "id": "template-birthday-5",
+      "description": "Funny birthday card with a cartoon animal",
+      "imageUrl": "https://picsum.photos/seed/tb5/400/500",
+      "imageHint": "cartoon animal"
+    },
+    {
+      "id": "template-holiday-1",
+      "description": "Christmas card with a snowy landscape",
+      "imageUrl": "https://picsum.photos/seed/th1/400/500",
+      "imageHint": "snowy landscape"
+    },
+    {
+      "id": "template-holiday-2",
+      "description": "New Year card with fireworks",
+      "imageUrl": "https://picsum.photos/seed/th2/400/500",
+      "imageHint": "fireworks night"
+    },
+    {
+      "id": "template-holiday-3",
+      "description": "Holiday card with ornaments",
+      "imageUrl": "https://picsumphotos.com/seed/th3/400/500",
+      "imageHint": "holiday ornaments"
+    },
+    {
+      "id": "template-holiday-4",
+      "description": "Holiday card with a cozy fireplace",
+      "imageUrl":https://picsum.photos/seed/th4/400/500",
+      "imageHint": "cozy fireplace"
+    },
+    {
+      "id": "template-holiday-5",
+      "description": "Modern Holiday card with geometric patterns",
+      "imageUrl": "https://picsum.photos/seed/th5/400/500",
+      "imageHint": "geometric pattern"
+    },
+    {
+      "id": "template-wedding-1",
+      "description": "Elegant wedding invitation with floral design",
+      "imageUrl": "https://picsum.photos/seed/tw1/400/500",
+      "imageHint": "floral wedding"
+    },
+    {
+      "id": "template-wedding-2",
+      "description": "Wedding card with two rings",
+      "imageUrl": "https://picsum.photos/seed/tw2/400/500",
+      "imageHint": "wedding rings"
+    },
+    {
+      "id": "template-wedding-3",
+      "description": "Minimalist wedding card",
+      "imageUrl": "https://picsum.photos/seed/tw3/400/500",
+      "imageHint": "minimalist wedding"
+    },
+    {
+      "id": "template-wedding-4",
+      "description": "Rustic wedding card with wood texture",
+      "imageUrl": "https://picsum.photos/seed/tw4/400/500",
+      "imageHint": "rustic wood"
+    },
+    {
+      "id": "template-wedding-5",
+      "description": "Luxury wedding card with gold foil",
+      "imageUrl": "https://picsum.photos/seed/tw5/400/500",
+      "imageHint": "gold foil"
+    },
+    {
+      "id": "master-prompt-birthday-1",
+      "description": "An abstract, vibrant, and energetic birthday card design.",
+      "imageUrl": "https://picsum.photos/seed/mpb1/400/250",
+      "imageHint": "abstract vibrant"
+    },
+    {
+      "id": "master-prompt-birthday-2",
+      "description": "A calm and serene birthday card with pastel colors.",
+      "imageUrl": "https://picsum.photos/seed/mpb2/400/250",
+      "imageHint": "pastel serene"
+    },
+    {
+      "id": "master-prompt-birthday-3",
+      "description": "A photorealistic birthday scene.",
+      "imageUrl": "https://picsum.photos/seed/mpb3/400/250",
+      "imageHint": "photorealistic cake"
+    },
+    {
+      "id": "master-prompt-birthday-4",
+      "description": "A retro-style birthday card from the 80s.",
+      "imageUrl": "https://picsum.photos/seed/mpb4/400/250",
+      "imageHint": "retro 80s"
+    },
+    {
+      "id": "master-prompt-birthday-5",
+      "description": "A birthday card in a futuristic, sci-fi style.",
+      "imageUrl": "https://picsum.photos/seed/mpb5/400/250",
+      "imageHint": "futuristic sci-fi"
+    },
+    {
+      "id": "master-prompt-holiday-1",
+      "description": "A classic, traditional Christmas card scene.",
+      "imageUrl": "https://picsum.photos/seed/mph1/400/250",
+      "imageHint": "traditional christmas"
+    },
+    {
+      "id": "master-prompt-holiday-2",
+      "description": "A modern and minimalist holiday design.",
+      "imageUrl": "https://picsum.photos/seed/mph2/400/250",
+      "imageHint": "modern minimalist"
+    },
+    {
+      "id": "master-prompt-holiday-3",
+      "description": "A watercolor painting of a winter wonderland.",
+      "imageUrl": "https://picsum.photos/seed/mph3/400/250",
+      "imageHint": "watercolor winter"
+    },
+    {
+      "id": "master-prompt-holiday-4",
+      "description": "A cozy, hygge-inspired holiday card.",
+      "imageUrl": "https://picsum.photos/seed/mph4/400/250",
+      "imageHint": "cozy holiday"
+    },
+    {
+      "id": "master-prompt-holiday-5",
+      "description": "A bright and festive New Year's celebration.",
+      "imageUrl": "https://picsum.photos/seed/mph5/400/250",
+      "imageHint": "festive celebration"
+    },
+    {
+      "id": "master-prompt-wedding-1",
+      "description": "An elegant and romantic floral wedding design.",
+      "imageUrl": "https://picsum.photos/seed/mpw1/400/250",
+      "imageHint": "romantic floral"
+    },
+    {
+      "id": "master-prompt-wedding-2",
+      "description": "A vintage, art deco style wedding invitation.",
+      "imageUrl": "https://picsum.photos/seed/mpw2/400/250",
+      "imageHint": "art deco"
+    },
+    {
+      "id": "master-prompt-wedding-3",
+      "description": "A bohemian, free-spirited wedding card.",
+      "imageUrl": "https://picsum.photos/seed/mpw3/400/250",
+      "imageHint": "bohemian wedding"
+    },
+    {
+      "id": "master-prompt-wedding-4",
+      "description": "A modern, geometric wedding design.",
+      "imageUrl": "https://picsum.photos/seed/mpw4/400/250",
+      "imageHint": "modern geometric"
+    },
+    {
+      "id": "master-prompt-wedding-5",
+      "description": "A luxurious and opulent wedding card with gold accents.",
+      "imageUrl": "https://picsum.photos/seed/mpw5/400/250",
+      "imageHint": "luxury gold"
+    },
+    {
+      "id": "history-1",
+      "description": "A generated card showing a cat in a party hat.",
+      "imageUrl": "https://picsum.photos/seed/hist1/400/500",
+      "imageHint": "party cat"
+    },
+    {
+      "id": "history-2",
+      "description": "A generated card showing a beautiful sunset.",
+      "imageUrl": "https://picsum.photos/seed/hist2/400/500",
+      "imageHint": "beautiful sunset"
+    },
+    {
+      "id": "history-3",
+      "description": "A generated card showing a futuristic city.",
+      "imageUrl": "https://picsum.photos/seed/hist3/400/500",
+      "imageHint": "futuristic city"
+    }
+  ]
 }

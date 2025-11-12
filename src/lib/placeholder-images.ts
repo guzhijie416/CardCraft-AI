@@ -7,4 +7,5 @@ export type ImagePlaceholder = {
   imageHint: string;
 };
 
-export const PlaceHolderImages: ImagePlaceholder[] = data.placeholderImages;
+// The type annotation is changed to any to accommodate the new structure
+export const PlaceHolderImages: ImagePlaceholder[] = (data as any).placeholderImages;
