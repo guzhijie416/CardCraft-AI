@@ -1,139 +1,51 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Camera, RefreshCcw, Send, Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { AiCardEditor } from '@/components/ai-card-editor';
-import { masterPrompts } from '@/lib/data';
+import { Sparkles, Camera } from 'lucide-react';
 
-export default function PostcardPage() {
-  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
-  const [photoDataUri, setPhotoDataUri] = useState<string | null>(null);
-  const [isClient, setIsClient] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const router = useRouter();
-  const { toast } = useToast();
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isClient) return;
-
-    const getCameraPermission = async () => {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        toast({
-          variant: 'destructive',
-          title: 'Camera Not Supported',
-          description: 'Your browser does not support camera access.',
-        });
-        setHasCameraPermission(false);
-        return;
-      }
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        setHasCameraPermission(true);
-
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-      } catch (error) {
-        console.error('Error accessing camera:', error);
-        setHasCameraPermission(false);
-        toast({
-          variant: 'destructive',
-          title: 'Camera Access Denied',
-          description: 'Please enable camera permissions in your browser settings to use this feature.',
-        });
-      }
-    };
-
-    getCameraPermission();
-
-    return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject as MediaStream;
-        stream.getTracks().forEach(track => track.stop());
-      }
-    };
-  }, [isClient, toast]);
-
-  const takePhoto = () => {
-    if (videoRef.current && canvasRef.current) {
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const context = canvas.getContext('2d');
-      if (context) {
-        context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-        const dataUri = canvas.toDataURL('image/jpeg');
-        setPhotoDataUri(dataUri);
-      }
-    }
-  };
-
-  const retakePhoto = () => {
-    setPhotoDataUri(null);
-  };
-  
-  const postcardMasterPrompt = masterPrompts.find(p => p.id === 'postcard-mp-1');
-
-  if (!isClient || hasCameraPermission === null) {
-    return (
-      <div className="container mx-auto py-8 text-center">
-        <p>Loading camera...</p>
-      </div>
-    );
-  }
-  
-  if (postcardMasterPrompt && photoDataUri) {
-     return (
-       <div className="container mx-auto py-8">
-         <AiCardEditor
-           masterPrompt={postcardMasterPrompt}
-           photoDataUri={photoDataUri}
-         />
-       </div>
-     );
-  }
+export default function CreatePostcardPage() {
+  const creationOptions = [
+    {
+      title: 'Use Your Camera',
+      description: 'Take a photo and use it as the background for your postcard. Perfect for capturing moments on the go.',
+      icon: Camera,
+      href: '/create/postcard/camera',
+      linkText: 'Use Camera',
+    },
+    {
+      title: 'Generate with AI',
+      description: 'Don\'t have a photo? Describe the scene you want and our AI will create a stunning image for your postcard.',
+      icon: Sparkles,
+      href: '/create/ai/postcard',
+      linkText: 'Start with AI',
+    },
+];
 
   return (
     <div className="container mx-auto py-8">
-      <Card className="w-full max-w-2xl mx-auto">
-        <CardHeader>
-          <CardTitle className="font-headline">Create a Postcard</CardTitle>
-          <CardDescription>Take a photo to use as the background for your AI-generated postcard.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {hasCameraPermission === false && (
-            <Alert variant="destructive">
-              <AlertTitle>Camera Access Required</AlertTitle>
-              <AlertDescription>
-                Please allow camera access in your browser to use this feature.
-              </AlertDescription>
-            </Alert>
-          )}
-          
-          <div className="relative aspect-video w-full rounded-md overflow-hidden border bg-muted">
-            <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
-            <canvas ref={canvasRef} className="hidden" />
-          </div>
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold font-headline">Create a Postcard</h1>
+        <p className="text-muted-foreground mt-2 text-lg">How would you like to create your postcard?</p>
+      </div>
 
-          <div className="mt-4 flex justify-center">
-            <Button onClick={takePhoto} size="lg" disabled={!hasCameraPermission}>
-              <Camera className="mr-2 h-5 w-5" />
-              Take Photo
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        {creationOptions.map((option) => (
+          <Link href={option.href} key={option.title} className="block">
+            <Card className="h-full text-center p-8 flex flex-col items-center justify-center transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:border-primary">
+              <CardHeader>
+                <div className="mx-auto bg-primary/10 p-4 rounded-full">
+                  <option.icon className="h-12 w-12 text-primary" />
+                </div>
+                <CardTitle className="mt-4 text-2xl font-headline">{option.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-base">{option.description}</CardDescription>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

@@ -15,6 +15,37 @@ export default function MasterPromptSelectionPage({ params }: { params: { occasi
     notFound();
   }
 
+  if (occasion === 'postcard') {
+    // This case is now handled by /create/postcard page.
+    // However, to avoid breaking links if someone lands here directly,
+    // we can redirect or show a specific message.
+    // For now, we can show the postcard master prompt directly.
+     const postcardMasterPrompt = masterPrompts.find(p => p.id === 'postcard-mp-1');
+     if (!postcardMasterPrompt) notFound();
+     
+     return (
+        <div className="container mx-auto py-8">
+            <div className="text-center mb-12">
+                <h1 className="text-4xl font-bold font-headline">Create an AI Postcard</h1>
+                <p className="text-muted-foreground mt-2 text-lg">Describe the postcard you want to create.</p>
+            </div>
+            <div className="flex justify-center">
+                 <Card key={postcardMasterPrompt.id} className="overflow-hidden group transform transition-all duration-300 hover:scale-105 hover:shadow-xl flex flex-col max-w-sm">
+                    <CardHeader>
+                        <CardTitle className="font-headline">{postcardMasterPrompt.name}</CardTitle>
+                        <CardDescription className="text-sm">{postcardMasterPrompt.prompt}</CardDescription>
+                    </CardHeader>
+                    <CardFooter className="mt-auto">
+                    <Button asChild className="w-full">
+                        <Link href={`/create/ai/editor/${postcardMasterPrompt.id}`}>Select & Personalize</Link>
+                    </Button>
+                    </CardFooter>
+                </Card>
+            </div>
+        </div>
+     )
+  }
+
   return (
     <div className="container mx-auto py-8">
       <div className="text-center mb-12">
