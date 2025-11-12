@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/componentsüi/button';
+import { Button } from '@/components/ui/button';
 import { masterPrompts, occasions, placeholderImages } from '@/lib/data';
 import type { Occasion } from '@/lib/data';
 import { notFound } from 'next/navigation';
