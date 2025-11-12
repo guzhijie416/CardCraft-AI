@@ -1,11 +1,11 @@
 import type { LucideIcon } from 'lucide-react';
-import { Cake, Gift, GraduationCap, Heart, Users, Star } from 'lucide-react';
+import { Cake, Gift, GraduationCap, Heart, Users, Camera } from 'lucide-react';
 import { PlaceHolderImages as allImages } from './placeholder-images';
 
 export const placeholderImages = allImages;
 
 export type Occasion = {
-  id: 'birthday' | 'holiday' | 'wedding' | 'graduation' | 'lovers' | 'group';
+  id: 'birthday' | 'holiday' | 'wedding' | 'graduation' | 'lovers' | 'group' | 'postcard';
   name: string;
   icon: LucideIcon;
 };
@@ -17,6 +17,7 @@ export const occasions: Occasion[] = [
   { id: 'graduation', name: 'Graduation', icon: GraduationCap },
   { id: 'lovers', name: 'Lovers', icon: Heart },
   { id: 'group', name: 'Group Card', icon: Users },
+  { id: 'postcard', name: 'Postcard', icon: Camera },
 ];
 
 export type CardTemplate = {
@@ -68,6 +69,7 @@ export const masterPrompts: MasterPrompt[] = [
   { id: 'wed-mp-3', occasion: 'wedding', name: 'Bohemian Spirit', prompt: 'A bohemian, free-spirited wedding card. Think natural elements, earthy tones, and a relaxed, artistic vibe.', imageId: 'master-prompt-wedding-3' },
   { id: 'wed-mp-4', occasion: 'wedding', name: 'Modern Geometric', prompt: 'A clean, modern wedding design featuring geometric patterns and shapes. Minimalist, chic, and contemporary.', imageId: 'master-prompt-wedding-4' },
   { id: 'wed-mp-5', occasion: 'wedding', name: 'Luxury Gold', prompt: 'A luxurious and opulent wedding card with rich textures and prominent gold accents. Evokes a sense of grandeur and elegance.', imageId: 'master-prompt-wedding-5' },
+  { id: 'postcard-mp-1', occasion: 'postcard', name: 'Postcard Style', prompt: 'Create a postcard based on the provided image. Add creative elements and text to make it look like a real postcard.', imageId: 'master-prompt-postcard-1' }
 ];
 
 export const historyItems = [

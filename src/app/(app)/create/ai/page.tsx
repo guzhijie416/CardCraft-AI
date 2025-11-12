@@ -11,18 +11,21 @@ export default function AiCreatePage() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-        {occasions.map((occasion) => (
-          <Link href={`/create/template/${occasion.id}`} key={occasion.id} className="block group">
-            <Card className="text-center p-6 flex flex-col items-center justify-center aspect-square transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-primary/5">
-              <CardContent className="p-0 flex flex-col items-center justify-center gap-4">
-                <div className="bg-secondary p-4 rounded-full transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                  <occasion.icon className="h-10 w-10 text-primary transition-colors group-hover:text-primary-foreground" />
-                </div>
-                <span className="font-semibold font-headline text-lg">{occasion.name}</span>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
+        {occasions.map((occasion) => {
+          const href = occasion.id === 'postcard' ? '/create/postcard' : `/create/ai/${occasion.id}`;
+          return (
+            <Link href={href} key={occasion.id} className="block group">
+              <Card className="text-center p-6 flex flex-col items-center justify-center aspect-square transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-primary/5">
+                <CardContent className="p-0 flex flex-col items-center justify-center gap-4">
+                  <div className="bg-secondary p-4 rounded-full transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                    <occasion.icon className="h-10 w-10 text-primary transition-colors group-hover:text-primary-foreground" />
+                  </div>
+                  <span className="font-semibold font-headline text-lg">{occasion.name}</span>
+                </CardContent>
+              </Card>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

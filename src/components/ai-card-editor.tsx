@@ -28,7 +28,7 @@ const formSchema = z.object({
 
 type EditorState = 'idle' | 'analyzing' | 'needs_improvement' | 'generating' | 'done' | 'error';
 
-export function AiCardEditor({ masterPrompt }: { masterPrompt: MasterPrompt }) {
+export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: MasterPrompt, photoDataUri?: string }) {
   const [editorState, setEditorState] = useState<EditorState>('idle');
   const [analysis, setAnalysis] = useState<SummarizeAndImproveUserPromptOutput | null>(null);
   const [finalCardUri, setFinalCardUri] = useState<string | null>(null);
@@ -41,6 +41,21 @@ export function AiCardEditor({ masterPrompt }: { masterPrompt: MasterPrompt }) {
       personalizedPrompt: '',
     },
   });
+  
+  const modifiedMasterPrompt = photoDataUri
+    ? `${masterPrompt.prompt} Use the following image as the primary background and inspiration.`
+    : masterPrompt.prompt;
+    
+  const generateCardInput = (promptToUse: string) => {
+    let input: any = {
+        masterPrompt: modifiedMasterPrompt,
+        personalizedPrompt: promptToUse,
+    }
+    if (photoDataUri) {
+        input.photoDataUri = photoDataUri
+    }
+    return input;
+  }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setEditorState('analyzing');
@@ -50,7 +65,7 @@ export function AiCardEditor({ masterPrompt }: { masterPrompt: MasterPrompt }) {
       // Step 1: Analyze and improve prompt
       const analysisResult = await analyzePromptAction({
         userPrompt: values.personalizedPrompt,
-        masterPrompt: masterPrompt.prompt,
+        masterPrompt: modifiedMasterPrompt,
       });
 
       setAnalysis(analysisResult);
@@ -79,10 +94,7 @@ export function AiCardEditor({ masterPrompt }: { masterPrompt: MasterPrompt }) {
       }
 
       // Step 3: Generate card
-      const cardResult = await generateCardAction({
-        masterPrompt: masterPrompt.prompt,
-        personalizedPrompt: promptToUse,
-      });
+      const cardResult = await generateCardAction(generateCardInput(promptToUse));
 
       setFinalCardUri(cardResult.cardDataUri);
       setEditorState('done');
@@ -145,6 +157,12 @@ export function AiCardEditor({ masterPrompt }: { masterPrompt: MasterPrompt }) {
       <CardHeader>
         <CardTitle className="font-headline">Personalize Your AI Card</CardTitle>
         <CardDescription>You chose the <span className="font-bold text-primary">{masterPrompt.name}</span> style. Now, add your personal touch.</CardDescription>
+        {photoDataUri && (
+             <div className="mt-4">
+                <p className="text-sm font-semibold mb-2">Your Photo:</p>
+                <Image src={photoDataUri} alt="User photo for postcard" width={200} height={150} className="rounded-md border" />
+             </div>
+        )}
       </CardHeader>
       <CardContent className="space-y-6">
         {editorState === 'needs_improvement' && analysis && (

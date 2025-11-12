@@ -13,6 +13,7 @@ import {z} from 'genkit';
 const GenerateAiCardFromPromptInputSchema = z.object({
   masterPrompt: z.string().describe('A pre-selected master prompt for the overall theme of the card.'),
   personalizedPrompt: z.string().describe('A personalized prompt for specific details of the card design.'),
+  photoDataUri: z.string().optional().describe("An optional photo of a user, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."),
 });
 export type GenerateAiCardFromPromptInput = z.infer<typeof GenerateAiCardFromPromptInputSchema>;
 
@@ -25,29 +26,36 @@ export async function generateAiCardFromPrompt(input: GenerateAiCardFromPromptIn
   return generateAiCardFromPromptFlow(input);
 }
 
-const generateAiCardPrompt = ai.definePrompt({
-  name: 'generateAiCardPrompt',
-  input: {schema: GenerateAiCardFromPromptInputSchema},
-  output: {schema: GenerateAiCardFromPromptOutputSchema},
-  prompt: `Combine the following master prompt and personalized prompt to generate a unique card design. Return the card as a data URI.
-
-Master Prompt: {{{masterPrompt}}}
-Personalized Prompt: {{{personalizedPrompt}}}
-
-Card Design: {{media url=cardDataUri}}`,
-});
-
 const generateAiCardFromPromptFlow = ai.defineFlow(
   {
     name: 'generateAiCardFromPromptFlow',
     inputSchema: GenerateAiCardFromPromptInputSchema,
     outputSchema: GenerateAiCardFromPromptOutputSchema,
   },
-  async input => {
-    const {media} = await ai.generate({
-      model: 'googleai/imagen-4.0-fast-generate-001',
-      prompt: input.masterPrompt + ", " + input.personalizedPrompt,
-    });
-    return {cardDataUri: media.url!};
+  async (input) => {
+    let prompt;
+    let model = 'googleai/imagen-4.0-fast-generate-001';
+    let config;
+
+    if (input.photoDataUri) {
+        model = 'googleai/gemini-2.5-flash-image-preview';
+        prompt = [
+            { media: { url: input.photoDataUri } },
+            { text: `${input.masterPrompt}, ${input.personalizedPrompt}` },
+        ];
+        config = {
+            responseModalities: ['TEXT', 'IMAGE'],
+        };
+    } else {
+        prompt = `${input.masterPrompt}, ${input.personalizedPrompt}`;
+    }
+    
+    const generationRequest: any = { model, prompt };
+    if (config) {
+      generationRequest.config = config;
+    }
+
+    const { media } = await ai.generate(generationRequest);
+    return { cardDataUri: media.url! };
   }
 );
