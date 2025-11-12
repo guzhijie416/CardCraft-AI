@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Represents a user's public and private profile information.",
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "description": "The user's display name."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The user's email address."
+        },
+        "photoURL": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the user's profile picture."
+        },
+        "subscriptionTier": {
+          "type": "string",
+          "enum": ["free", "premium"],
+          "description": "The user's subscription level."
+        },
+        "cardCount": {
+            "type": "number",
+            "description": "The number of cards the user has created."
+        }
+      },
+      "required": ["displayName", "email", "subscriptionTier", "cardCount"]
+    },
+    "Card": {
+      "title": "Card",
+      "description": "Represents a card created by a user.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who created the card."
+        },
+        "prompt": {
+          "type": "string",
+          "description": "The personalized prompt used to generate the card."
+        },
+        "masterPrompt": {
+          "type": "string",
+          "description": "The master prompt theme used."
+        },
+        "cardDataUrl": {
+          "type": "string",
+          "description": "The data URL of the generated card image."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the card was created."
+        }
+      },
+      "required": ["userId", "prompt", "cardDataUrl", "createdAt"]
+    }
+  },
+  "auth": {
+    "providers": ["email"]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/UserProfile"
+      },
+      "description": "Stores user profile information."
+    },
+    "/users/{userId}/cards/{cardId}": {
+      "schema": {
+        "$ref": "#/entities/Card"
+      },
+      "description": "Stores the cards created by a specific user."
+    }
+  }
+}
