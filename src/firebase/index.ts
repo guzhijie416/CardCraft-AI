@@ -11,6 +11,14 @@ import { useDoc } from './firestore/use-doc';
 
 function initializeFirebase() {
   const apps = getApps();
+  // Check if firebaseConfig is populated before initializing
+  const isConfigValid = firebaseConfig && firebaseConfig.apiKey;
+  
+  if (!isConfigValid && apps.length === 0) {
+    // Return nulls if config is invalid and no app is initialized
+    return { app: null, auth: null, firestore: null };
+  }
+
   const app = apps.length ? apps[0] : initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const firestore = getFirestore(app);
