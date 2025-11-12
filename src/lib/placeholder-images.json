@@ -9,61 +9,61 @@
     {
       "id": "template-birthday-1",
       "description": "Birthday card with a colorful cake and candles",
-      "imageUrl": "https://images.unsplash.com/photo-1607482369189-a53b6e71fa48?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxiaXJ0aGRheSUyMGNha2V8ZW58MHx8fHwxNzYyOTI4MDExfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxiaXJ0aGRheSUyMGNha2V8ZW58MHx8fHwxNzYyOTI4MDExfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "birthday cake"
     },
     {
       "id": "template-birthday-2",
       "description": "Birthday card with festive balloons and confetti",
-      "imageUrl": "https://images.unsplash.com/photo-1529153856829-f8c6aeee2e48?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YmlydGhkYXklMjBiYWxsb29uc3xlbnwwfHx8fDE3NjI5NTAyNTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1554719956-5c151ab80680?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxiaXJ0aGRheSUyMGJhbGxvb25zfGVufDB8fHx8MTc2Mjk1MDI1NHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "birthday balloons"
     },
     {
       "id": "template-birthday-3",
       "description": "Elegant birthday card with gold lettering",
-      "imageUrl": "https://images.unsplash.com/photo-1697201342955-25cdf3627683?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxlbGVnYW50JTIwdHlwb2dyYXBoeXxlbnwwfHx8fDE3NjI5NTgzNTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1697201343045-64b1548535cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxlbGVnYW50JTIwdHlwb2dyYXBoeXxlbnwwfHx8fDE3NjI5NTgzNTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "elegant typography"
     },
     {
       "id": "template-birthday-4",
       "description": "Minimalist birthday card with a single flower",
-      "imageUrl": "https://images.unsplash.com/photo-1502809737437-1d85c70dd2ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtaW5pbWFsaXN0JTIwZmxvd2VyfGVufDB8fHx8MTc2Mjk1ODM1NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1620223437074-594368cad589?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtaW5pbWFsaXN0JTIwZmxvd2VyfGVufDB8fHx8MTc2Mjk1ODM1NHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "minimalist flower"
     },
     {
       "id": "template-birthday-5",
       "description": "Funny birthday card with a cartoon animal",
-      "imageUrl": "https://images.unsplash.com/photo-1743964451755-c4a8641a795d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjYXJ0b29uJTIwYW5pbWFsfGVufDB8fHx8MTc2MjkzNTYxNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1743964451734-90a90b395a84?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjYXJ0b29uJTIwYW5pbWFsfGVufDB8fHx8MTc2MjkzNTYxNnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cartoon animal"
     },
     {
       "id": "template-holiday-1",
       "description": "Christmas card with a snowy landscape",
-      "imageUrl": "https://images.unsplash.com/photo-1488164841856-b181b52ceb38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzbm93eSUyMGxhbmRzY2FwZXxlbnwwfHx8fDE3NjI4NzQ0MTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1613082364903-9ff4734f5dd1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzbm93eSUyMGxhbmRzY2FwZXxlbnwwfHx8fDE3NjI4NzQ0MTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "snowy landscape"
     },
     {
       "id": "template-holiday-2",
       "description": "New Year card with fireworks",
-      "imageUrl": "https://images.unsplash.com/photo-1730416615304-61355ef9d64c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmaXJld29ya3MlMjBuaWdodHxlbnwwfHx8fDE3NjI4NzI3MTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1730846647452-009c1a50fafc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxmaXJld29ya3MlMjBuaWdodHxlbnwwfHx8fDE3NjI4NzI3MTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "fireworks night"
     },
     {
       "id": "template-holiday-3",
       "description": "Holiday card with ornaments",
-      "imageUrl": "https://images.unsplash.com/photo-1451772741724-d20990422508?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxob2xpZGF5JTIwb3JuYW1lbnRzfGVufDB8fHx8MTc2Mjk1ODM1NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1544044468-8b022942b9aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxob2xpZGF5JTIwb3JuYW1lbnRzfGVufDB8fHx8MTc2Mjk1ODM1NHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "holiday ornaments"
     },
     {
       "id": "template-holiday-4",
       "description": "Holiday card with a cozy fireplace",
-      "imageUrl": "https://images.unsplash.com/photo-1579761804843-f997ade7fa35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb3p5JTIwZmlyZXBsYWNlfGVufDB8fHx8MTc2Mjg5NDIzMHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1543393470-b2c833b98dce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb3p5JTIwZmlyZXBsYWNlfGVufDB8fHx8MTc2Mjg5NDIzMHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cozy fireplace"
     },
     {
       "id": "template-holiday-5",
       "description": "Modern Holiday card with geometric patterns",
-      "imageUrl": "https://images.unsplash.com/photo-1454117096348-e4abbeba002c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxnZW9tZXRyaWMlMjBwYXR0ZXJufGVufDB8fHx8MTc2Mjg4MDM4NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1595411425732-e69c1abe2763?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxnZW9tZXRyaWMlMjBwYXR0ZXJufGVufDB8fHx8MTc2Mjg4MDM4NHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "geometric pattern"
     },
     {
@@ -75,19 +75,19 @@
     {
       "id": "template-wedding-2",
       "description": "Wedding card with two rings",
-      "imageUrl": "https://images.unsplash.com/photo-1554047310-ab6170fc7b10?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx3ZWRkaW5nJTIwcmluZ3N8ZW58MHx8fHwxNzYyODk1ODExfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1654699643507-3047b3e07045?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx3ZWRkaW5nJTIwcmluZ3N8ZW58MHx8fHwxNzYyODk1ODExfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "wedding rings"
     },
     {
       "id": "template-wedding-3",
       "description": "Minimalist wedding card",
-      "imageUrl": "https://images.unsplash.com/photo-1592677818226-af94f44b04a5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtaW5pbWFsaXN0JTIwd2VkZGluZ3xlbnwwfHx8fDE3NjI5NTgzNTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1621847793384-f6b78c356f18?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtaW5pbWFsaXN0JTIwd2VkZGluZ3xlbnwwfHx8fDE3NjI5NTgzNTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "minimalist wedding"
     },
     {
       "id": "template-wedding-4",
       "description": "Rustic wedding card with wood texture",
-      "imageUrl": "https://images.unsplash.com/photo-1713397837267-84b0843b22ef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxydXN0aWMlMjB3b29kfGVufDB8fHx8MTc2Mjk1ODM1NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1600034907034-e9bbb9d1b3b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxydXN0aWMlMjB3b29kfGVufDB8fHx8MTc2Mjk1ODM1NXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "rustic wood"
     },
     {
@@ -99,31 +99,31 @@
     {
       "id": "master-prompt-birthday-1",
       "description": "An abstract, vibrant, and energetic birthday card design.",
-      "imageUrl": "https://images.unsplash.com/photo-1705254613735-1abb457f8a60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMHZpYnJhbnR8ZW58MHx8fHwxNzYyOTI4NTU5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1547139559-c89c59d11761?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxhYnN0cmFjdCUyMHZpYnJhbnR8ZW58MHx8fHwxNzYyOTI4NTU5fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "abstract vibrant"
     },
     {
       "id": "master-prompt-birthday-2",
       "description": "A calm and serene birthday card with pastel colors.",
-      "imageUrl": "https://images.unsplash.com/photo-1735676286641-5d521e25efcb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwYXN0ZWwlMjBzZXJlbmV8ZW58MHx8fHwxNzYyOTU4MzU1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1745561824183-0f8e11f21483?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwYXN0ZWwlMjBzZXJlbmV8ZW58MHx8fHwxNzYyOTU4MzU1fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "pastel serene"
     },
     {
       "id": "master-prompt-birthday-3",
       "description": "A photorealistic birthday scene.",
-      "imageUrl": "https://images.unsplash.com/photo-1577110949352-b27e8eff8a5f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwaG90b3JlYWxpc3RpYyUyMGNha2V8ZW58MHx8fHwxNzYyOTU4MzU1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1666453579043-fef25e9ce099?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwaG90b3JlYWxpc3RpYyUyMGNha2V8ZW58MHx8fHwxNzYyOTU4MzU1fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "photorealistic cake"
     },
     {
       "id": "master-prompt-birthday-4",
       "description": "A retro-style birthday card from the 80s.",
-      "imageUrl": "https://images.unsplash.com/photo-1658806801893-efd232b188e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxyZXRybyUyMDgwc3xlbnwwfHx8fDE3NjI5NTgzNTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1651205085803-9911c423af71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxyZXRybyUyMDgwc3xlbnwwfHx8fDE3NjI5NTgzNTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "retro 80s"
     },
     {
       "id": "master-prompt-birthday-5",
       "description": "A birthday card in a futuristic, sci-fi style.",
-      "imageUrl": "https://images.unsplash.com/photo-1644772715611-0d1f77c10e36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxmdXR1cmlzdGljJTIwc2NpLWZpfGVufDB8fHx8MTc2Mjk1ODM1NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1619960535209-fc795018bbe1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxmdXR1cmlzdGljJTIwc2NpLWZpfGVufDB8fHx8MTc2Mjk1ODM1NXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "futuristic sci-fi"
     },
     {
@@ -135,19 +135,19 @@
     {
       "id": "master-prompt-holiday-2",
       "description": "A modern and minimalist holiday design.",
-      "imageUrl": "https://images.unsplash.com/photo-1622231858940-b1f315e57efe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtb2Rlcm4lMjBtaW5pbWFsaXN0fGVufDB8fHx8MTc2Mjk1ODM1NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1704428381412-f748f49eb9a6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxtb2Rlcm4lMjBtaW5pbWFsaXN0fGVufDB8fHx8MTc2Mjk1ODM1NXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "modern minimalist"
     },
     {
       "id": "master-prompt-holiday-3",
       "description": "A watercolor painting of a winter wonderland.",
-      "imageUrl": "https://images.unsplash.com/photo-1741116879873-83b5a24d2335?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx3YXRlcmNvbG9yJTIwd2ludGVyfGVufDB8fHx8MTc2Mjk1ODM1NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1694156406336-ce0e11b2602b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx3YXRlcmNvbG9yJTIwd2ludGVyfGVufDB8fHx8MTc2Mjk1ODM1NXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "watercolor winter"
     },
     {
       "id": "master-prompt-holiday-4",
       "description": "A cozy, hygge-inspired holiday card.",
-      "imageUrl": "https://images.unsplash.com/photo-1627915824720-df62f8059d85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb3p5JTIwaG9saWRheXxlbnwwfHx8fDE3NjI5NTgzNTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1702327691839-c0be4c94cef6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjb3p5JTIwaG9saWRheXxlbnwwfHx8fDE3NjI5NTgzNTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cozy holiday"
     },
     {
@@ -159,49 +159,49 @@
     {
       "id": "master-prompt-wedding-1",
       "description": "An elegant and romantic floral wedding design.",
-      "imageUrl": "https://images.unsplash.com/photo-1556705191-7a4def2bd308?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxyb21hbnRpYyUyMGZsb3JhbHxlbnwwfHx8fDE3NjI5MDYwNzd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1573332046013-d9e013e8c71f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxyb21hbnRpYyUyMGZsb3JhbHxlbnwwfHx8fDE3NjI5MDYwNzd8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "romantic floral"
     },
     {
       "id": "master-prompt-wedding-2",
       "description": "A vintage, art deco style wedding invitation.",
-      "imageUrl": "https://images.unsplash.com/photo-1577083165633-14ebcdb0f658?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YXJ0JTIwZGVjb3xlbnwwfHx8fDE3NjI5MDU3NjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1584448033614-882b971a36f3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhcnQlMjBkZWNvfGVufDB8fHx8MTc2MjkwNTc2MHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "art deco"
     },
     {
       "id": "master-prompt-wedding-3",
       "description": "A bohemian, free-spirited wedding card.",
-      "imageUrl": "https://images.unsplash.com/photo-1695138884105-9a5481217d1c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxib2hlbWlhbiUyMHdlZGRpbmd8ZW58MHx8fHwxNzYyOTU4MzU1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1649615644624-506e21b4d35d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxib2hlbWlhbiUyMHdlZGRpbmd8ZW58MHx8fHwxNzYyOTU4MzU1fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "bohemian wedding"
     },
     {
       "id": "master-prompt-wedding-4",
       "description": "A modern, geometric wedding design.",
-      "imageUrl": "https://images.unsplash.com/photo-1612516803878-bdfd794765b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtb2Rlcm4lMjBnZW9tZXRyaWN8ZW58MHx8fHwxNzYyOTU4MzU1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1636378740848-038d2432cb3b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBnZW9tZXRyaWN8ZW58MHx8fHwxNzYyOTU4MzU1fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "modern geometric"
     },
     {
       "id": "master-prompt-wedding-5",
       "description": "A luxurious and opulent wedding card with gold accents.",
-      "imageUrl": "https://images.unsplash.com/photo-1716537817238-13298c24016f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxsdXh1cnklMjBnb2xkfGVufDB8fHx8MTc2Mjk1ODM1NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1565133060055-204fd1bf2e14?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxsdXh1cnklMjBnb2xkfGVufDB8fHx8MTc2Mjk1ODM1NXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "luxury gold"
     },
     {
       "id": "history-1",
       "description": "A generated card showing a cat in a party hat.",
-      "imageUrl": "https://images.unsplash.com/photo-1649567900891-e1791eb53e1a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwYXJ0eSUyMGNhdHxlbnwwfHx8fDE3NjI5NTgzNTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1644463411072-79fd923340cc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwYXJ0eSUyMGNhdHxlbnwwfHx8fDE3NjI5NTgzNTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "party cat"
     },
     {
       "id": "history-2",
       "description": "A generated card showing a beautiful sunset.",
-      "imageUrl": "https://images.unsplash.com/photo-1551237135-a687125805b2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxiZWF1dGlmdWwlMjBzdW5zZXR8ZW58MHx8fHwxNzYyODk3NTE0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1620053580376-3de604e91953?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxiZWF1dGlmdWwlMjBzdW5zZXR8ZW58MHx8fHwxNzYyODk3NTE0fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "beautiful sunset"
     },
     {
       "id": "history-3",
       "description": "A generated card showing a futuristic city.",
-      "imageUrl": "https://images.unsplash.com/photo-1470217957101-da7150b9b681?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxmdXR1cmlzdGljJTIwY2l0eXxlbnwwfHx8fDE3NjI4NzM0MzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1512364615838-8088a04a778b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmdXR1cmlzdGljJTIwY2l0eXxlbnwwfHx8fDE3NjI4NzM0MzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "futuristic city"
     }
   ]
