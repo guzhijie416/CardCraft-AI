@@ -17,6 +17,7 @@ import {
   History,
   User,
   CreditCard,
+  Beaker,
 } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { UserNav } from '@/components/user-nav';
@@ -30,6 +31,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     { href: '/history', label: 'My History', icon: History },
     { href: '/account', label: 'My Account', icon: User },
     { href: '/pricing', label: 'Billing & Plans', icon: CreditCard },
+    { href: '/dev/template-generator', label: 'Template Generator', icon: Beaker },
   ];
 
   return (
