@@ -1,16 +1,17 @@
+
 import type { LucideIcon } from 'lucide-react';
-import { Cake, Gift, GraduationCap, Heart, Users, Camera } from 'lucide-react';
+import { Cake, Gift, GraduationCap, Heart, Users, Camera, Mountain, Building, Zap } from 'lucide-react';
 import { PlaceHolderImages as allImages } from './placeholder-images';
 
 export const placeholderImages = allImages;
 
 export type Occasion = {
-  id: 'birthday' | 'holiday' | 'wedding' | 'graduation' | 'lovers' | 'group' | 'postcard';
+  id: 'birthday' | 'holiday' | 'wedding' | 'graduation' | 'lovers' | 'group' | 'postcard' | 'nature' | 'architecture' | 'abstract';
   name: string;
   icon: LucideIcon;
 };
 
-export const occasions: Occasion[] = [
+export const allOccasions: Occasion[] = [
   { id: 'birthday', name: 'Birthday', icon: Cake },
   { id: 'holiday', name: 'Holiday', icon: Gift },
   { id: 'wedding', name: 'Wedding', icon: Heart },
@@ -18,7 +19,14 @@ export const occasions: Occasion[] = [
   { id: 'lovers', name: 'Lovers', icon: Heart },
   { id: 'group', name: 'Group Card', icon: Users },
   { id: 'postcard', name: 'Postcard', icon: Camera },
+  { id: 'nature', name: 'Nature', icon: Mountain },
+  { id: 'architecture', name: 'Architecture', icon: Building },
+  { id: 'abstract', name: 'Abstract', icon: Zap },
 ];
+
+export const occasions: Occasion[] = allOccasions.filter(o => !['nature', 'architecture', 'abstract'].includes(o.id));
+export const templateOccasions: Occasion[] = allOccasions.filter(o => ['nature', 'architecture', 'abstract', 'birthday', 'holiday', 'wedding', 'graduation'].includes(o.id));
+
 
 export type CardTemplate = {
   id: string;
@@ -28,6 +36,36 @@ export type CardTemplate = {
 };
 
 export const templates: CardTemplate[] = [
+  // Nature
+  { id: 'nature-t-1', occasion: 'nature', name: 'Mountain Lake', imageId: 'hero' },
+  { id: 'nature-t-2', occasion: 'nature', name: 'Minimalist Flower', imageId: 'template-birthday-4' },
+  { id: 'nature-t-3', occasion: 'nature', name: 'Tropical Vibes', imageId: 'template-birthday-10' },
+  { id: 'nature-t-4', occasion: 'nature', name: 'Under the Sea', imageId: 'template-birthday-15' },
+  { id: 'nature-t-5', occasion: 'nature', name: 'Floral Wreath', imageId: 'template-birthday-17' },
+  { id: 'nature-t-6', occasion: 'nature', name: 'Hot Air Balloons', imageId: 'template-birthday-18' },
+  { id: 'nature-t-7', occasion: 'nature', name: 'Snowy Peace', imageId: 'template-holiday-1' },
+  { id: 'nature-t-8', occasion: 'nature', name: 'Beach Sunset', imageId: 'template-wedding-6' },
+  { id: 'nature-t-9', occasion: 'nature', name: 'Mountain Majesty', imageId: 'template-wedding-7' },
+  { id: 'nature-t-10', occasion: 'nature', name: 'Starry Night', imageId: 'template-wedding-15' },
+
+  // Architecture
+  { id: 'arch-t-1', occasion: 'architecture', name: 'Cozy Fireplace', imageId: 'template-holiday-4' },
+  { id: 'arch-t-2', occasion: 'architecture', name: 'Winter Village', imageId: 'template-holiday-6' },
+  { id: 'arch-t-3', occasion: 'architecture', name: 'City Lights', imageId: 'template-wedding-8' },
+  { id: 'arch-t-4', occasion: 'architecture', name: 'Fairytale Castle', imageId: 'template-wedding-12' },
+  { id: 'arch-t-5', occasion: 'architecture', name: 'Vineyard Vows', imageId: 'template-wedding-18' },
+
+  // Abstract
+  { id: 'abstract-t-1', occasion: 'abstract', name: 'Watercolor Wonder', imageId: 'template-birthday-1' },
+  { id: 'abstract-t-2', occasion: 'abstract', name: 'Cosmic Celebration', imageId: 'template-birthday-6' },
+  { id: 'abstract-t-3', occasion: 'abstract', name: 'Modern Geometric', imageId: 'template-birthday-7' },
+  { id: 'abstract-t-4', occasion: 'abstract', name: 'Art Deco Glam', imageId: 'template-birthday-20' },
+  { id: 'abstract-t-5', occasion: 'abstract', name: 'Geometric Cheer', imageId: 'template-holiday-5' },
+  { id: 'abstract-t-6', occasion: 'abstract', name: 'Watercolor Love', imageId: 'template-wedding-9' },
+  { id: 'abstract-t-7', occasion: 'abstract', name: 'Art Deco Affair', imageId: 'template-wedding-10' },
+  { id: 'abstract-t-8', occasion: 'abstract', name: 'Abstract Union', imageId: 'template-wedding-19' },
+
+  // Birthday
   { id: 'bday-t-1', occasion: 'birthday', name: 'Watercolor Wonder', imageId: 'template-birthday-1' },
   { id: 'bday-t-2', occasion: 'birthday', name: 'Festive Fun', imageId: 'template-birthday-2' },
   { id: 'bday-t-3', occasion: 'birthday', name: 'Golden Elegance', imageId: 'template-birthday-3' },
@@ -36,7 +74,7 @@ export const templates: CardTemplate[] = [
   { id: 'bday-t-6', occasion: 'birthday', name: 'Cosmic Celebration', imageId: 'template-birthday-6' },
   { id: 'bday-t-7', occasion: 'birthday', name: 'Modern Geometric', imageId: 'template-birthday-7' },
   { id: 'bday-t-8', occasion: 'birthday', name: 'Vintage Charm', imageId: 'template-birthday-8' },
-  { id: 'bday-t-9', occasion: 'birthday', name: 'Gamer\'s Delight', imageId: 'template-birthday-9' },
+  { id: 'bday-t-9', occasion: 'birthday', name: "Gamer's Delight", imageId: 'template-birthday-9' },
   { id: 'bday-t-10', occasion: 'birthday', name: 'Tropical Vibes', imageId: 'template-birthday-10' },
   { id: 'bday-t-11', occasion: 'birthday', name: 'Sweet Cupcake', imageId: 'template-birthday-11' },
   { id: 'bday-t-12', occasion: 'birthday', name: 'Rockstar Stage', imageId: 'template-birthday-12' },
@@ -48,6 +86,8 @@ export const templates: CardTemplate[] = [
   { id: 'bday-t-18', occasion: 'birthday', name: 'Hot Air Balloons', imageId: 'template-birthday-18' },
   { id: 'bday-t-19', occasion: 'birthday', name: 'Book Lover', imageId: 'template-birthday-19' },
   { id: 'bday-t-20', occasion: 'birthday', name: 'Art Deco Glam', imageId: 'template-birthday-20' },
+
+  // Holiday
   { id: 'holi-t-1', occasion: 'holiday', name: 'Snowy Peace', imageId: 'template-holiday-1' },
   { id: 'holi-t-2', occasion: 'holiday', name: 'New Year Blast', imageId: 'template-holiday-2' },
   { id: 'holi-t-3', occasion: 'holiday', name: 'Ornament Joy', imageId: 'template-holiday-3' },
@@ -68,6 +108,8 @@ export const templates: CardTemplate[] = [
   { id: 'holi-t-18', occasion: 'holiday', name: 'Penguin Party', imageId: 'template-holiday-18' },
   { id: 'holi-t-19', occasion: 'holiday', name: 'Gilded Greetings', imageId: 'template-holiday-19' },
   { id: 'holi-t-20', occasion: 'holiday', name: 'Folk Art Christmas', imageId: 'template-holiday-20' },
+
+  // Wedding
   { id: 'wed-t-1', occasion: 'wedding', name: 'Floral Dreams', imageId: 'template-wedding-1' },
   { id: 'wed-t-2', occasion: 'wedding', name: 'Eternal Rings', imageId: 'template-wedding-2' },
   { id: 'wed-t-3', occasion: 'wedding', name: 'Simple Vows', imageId: 'template-wedding-3' },
@@ -88,11 +130,27 @@ export const templates: CardTemplate[] = [
   { id: 'wed-t-18', occasion: 'wedding', name: 'Vineyard Vows', imageId: 'template-wedding-18' },
   { id: 'wed-t-19', occasion: 'wedding', name: 'Abstract Union', imageId: 'template-wedding-19' },
   { id: 'wed-t-20', occasion: 'wedding', name: 'Passport to Love', imageId: 'template-wedding-20' },
+  
+  // Graduation
   { id: 'grad-t-1', occasion: 'graduation', name: 'The Tassel', imageId: 'template-graduation-1' },
   { id: 'grad-t-2', occasion: 'graduation', name: 'Future is Bright', imageId: 'template-graduation-2' },
   { id: 'grad-t-3', occasion: 'graduation', name: 'Class of 2024', imageId: 'template-graduation-3' },
   { id: 'grad-t-4', occasion: 'graduation', name: 'Adventure Awaits', imageId: 'template-graduation-4' },
   { id: 'grad-t-5', occasion: 'graduation', name: 'Scholarly Script', imageId: 'template-graduation-5' },
+
+  // Lovers
+  { id: 'love-t-1', occasion: 'lovers', name: 'Our Story', imageId: 'template-lovers-1' },
+  { id: 'love-t-2', occasion: 'lovers', name: 'Better Together', imageId: 'template-lovers-2' },
+  { id: 'love-t-3', occasion: 'lovers', name: 'XOXO', imageId: 'template-lovers-3' },
+  { id: 'love-t-4', occasion: 'lovers', name: 'To My Love', imageId: 'template-lovers-4' },
+  { id: 'love-t-5', occasion: 'lovers', name: 'Always & Forever', imageId: 'template-lovers-5' },
+  
+  // Group Card
+  { id: 'group-t-1', occasion: 'group', name: 'Team Celebration', imageId: 'template-group-1' },
+  { id: 'group-t-2', occasion: 'group', name: 'Thank You', imageId: 'template-group-2' },
+  { id: 'group-t-3', occasion: 'group', name: 'Farewell', imageId: 'template-group-3' },
+  { id: 'group-t-4', occasion: 'group', name: 'Good Luck', imageId: 'template-group-4' },
+  { id: 'group-t-5', occasion: 'group', name: 'Congratulations', imageId: 'template-group-5' },
 ];
 
 export type MasterPrompt = {
@@ -145,3 +203,5 @@ export const historyItems = [
         createdAt: '1 week ago'
     }
 ]
+
+    

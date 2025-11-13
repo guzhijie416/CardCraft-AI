@@ -5,14 +5,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { templates, occasions, placeholderImages } from '@/lib/data';
+import { templates, allOccasions, placeholderImages } from '@/lib/data';
 import type { Occasion } from '@/lib/data';
 import { notFound } from 'next/navigation';
 
 export default function TemplateSelectionPage({ params }: { params: { occasion: Occasion['id'] } }) {
   const [visibleCount, setVisibleCount] = useState(10);
   const { occasion } = params;
-  const occasionDetails = occasions.find(o => o.id === occasion);
+  const occasionDetails = allOccasions.find(o => o.id === occasion);
   const filteredTemplates = templates.filter(t => t.occasion === occasion);
 
   if (!occasionDetails) {
@@ -74,9 +74,9 @@ export default function TemplateSelectionPage({ params }: { params: { occasion: 
         </>
       ) : (
         <div className="text-center py-16 border-2 border-dashed rounded-lg">
-          <p className="text-muted-foreground">No templates available for this occasion yet.</p>
+          <p className="text-muted-foreground">No templates available for this category yet.</p>
           <Button asChild variant="link" className="mt-4">
-            <Link href="/create/template">Back to occasions</Link>
+            <Link href="/create/template">Back to categories</Link>
           </Button>
         </div>
       )}
