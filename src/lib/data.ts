@@ -24,7 +24,7 @@ export const allOccasions: Occasion[] = [
   { id: 'abstract', name: 'Abstract', icon: Zap },
 ];
 
-export const occasions: Occasion[] = allOccasions.filter(o => !['nature', 'architecture', 'abstract'].includes(o.id));
+export const occasions: Occasion[] = allOccasions.filter(o => !['nature', 'architecture', 'abstract', 'lovers', 'group'].includes(o.id));
 export const templateOccasions: Occasion[] = allOccasions.filter(o => ['nature', 'architecture', 'abstract', 'birthday', 'holiday', 'wedding', 'graduation'].includes(o.id));
 
 
@@ -74,7 +74,7 @@ export const templates: CardTemplate[] = [
   { id: 'bday-t-6', occasion: 'birthday', name: 'Cosmic Celebration', imageId: 'template-birthday-6' },
   { id: 'bday-t-7', occasion: 'birthday', name: 'Modern Geometric', imageId: 'template-birthday-7' },
   { id: 'bday-t-8', occasion: 'birthday', name: 'Vintage Charm', imageId: 'template-birthday-8' },
-  { id: 'bday-t-9', occasion: 'birthday', name: "Gamer's Delight", imageId: 'template-birthday-9' },
+  { id: 'bday-t-9', occasion: 'birthday', name: 'Gamer\'s Delight', imageId: 'template-birthday-9' },
   { id: 'bday-t-10', occasion: 'birthday', name: 'Tropical Vibes', imageId: 'template-birthday-10' },
   { id: 'bday-t-11', occasion: 'birthday', name: 'Sweet Cupcake', imageId: 'template-birthday-11' },
   { id: 'bday-t-12', occasion: 'birthday', name: 'Rockstar Stage', imageId: 'template-birthday-12' },
@@ -202,6 +202,63 @@ export const historyItems = [
         imageId: 'history-3',
         createdAt: '1 week ago'
     }
-]
+];
 
-    
+export type SuggestedMessage = {
+  id: string;
+  occasion: Occasion['id'];
+  message: string;
+};
+
+export const suggestedMessages: SuggestedMessage[] = [
+  // Birthday
+  { id: 'bday-msg-1', occasion: 'birthday', message: 'Wishing you a day as special as you are. Happy Birthday!' },
+  { id: 'bday-msg-2', occasion: 'birthday', message: 'May your birthday be filled with joy, laughter, and everything you wished for.' },
+  { id: 'bday-msg-3', occasion: 'birthday', message: 'Another year older, another year wiser. Have a fantastic birthday!' },
+  { id: 'bday-msg-4', occasion: 'birthday', message: 'Hope your special day brings you all that your heart desires! Happy Birthday.' },
+  { id: 'bday-msg-5', occasion: 'birthday', message: 'Cheers to you for another trip around the sun. Happy Birthday!' },
+  { id: 'bday-msg-6', occasion: 'birthday', message: 'Happy birthday! May your day be as wonderful as you are.' },
+  { id: 'bday-msg-7', occasion: 'birthday', message: 'Wishing you a birthday that’s just as amazing as you are!' },
+  { id: 'bday-msg-8', occasion: 'birthday', message: 'Enjoy your special day and may all your wishes come true.' },
+  { id: 'bday-msg-9', occasion: 'birthday', message: 'Sending you smiles for every moment of your special day.' },
+  { id: 'bday-msg-10', occasion: 'birthday', message: 'Happy birthday to one of my favorite people on the planet.' },
+
+  // Holiday
+  { id: 'holi-msg-1', occasion: 'holiday', message: 'Wishing you a season of joy and a new year of peace.' },
+  { id: 'holi-msg-2', occasion: 'holiday', message: 'May the holiday season fill your home with joy, your heart with love, and your life with laughter.' },
+  { id: 'holi-msg-3', occasion: 'holiday', message: 'Happy Holidays! Wishing you all the best this season and throughout the year.' },
+  { id: 'holi-msg-4', occasion: 'holiday', message: 'May your holidays sparkle with moments of love, laughter, and goodwill.' },
+  { id: 'holi-msg-5', occasion: 'holiday', message: 'Warmest wishes for a happy holiday season and a wonderful New Year.' },
+  { id: 'holi-msg-6', occasion: 'holiday', message: 'Thinking of you with lots of love during this festive season.' },
+  { id: 'holi-msg-7', occasion: 'holiday', message: 'May the peace and joy of the holidays be with you today and throughout the new year.' },
+  { id: 'holi-msg-8', occasion: 'holiday', message: 'Wishing you a holiday season full of fun, and a new year filled with prosperity.' },
+  { id: 'holi-msg-9', occasion: 'holiday', message: 'Let the spirit of the holidays warm your home and fill your heart.' },
+  { id: 'holi-msg-10', occasion: 'holiday', message: 'Hope your holidays are filled with all your favorite things.' },
+  
+  // Wedding
+  { id: 'wed-msg-1', occasion: 'wedding', message: 'Congratulations on finding your forever. Wishing you a lifetime of love and happiness.' },
+  { id: 'wed-msg-2', occasion: 'wedding', message: 'May the years ahead be filled with lasting joy. Congratulations to a wonderful couple!' },
+  { id: 'wed-msg-3', occasion: 'wedding', message: 'Your wedding day may come and go, but may your love forever grow. Congratulations!' },
+  { id: 'wed-msg-4', occasion: 'wedding', message: 'Wishing you a beautiful wedding day and a future filled with happiness.' },
+  { id: 'wed-msg-5', occasion: 'wedding', message: 'So happy to celebrate this special day with you both! Much love and happiness.' },
+  { id: 'wed-msg-6', occasion: 'wedding', message: 'Congratulations on your marriage! Wishing you the best today and always.' },
+  { id: 'wed-msg-7', occasion: 'wedding', message: 'May your joining together bring you more joy than you can imagine.' },
+  { id: 'wed-msg-8', occasion: 'wedding', message: 'Here’s to a long and happy marriage! Congratulations!' },
+  { id: 'wed-msg-9', occasion: 'wedding', message: 'Best wishes on this wonderful journey, as you build your new lives together.' },
+  { id: 'wed-msg-10', occasion: 'wedding', message: 'Thank you for letting me share in your special day. I wish you all the happiness.' },
+  
+  // Graduation
+  { id: 'grad-msg-1', occasion: 'graduation', message: 'Congratulations on your graduation! The future is all yours. Make it a great one.' },
+  { id: 'grad-msg-2', occasion: 'graduation', message: 'Caps off to you, Graduate! Wishing you all the best for the future.' },
+  { id: 'grad-msg-3', occasion: 'graduation', message: 'Congratulations on your well-deserved success. The journey is just beginning!' },
+  { id: 'grad-msg-4', occasion: 'graduation', message: 'May your degree unlock many doors to a successful and happy life. Congratulations!' },
+  { id: 'grad-msg-5', occasion: 'graduation', message: 'So proud of your hard work and dedication. Congratulations on your graduation!' },
+  
+  // Nature, Architecture, Abstract
+  { id: 'nature-msg-1', occasion: 'nature', message: 'The beauty of nature is a gift that cultivates appreciation and gratitude.' },
+  { id: 'nature-msg-2', occasion: 'nature', message: 'In every walk with nature, one receives far more than he seeks.' },
+  { id: 'arch-msg-1', occasion: 'architecture', message: 'Great architecture is built on a foundation of creativity and precision.' },
+  { id: 'arch-msg-2', occasion: 'architecture', message: 'The mother art is architecture. Without an architecture of our own we have no soul of our own civilization.' },
+  { id: 'abstract-msg-1', occasion: 'abstract', message: 'Abstraction is the freedom of the mind. It’s a journey into the unknown.' },
+  { id: 'abstract-msg-2', occasion: 'abstract', message: 'Art is not what you see, but what you make others see.' },
+];
