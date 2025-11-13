@@ -37,6 +37,96 @@
       "imageHint": "cartoon animal"
     },
     {
+      "id": "template-birthday-6",
+      "imageUrl": "https://images.unsplash.com/photo-1709141428202-e21518e6481f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxnYWxheHklMjBiaXJ0aGRheXxlbnwwfHx8fDE3NjMwMDQ1MDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Cosmic celebration theme",
+      "imageHint": "galaxy birthday"
+    },
+    {
+      "id": "template-birthday-7",
+      "imageUrl": "https://images.unsplash.com/photo-1759523350278-b8f653dc68da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxnZW9tZXRyaWMlMjBiaXJ0aGRheXxlbnwwfHx8fDE3NjMwMDQ1MDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Modern geometric birthday design",
+      "imageHint": "geometric birthday"
+    },
+    {
+      "id": "template-birthday-8",
+      "imageUrl": "https://images.unsplash.com/photo-1680730044689-1970d56a7f06?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx2aW50YWdlJTIwYmlydGhkYXl8ZW58MHx8fHwxNzYzMDA0NTAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Vintage charm birthday card",
+      "imageHint": "vintage birthday"
+    },
+    {
+      "id": "template-birthday-9",
+      "imageUrl": "https://images.unsplash.com/photo-1622349851524-890cc3641b87?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxnYW1lciUyMGJpcnRoZGF5fGVufDB8fHx8MTc2MzAwNDUwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Gamer themed birthday card",
+      "imageHint": "gamer birthday"
+    },
+    {
+      "id": "template-birthday-10",
+      "imageUrl": "https://images.unsplash.com/photo-1497414146483-5bcafdccfdff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx0cm9waWNhbCUyMGJpcnRoZGF5fGVufDB8fHx8MTc2MzAwNDUwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Tropical vibes birthday card",
+      "imageHint": "tropical birthday"
+    },
+    {
+      "id": "template-birthday-11",
+      "imageUrl": "https://images.unsplash.com/photo-1610851024274-0163b12f8022?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjdXBjYWtlJTIwYmlydGhkYXl8ZW58MHx8fHwxNzYzMDA0NTAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Sweet cupcake birthday card",
+      "imageHint": "cupcake birthday"
+    },
+    {
+      "id": "template-birthday-12",
+      "imageUrl": "https://images.unsplash.com/photo-1639678712941-fb0e98305621?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxyb2Nrc3RhciUyMGJpcnRoZGF5fGVufDB8fHx8MTc2MzAwNDUwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Rockstar stage birthday card",
+      "imageHint": "rockstar birthday"
+    },
+    {
+      "id": "template-birthday-13",
+      "imageUrl": "https://images.unsplash.com/photo-1756621716318-9eec89d42715?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxkaW5vc2F1ciUyMGJpcnRoZGF5fGVufDB8fHx8MTc2MzAwNDUwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Dinosaur themed birthday card",
+      "imageHint": "dinosaur birthday"
+    },
+    {
+      "id": "template-birthday-14",
+      "imageUrl": "https://images.unsplash.com/photo-1721993914686-70b0a6a5708a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzY3JpcHQlMjBiaXJ0aGRheXxlbnwwfHx8fDE3NjMwMDQ1MDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Elegant script birthday card",
+      "imageHint": "script birthday"
+    },
+    {
+      "id": "template-birthday-15",
+      "imageUrl": "https://images.unsplash.com/photo-1759922273720-70171ab08bf2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxvY2VhbiUyMGJpcnRoZGF5fGVufDB8fHx8MTc2MzAwNDUwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Under the sea birthday card",
+      "imageHint": "ocean birthday"
+    },
+    {
+      "id": "template-birthday-16",
+      "imageUrl": "https://images.unsplash.com/photo-1713046976030-22b4b0f0e3c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdXBlcmhlcm8lMjBiaXJ0aGRheXxlbnwwfHx8fDE3NjMwMDQ1MDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Superhero themed birthday card",
+      "imageHint": "superhero birthday"
+    },
+    {
+      "id": "template-birthday-17",
+      "imageUrl": "https://images.unsplash.com/photo-1609096873904-893c526aa73f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3cmVhdGglMjBiaXJ0aGRheXxlbnwwfHx8fDE3NjMwMDQ1MDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Floral wreath birthday card",
+      "imageHint": "wreath birthday"
+    },
+    {
+      "id": "template-birthday-18",
+      "imageUrl": "https://images.unsplash.com/photo-1646558583538-624ccabd1fbd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxiYWxsb29ucyUyMGJpcnRoZGF5fGVufDB8fHx8MTc2MzAwNDUwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Hot air balloons birthday card",
+      "imageHint": "balloons birthday"
+    },
+    {
+      "id": "template-birthday-19",
+      "imageUrl": "https://images.unsplash.com/photo-1603289847182-ea07398a1522?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxib29rJTIwYmlydGhkYXl8ZW58MHx8fHwxNzYzMDA0NTAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Book lover birthday card",
+      "imageHint": "book birthday"
+    },
+    {
+      "id": "template-birthday-20",
+      "imageUrl": "https://picsum.photos/seed/b20/400/500",
+      "description": "Art deco glam birthday card",
+      "imageHint": "artdeco birthday"
+    },
+    {
       "id": "template-holiday-1",
       "description": "Christmas card with a snowy landscape",
       "imageUrl": "https://images.unsplash.com/photo-1605153123052-528d89be0d4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzbm93eSUyMGxhbmRzY2FwZXxlbnwwfHx8fDE3NjI4NzQ0MTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
@@ -67,6 +157,96 @@
       "imageHint": "geometric pattern"
     },
     {
+      "id": "template-holiday-6",
+      "imageUrl": "https://images.unsplash.com/photo-1609860200862-280ef414ed6a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx3aW50ZXIlMjB2aWxsYWdlfGVufDB8fHx8MTc2MzAwNDUwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Winter village holiday card",
+      "imageHint": "winter village"
+    },
+    {
+      "id": "template-holiday-7",
+      "imageUrl": "https://images.unsplash.com/photo-1542769779-fd65c7fb6c24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8aG9sbHklMjBjaHJpc3RtYXN8ZW58MHx8fHwxNzYzMDA0NTAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Holly Jolly holiday card",
+      "imageHint": "holly christmas"
+    },
+    {
+      "id": "template-holiday-8",
+      "imageUrl": "https://images.unsplash.com/photo-1601742787189-b08f79f2aa50?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxlbGVnYW50JTIwc25vd2ZsYWtlc3xlbnwwfHx8fDE3NjMwMDQ1MDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Elegant snowflakes holiday card",
+      "imageHint": "elegant snowflakes"
+    },
+    {
+      "id": "template-holiday-9",
+      "imageUrl": "https://images.unsplash.com/photo-1704224315149-ad5082219602?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxnaW5nZXJicmVhZCUyMGhvbGlkYXl8ZW58MHx8fHwxNzYzMDA0NTAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Gingerbread fun holiday card",
+      "imageHint": "gingerbread holiday"
+    },
+    {
+      "id": "template-holiday-10",
+      "imageUrl": "https://images.unsplash.com/photo-1701724487998-d8a8a6fcaa9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxyZWluZGVlciUyMGhvbGlkYXl8ZW58MHx8fHwxNzYzMDA0NTAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Reindeer greetings holiday card",
+      "imageHint": "reindeer holiday"
+    },
+    {
+      "id": "template-holiday-11",
+      "imageUrl": "https://images.unsplash.com/photo-1731763546963-3b168270bbbf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxoYW51a2thaCUyMGxpZ2h0c3xlbnwwfHx8fDE3NjMwMDQ1MDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Hanukkah lights holiday card",
+      "imageHint": "hanukkah lights"
+    },
+    {
+      "id": "template-holiday-12",
+      "imageUrl": "https://images.unsplash.com/photo-1673406541273-c43ea9af57ee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxrd2FuemFhJTIwdW5pdHl8ZW58MHx8fHwxNzYzMDA0NTAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Kwanzaa unity holiday card",
+      "imageHint": "kwanzaa unity"
+    },
+    {
+      "id": "template-holiday-13",
+      "imageUrl": "https://images.unsplash.com/photo-1545595775-940988527800?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8dHJvcGljYWwlMjBjaHJpc3RtYXN8ZW58MHx8fHwxNzYzMDA0NTAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Tropical Christmas holiday card",
+      "imageHint": "tropical christmas"
+    },
+    {
+      "id": "template-holiday-14",
+      "imageUrl": "https://images.unsplash.com/photo-1680716616279-fe81edd514f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx2aW50YWdlJTIwc2FudGF8ZW58MHx8fHwxNzYzMDA0NTAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Vintage Santa holiday card",
+      "imageHint": "vintage santa"
+    },
+    {
+      "id": "template-holiday-15",
+      "imageUrl": "https://images.unsplash.com/photo-1614030073435-b4b7d1b760c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwb2xhcmJlYXIlMjBob2xpZGF5fGVufDB8fHx8MTc2MzAwNDUwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Polar bear hug holiday card",
+      "imageHint": "polarbear holiday"
+    },
+    {
+      "id": "template-holiday-16",
+      "imageUrl": "https://images.unsplash.com/photo-1758844899473-c7e6153e31cc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bmV3eWVhciUyMGNvdW50ZG93bnxlbnwwfHx8fDE3NjMwMDQ1MDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "New Year countdown holiday card",
+      "imageHint": "newyear countdown"
+    },
+    {
+      "id": "template-holiday-17",
+      "imageUrl": "https://images.unsplash.com/photo-1700352757333-c92c3e3e5632?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtaXN0bGV0b2UlMjBob2xpZGF5fGVufDB8fHx8MTc2MzAwNDUwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Mistletoe kiss holiday card",
+      "imageHint": "mistletoe holiday"
+    },
+    {
+      "id": "template-holiday-18",
+      "imageUrl": "https://images.unsplash.com/photo-1730234342975-080dfd74cf88?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwZW5ndWluJTIwaG9saWRheXxlbnwwfHx8fDE3NjMwMDQ1MDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Penguin party holiday card",
+      "imageHint": "penguin holiday"
+    },
+    {
+      "id": "template-holiday-19",
+      "imageUrl": "https://images.unsplash.com/photo-1640002533519-6d5c70521e90?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxnaWxkZWQlMjBob2xpZGF5fGVufDB8fHx8MTc2MzAwNDUwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Gilded greetings holiday card",
+      "imageHint": "gilded holiday"
+    },
+    {
+      "id": "template-holiday-20",
+      "imageUrl": "https://images.unsplash.com/photo-1638866413187-701156273c68?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmb2xrYXJ0JTIwY2hyaXN0bWFzfGVufDB8fHx8MTc2MzAwNDUwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Folk art Christmas holiday card",
+      "imageHint": "folkart christmas"
+    },
+    {
       "id": "template-wedding-1",
       "description": "Elegant wedding invitation with floral design",
       "imageUrl": "https://images.unsplash.com/photo-1708077809012-4740dd43bd53?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmbG9yYWwlMjB3ZWRkaW5nfGVufDB8fHx8MTc2Mjk1ODM1NHww&ixlib=rb-4.1.0&q=80&w=1080",
@@ -95,6 +275,96 @@
       "description": "Luxury wedding card with gold foil",
       "imageUrl": "https://images.unsplash.com/photo-1545873681-d8affd67677b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxnb2xkJTIwZm9pbHxlbnwwfHx8fDE3NjI5NTgzNTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "gold foil"
+    },
+    {
+      "id": "template-wedding-6",
+      "imageUrl": "https://images.unsplash.com/photo-1605985687770-2e2e82c9b5f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxiZWFjaCUyMHdlZGRpbmd8ZW58MHx8fHwxNzYzMDA0NTAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Beach sunset wedding card",
+      "imageHint": "beach wedding"
+    },
+    {
+      "id": "template-wedding-7",
+      "imageUrl": "https://images.unsplash.com/photo-1666811088961-c666a471ad15?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bW91bnRhaW4lMjB3ZWRkaW5nfGVufDB8fHx8MTc2MzAwNDUwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Mountain majesty wedding card",
+      "imageHint": "mountain wedding"
+    },
+    {
+      "id": "template-wedding-8",
+      "imageUrl": "https://images.unsplash.com/photo-1737176424046-c0c755317477?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjaXR5JTIwd2VkZGluZ3xlbnwwfHx8fDE3NjMwMDQ1MDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "City lights wedding card",
+      "imageHint": "city wedding"
+    },
+    {
+      "id": "template-wedding-9",
+      "imageUrl": "https://images.unsplash.com/photo-1646577132683-a5aad276bb91?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3YXRlcmNvbG9yJTIwd2VkZGluZ3xlbnwwfHx8fDE3NjMwMDQ1MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Watercolor love wedding card",
+      "imageHint": "watercolor wedding"
+    },
+    {
+      "id": "template-wedding-10",
+      "imageUrl": "https://images.unsplash.com/photo-1752159985395-ee98f2574448?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxhcnRkZWNvJTIwd2VkZGluZ3xlbnwwfHx8fDE3NjMwMDQ1MDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Art Deco affair wedding card",
+      "imageHint": "artdeco wedding"
+    },
+    {
+      "id": "template-wedding-11",
+      "imageUrl": "https://images.unsplash.com/photo-1605101417781-b069480f938a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxib2hvJTIwd2VkZGluZ3xlbnwwfHx8fDE3NjMwMDQ1MDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Boho chic wedding card",
+      "imageHint": "boho wedding"
+    },
+    {
+      "id": "template-wedding-12",
+      "imageUrl": "https://images.unsplash.com/photo-1731576090228-5481324e7068?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjYXN0bGUlMjB3ZWRkaW5nfGVufDB8fHx8MTc2MzAwNDUwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Fairytale castle wedding card",
+      "imageHint": "castle wedding"
+    },
+    {
+      "id": "template-wedding-13",
+      "imageUrl": "https://images.unsplash.com/photo-1615559682366-0629e6668b2f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtb2Rlcm4lMjB3ZWRkaW5nfGVufDB8fHx8MTc2MzAwNDUwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Minimalist modern wedding card",
+      "imageHint": "modern wedding"
+    },
+    {
+      "id": "template-wedding-14",
+      "imageUrl": "https://images.unsplash.com/photo-1693026221384-87b69367fb65?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxsYWNlJTIwd2VkZGluZ3xlbnwwfHx8fDE3NjMwMDQ1MDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Vintage lace wedding card",
+      "imageHint": "lace wedding"
+    },
+    {
+      "id": "template-wedding-15",
+      "imageUrl": "https://images.unsplash.com/photo-1744372248174-fb7740264759?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzdGFycnklMjB3ZWRkaW5nfGVufDB8fHx8MTc2MzAwNDUwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Starry night wedding card",
+      "imageHint": "starry wedding"
+    },
+    {
+      "id": "template-wedding-16",
+      "imageUrl": "https://images.unsplash.com/photo-1521460242800-c050e7e2cac7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxoZWFydHMlMjB3ZWRkaW5nfGVufDB8fHx8MTc2MzAwNDUwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Two hearts wedding card",
+      "imageHint": "hearts wedding"
+    },
+    {
+      "id": "template-wedding-17",
+      "imageUrl": "https://images.unsplash.com/photo-1660606422278-ec5aa459fb99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjYWxsaWdyYXBoeSUyMHdlZGRpbmd8ZW58MHx8fHwxNzYzMDA0NTAzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Elegant calligraphy wedding card",
+      "imageHint": "calligraphy wedding"
+    },
+    {
+      "id": "template-wedding-18",
+      "imageUrl": "https://images.unsplash.com/photo-1698616596895-71e43af05b70?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8dmluZXlhcmQlMjB3ZWRkaW5nfGVufDB8fHx8MTc2MzAwNDUwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Vineyard vows wedding card",
+      "imageHint": "vineyard wedding"
+    },
+    {
+      "id": "template-wedding-19",
+      "imageUrl": "https://images.unsplash.com/photo-1672798083354-e284cdc2a2ad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxhYnN0cmFjdCUyMHdlZGRpbmd8ZW58MHx8fHwxNzYzMDA0NTAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Abstract union wedding card",
+      "imageHint": "abstract wedding"
+    },
+    {
+      "id": "template-wedding-20",
+      "imageUrl": "https://images.unsplash.com/photo-1675248243374-c68a1f8b0c46?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwYXNzcG9ydCUyMHdlZGRpbmd8ZW58MHx8fHwxNzYzMDA0NTAzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Passport to love wedding card",
+      "imageHint": "passport wedding"
     },
     {
       "id": "master-prompt-birthday-1",
