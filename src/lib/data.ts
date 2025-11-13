@@ -74,7 +74,7 @@ export const templates: CardTemplate[] = [
   { id: 'bday-t-6', occasion: 'birthday', name: 'Cosmic Celebration', imageId: 'template-birthday-6' },
   { id: 'bday-t-7', occasion: 'birthday', name: 'Modern Geometric', imageId: 'template-birthday-7' },
   { id: 'bday-t-8', occasion: 'birthday', name: 'Vintage Charm', imageId: 'template-birthday-8' },
-  { id: 'bday-t-9', occasion: 'birthday', name: 'Gamer\'s Delight', imageId: 'template-birthday-9' },
+  { id: 'bday-t-9', occasion: 'birthday', name: "Gamer's Delight", imageId: 'template-birthday-9' },
   { id: 'bday-t-10', occasion: 'birthday', name: 'Tropical Vibes', imageId: 'template-birthday-10' },
   { id: 'bday-t-11', occasion: 'birthday', name: 'Sweet Cupcake', imageId: 'template-birthday-11' },
   { id: 'bday-t-12', occasion: 'birthday', name: 'Rockstar Stage', imageId: 'template-birthday-12' },
@@ -261,4 +261,30 @@ export const suggestedMessages: SuggestedMessage[] = [
   { id: 'arch-msg-2', occasion: 'architecture', message: 'The mother art is architecture. Without an architecture of our own we have no soul of our own civilization.' },
   { id: 'abstract-msg-1', occasion: 'abstract', message: 'Abstraction is the freedom of the mind. It’s a journey into the unknown.' },
   { id: 'abstract-msg-2', occasion: 'abstract', message: 'Art is not what you see, but what you make others see.' },
+];
+
+export type MessageMasterPrompt = {
+  id: string;
+  occasion: Occasion['id'];
+  name: string;
+  prompt: string;
+};
+
+export const messageMasterPrompts: MessageMasterPrompt[] = [
+  // Birthday
+  { id: 'bday-mmp-1', occasion: 'birthday', name: 'Funny & Witty', prompt: 'Generate 3 short, funny, and witty birthday messages. Keep them light-hearted and under 20 words.' },
+  { id: 'bday-mmp-2', occasion: 'birthday', name: 'Heartfelt & Warm', prompt: 'Generate 3 heartfelt and warm birthday messages, expressing deep appreciation and love. Aim for 2-3 sentences each.' },
+  { id: 'bday-mmp-3', occasion: 'birthday', name: 'For a Best Friend', prompt: 'Generate 3 birthday messages perfect for a best friend, referencing shared memories and inside jokes (use placeholders for specifics). Make them feel personal and special.' },
+  { id: 'bday-mmp-4', occasion: 'birthday', name: 'Belated Birthday', prompt: 'Generate 3 creative and apologetic messages for a belated birthday. Make them charming and forgiving.' },
+
+  // Holiday
+  { id: 'holi-mmp-1', occasion: 'holiday', name: 'Classic Christmas', prompt: 'Generate 3 classic and traditional Christmas messages, focusing on peace, joy, and goodwill.' },
+  { id: 'holi-mmp-2', occasion: 'holiday', name: 'Happy New Year', prompt: 'Generate 3 optimistic and exciting messages for the New Year, focusing on new beginnings and future success.' },
+  { id: 'holi-mmp-3', occasion: 'holiday', name: 'General Happy Holidays', prompt: 'Generate 3 inclusive and warm "Happy Holidays" messages that are suitable for anyone, regardless of what they celebrate.' },
+  { id: 'holi-mmp-4', occasion: 'holiday', name: 'For Family', prompt: 'Generate 3 holiday messages specifically for family, emphasizing love, togetherness, and gratitude.' },
+
+  // Wedding
+  { id: 'wed-mmp-1', occasion: 'wedding', name: 'Formal & Elegant', prompt: 'Generate 3 formal and elegant congratulatory messages for a wedding. Use sophisticated language.' },
+  { id: 'wed-mmp-2', occasion: 'wedding', name: 'Casual & Fun', prompt: 'Generate 3 casual, fun, and modern messages for a wedding, perfect for friends. Keep the tone light and celebratory.' },
+  { id: 'wed-mmp-3', occasion: 'wedding', name: 'Advice for the Couple', prompt: 'Generate 3 pieces of short, sweet, and meaningful advice for the newly married couple.' },
 ];

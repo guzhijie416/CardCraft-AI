@@ -9,6 +9,9 @@ import type { FilterAIContentInput } from '@/ai/flows/filter-ai-content-for-inap
 import { summarizeAndImproveUserPrompt } from '@/ai/flows/summarize-and-improve-user-prompt';
 import type { SummarizeAndImproveUserPromptInput } from '@/ai/flows/summarize-and-improve-user-prompt';
 
+import { generateCardMessage } from '@/ai/flows/generate-card-message';
+import type { GenerateCardMessageInput } from '@/ai/flows/generate-card-message';
+
 export async function analyzePromptAction(input: SummarizeAndImproveUserPromptInput) {
   try {
     return await summarizeAndImproveUserPrompt(input);
@@ -35,5 +38,14 @@ export async function generateCardAction(input: GenerateAiCardFromPromptInput) {
   } catch (error) {
     console.error('Error in generateCardAction:', error);
     throw new Error('Failed to generate the card. Please try again.');
+  }
+}
+
+export async function generateMessagesAction(input: GenerateCardMessageInput) {
+  try {
+    return await generateCardMessage(input);
+  } catch (error) {
+    console.error('Error in generateMessagesAction:', error);
+    throw new Error('Failed to generate messages.');
   }
 }
