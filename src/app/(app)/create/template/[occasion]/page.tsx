@@ -39,7 +39,7 @@ export default function TemplateSelectionPage({ params }: { params: { occasion: 
               const image = placeholderImages.find(p => p.id === template.imageId);
               return (
                 <Card key={template.id} className="overflow-hidden group transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
-                  <CardContent className="p-0 aspect-[4/5] bg-muted">
+                  <CardContent className="p-0 aspect-[4/5] bg-muted relative">
                     {image && (
                       <Image
                         src={image.imageUrl}
@@ -50,6 +50,7 @@ export default function TemplateSelectionPage({ params }: { params: { occasion: 
                         className="w-full h-full object-cover"
                       />
                     )}
+                     <div className="absolute inset-0 ring-1 ring-inset ring-black/10"></div>
                   </CardContent>
                   <CardHeader className="p-4">
                     <CardTitle className="font-headline text-lg truncate">{template.name}</CardTitle>

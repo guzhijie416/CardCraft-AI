@@ -3,8 +3,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { occasions } from '@/lib/data';
 
 export default function TemplateOccasionPage() {
-  // We filter out postcard because it has its own special flow.
-  const availableOccasions = occasions.filter(o => o.id !== 'postcard');
+  // We filter out postcard, lovers and group because they have their own special flow or are AI only.
+  const availableOccasions = occasions.filter(o => !['postcard', 'lovers', 'group'].includes(o.id));
 
   return (
     <div className="container mx-auto py-8">

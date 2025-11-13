@@ -93,16 +93,6 @@ export const templates: CardTemplate[] = [
   { id: 'grad-t-3', occasion: 'graduation', name: 'Class of 2024', imageId: 'template-graduation-3' },
   { id: 'grad-t-4', occasion: 'graduation', name: 'Adventure Awaits', imageId: 'template-graduation-4' },
   { id: 'grad-t-5', occasion: 'graduation', name: 'Scholarly Script', imageId: 'template-graduation-5' },
-  { id: 'love-t-1', occasion: 'lovers', name: 'Our Story', imageId: 'template-lovers-1' },
-  { id: 'love-t-2', occasion: 'lovers', name: 'Better Together', imageId: 'template-lovers-2' },
-  { id: 'love-t-3', occasion: 'lovers', name: 'XOXO', imageId: 'template-lovers-3' },
-  { id: 'love-t-4', occasion: 'lovers', name: 'To My Love', imageId: 'template-lovers-4' },
-  { id: 'love-t-5', occasion: 'lovers', name: 'Always & Forever', imageId: 'template-lovers-5' },
-  { id: 'group-t-1', occasion: 'group', name: 'Team Celebration', imageId: 'template-group-1' },
-  { id: 'group-t-2', occasion: 'group', name: 'Thank You!', imageId: 'template-group-2' },
-  { id: 'group-t-3', occasion: 'group', name: 'Farewell!', imageId: 'template-group-3' },
-  { id: 'group-t-4', occasion: 'group', name: 'Good Luck!', imageId: 'template-group-4' },
-  { id: 'group-t-5', occasion: 'group', name: 'Congrats!', imageId: 'template-group-5' },
 ];
 
 export type MasterPrompt = {
