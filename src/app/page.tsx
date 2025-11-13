@@ -21,13 +21,13 @@ export default function Home() {
       title: 'Elegant Templates',
       description: 'Choose from a curated collection of beautiful templates for any occasion. Customize with your own words.',
       icon: <Paintbrush className="h-10 w-10 text-primary" />,
-      link: '/login',
+      link: '/create',
     },
     {
       title: 'AI-Powered Magic',
       description: 'Describe your vision and let our AI create a unique, one-of-a-kind card design just for you. The possibilities are endless.',
       icon: <Sparkles className="h-10 w-10 text-primary" />,
-      link: '/login',
+      link: '/create/ai',
     },
   ];
 
