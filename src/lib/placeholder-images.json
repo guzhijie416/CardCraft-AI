@@ -479,6 +479,96 @@
       "description": "A generated card showing a futuristic city.",
       "imageUrl": "https://images.unsplash.com/photo-1470217957101-da7150b9b681?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxmdXR1cmlzdGljJTIwY2l0eXxlbnwwfHx8fDE3NjI4NzM0MzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "futuristic city"
+    },
+    {
+      "id": "template-graduation-1",
+      "description": "Graduation card with a tassel.",
+      "imageUrl": "https://images.unsplash.com/photo-1620550118415-4698ab466299?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxncmFkdWF0aW9uJTIwdGFzc2VsfGVufDB8fHx8MTc2MzAwNDg4M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "graduation tassel"
+    },
+    {
+      "id": "template-graduation-2",
+      "description": "Graduation card with a bright future theme.",
+      "imageUrl": "https://images.unsplash.com/photo-1762438136374-b2fe754053f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxncmFkdWF0aW9uJTIwZnV0dXJlfGVufDB8fHx8MTc2MzAwNDg4M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "graduation future"
+    },
+    {
+      "id": "template-graduation-3",
+      "description": "Graduation card with 'Class of 2024'.",
+      "imageUrl": "https://images.unsplash.com/photo-1761469354504-8d14b3a33757?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxncmFkdWF0aW9uJTIwY2xhc3N8ZW58MHx8fHwxNzYzMDA0ODgyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "graduation class"
+    },
+    {
+      "id": "template-graduation-4",
+      "description": "Graduation card with an adventure theme.",
+      "imageUrl": "https://images.unsplash.com/photo-1748542685954-e49304dd4c3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Z3JhZHVhdGlvbiUyMGFkdmVudHVyZXxlbnwwfHx8fDE3NjMwMDQ4ODN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "graduation adventure"
+    },
+    {
+      "id": "template-graduation-5",
+      "description": "Graduation card with scholarly script.",
+      "imageUrl": "https://images.unsplash.com/photo-1628489824362-738b49d387ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxncmFkdWF0aW9uJTIwc2NyaXB0fGVufDB8fHx8MTc2MzAwNDg4M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "graduation script"
+    },
+    {
+      "id": "template-lovers-1",
+      "description": "Card for lovers with 'Our Story' theme.",
+      "imageUrl": "https://images.unsplash.com/photo-1580071224303-4ac151718cb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsb3ZlJTIwc3Rvcnl8ZW58MHx8fHwxNzYzMDA0ODgzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "love story"
+    },
+    {
+      "id": "template-lovers-2",
+      "description": "Card for lovers with 'Better Together' theme.",
+      "imageUrl": "https://images.unsplash.com/photo-1607005813965-1d5dc0e6246f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsb3ZlJTIwdG9nZXRoZXJ8ZW58MHx8fHwxNzYzMDA0ODgzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "love together"
+    },
+    {
+      "id": "template-lovers-3",
+      "description": "Card for lovers with 'XOXO' theme.",
+      "imageUrl": "https://images.unsplash.com/photo-1634273453226-eab99c1253f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxsb3ZlJTIweG94b3xlbnwwfHx8fDE3NjMwMDQ4ODJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "love xoxo"
+    },
+    {
+      "id": "template-lovers-4",
+      "description": "Card for lovers with 'To My Love' theme.",
+      "imageUrl": "https://images.unsplash.com/photo-1619260288316-1dc66c32b718?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxsb3ZlJTIwbGV0dGVyfGVufDB8fHx8MTc2MzAwNDg4M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "love letter"
+    },
+    {
+      "id": "template-lovers-5",
+      "description": "Card for lovers with 'Always & Forever' theme.",
+      "imageUrl": "https://images.unsplash.com/photo-1633653330687-9955a3796b8c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxsb3ZlJTIwZm9yZXZlcnxlbnwwfHx8fDE3NjMwMDQ4ODJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "love forever"
+    },
+    {
+      "id": "template-group-1",
+      "description": "Group card for team celebration.",
+      "imageUrl": "https://images.unsplash.com/photo-1757031299772-e5efc55ae5c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx0ZWFtJTIwY2VsZWJyYXRpb258ZW58MHx8fHwxNzYyOTUzNDQ2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "team celebration"
+    },
+    {
+      "id": "template-group-2",
+      "description": "Group card for saying thank you.",
+      "imageUrl": "https://images.unsplash.com/photo-1762504351153-58a41cd486dd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0ZWFtJTIwdGhhbmslMjB5b3V8ZW58MHx8fHwxNzYzMDA0ODgzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "team thank you"
+    },
+    {
+      "id": "template-group-3",
+      "description": "Group card for a farewell.",
+      "imageUrl": "https://images.unsplash.com/photo-1603371189473-eb9f2fb6364a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0ZWFtJTIwZmFyZXdlbGx8ZW58MHx8fHwxNzYzMDA0ODgyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "team farewell"
+    },
+    {
+      "id": "template-group-4",
+      "description": "Group card for good luck.",
+      "imageUrl": "https://images.unsplash.com/photo-1547228080-50a58f33b43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx0ZWFtJTIwZ29vZCUyMGx1Y2t8ZW58MHx8fHwxNzYzMDA0ODgyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "team good luck"
+    },
+    {
+      "id": "template-group-5",
+      "description": "Group card for congratulations.",
+      "imageUrl": "https://picsum.photos/seed/group5/400/500",
+      "imageHint": "team congrats"
     }
   ]
 }
