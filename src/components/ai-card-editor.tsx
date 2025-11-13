@@ -9,16 +9,18 @@ import {
   analyzePromptAction,
   filterContentAction,
   generateCardAction,
+  generateMessagesAction,
 } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, Wand2, Lightbulb, Download, Mail, Printer } from 'lucide-react';
+import { Loader2, Sparkles, Wand2, Lightbulb, Download, Mail, Printer, MessageSquareQuote } from 'lucide-react';
 import type { MasterPrompt } from '@/lib/data';
 import type { SummarizeAndImproveUserPromptOutput } from '@/ai/flows/summarize-and-improve-user-prompt';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 const formSchema = z.object({
   personalizedPrompt: z.string().min(10, {
@@ -27,11 +29,15 @@ const formSchema = z.object({
 });
 
 type EditorState = 'idle' | 'analyzing' | 'needs_improvement' | 'generating' | 'done' | 'error';
+type MessageState = 'idle' | 'generating' | 'done' | 'error';
+
 
 export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: MasterPrompt, photoDataUri?: string }) {
   const [editorState, setEditorState] = useState<EditorState>('idle');
+  const [messageState, setMessageState] = useState<MessageState>('idle');
   const [analysis, setAnalysis] = useState<SummarizeAndImproveUserPromptOutput | null>(null);
   const [finalCardUri, setFinalCardUri] = useState<string | null>(null);
+  const [suggestedMessages, setSuggestedMessages] = useState<string[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { toast } = useToast();
 
@@ -106,11 +112,26 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
       handleError(error, 'There was an issue generating your card.');
     }
   }
+  
+  async function handleGenerateMessages() {
+    setMessageState('generating');
+    try {
+      const result = await generateMessagesAction({
+        prompt: form.getValues('personalizedPrompt') || masterPrompt.prompt,
+        occasion: masterPrompt.occasion,
+      });
+      setSuggestedMessages(result.messages);
+      setMessageState('done');
+    } catch (error) {
+       handleError(error, 'Could not generate message suggestions.');
+       setMessageState('error');
+    }
+  }
 
   function handleError(error: unknown, defaultMessage: string) {
     const message = error instanceof Error ? error.message : defaultMessage;
     setErrorMessage(message);
-    setEditorState('error');
+    setEditorState('error'); // It might be better to have a separate error state for messages
     toast({
       variant: 'destructive',
       title: 'An error occurred',
@@ -120,8 +141,10 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
 
   function handleReset() {
     setEditorState('idle');
+    setMessageState('idle');
     setAnalysis(null);
     setFinalCardUri(null);
+    setSuggestedMessages([]);
     setErrorMessage(null);
     form.reset();
   }
@@ -133,7 +156,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
       <Card className="w-full max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle className="font-headline">Your Card is Ready!</CardTitle>
-          <CardDescription>Download, share, or print your creation.</CardDescription>
+          <CardDescription>Download your creation or get some AI-powered message ideas.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="aspect-[4/5] w-full rounded-lg overflow-hidden border">
@@ -144,10 +167,49 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
             <Button variant="secondary"><Mail className="mr-2 h-4 w-4" /> Email</Button>
             <Button variant="secondary"><Printer className="mr-2 h-4 w-4" /> Print</Button>
           </div>
-          <Button variant="outline" className="w-full" onClick={handleReset}>
+        </CardContent>
+        <CardFooter className="flex-col items-start gap-4 pt-4 border-t">
+          {messageState !== 'done' && (
+             <Button onClick={handleGenerateMessages} disabled={messageState === 'generating'} className="w-full">
+              {messageState === 'generating' ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <MessageSquareQuote className="mr-2 h-4 w-4" />
+              )}
+              Suggest Messages
+            </Button>
+          )}
+
+           {messageState === 'done' && suggestedMessages.length > 0 && (
+                <div className="space-y-2 w-full">
+                    <Label>AI Message Suggestions (click to copy)</Label>
+                    <Carousel opts={{ align: "start", loop: false }} className="w-full">
+                      <CarouselContent>
+                        {suggestedMessages.map((msg, index) => (
+                          <CarouselItem key={index} className="basis-full md:basis-1/2">
+                            <div className="p-1">
+                               <Card className="bg-muted/50 cursor-pointer hover:bg-muted" onClick={() => {
+                                 navigator.clipboard.writeText(msg);
+                                 toast({ title: 'Copied to clipboard!' });
+                               }}>
+                                <CardContent className="p-4 text-sm">
+                                  <p>{msg}</p>
+                                </CardContent>
+                              </Card>
+                            </div>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="ml-12" />
+                      <CarouselNext className="mr-12"/>
+                    </Carousel>
+                </div>
+              )}
+          
+          <Button variant="outline" className="w-full mt-4" onClick={handleReset}>
             Create Another Card
           </Button>
-        </CardContent>
+        </CardFooter>
       </Card>
     );
   }
