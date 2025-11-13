@@ -8,7 +8,7 @@ export default function CreatePage() {
       title: 'Create from Template',
       description: 'Choose from our library of professionally designed templates for any occasion.',
       icon: BookOpen,
-      href: '/create/ai', // This path shows occasions, which is a good starting point for templates too.
+      href: '/create/template',
       linkText: 'Browse Templates',
     },
     {

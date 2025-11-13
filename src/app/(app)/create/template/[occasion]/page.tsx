@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { templates, occasions, placeholderImages } from '@/lib/data';
 import type { Occasion } from '@/lib/data';
@@ -40,10 +40,12 @@ export default function TemplateSelectionPage({ params }: { params: { occasion: 
                     />
                   )}
                 </CardContent>
-                <CardFooter className="p-4 flex flex-col items-start">
-                  <h3 className="font-semibold font-headline">{template.name}</h3>
-                  <Button asChild className="mt-2 w-full">
-                    <Link href={`/create/ai/${template.occasion}`}>Use AI Instead</Link>
+                <CardHeader className="p-4">
+                  <CardTitle className="font-headline text-lg">{template.name}</CardTitle>
+                </CardHeader>
+                <CardFooter className="p-4 pt-0">
+                  <Button asChild className="w-full">
+                    <Link href={`/editor/template/${template.id}`}>Customize</Link>
                   </Button>
                 </CardFooter>
               </Card>
@@ -54,7 +56,7 @@ export default function TemplateSelectionPage({ params }: { params: { occasion: 
         <div className="text-center py-16 border-2 border-dashed rounded-lg">
           <p className="text-muted-foreground">No templates available for this occasion yet.</p>
           <Button asChild variant="link" className="mt-4">
-            <Link href="/create">Back to creation</Link>
+            <Link href="/create/template">Back to occasions</Link>
           </Button>
         </div>
       )}
