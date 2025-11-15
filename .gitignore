@@ -43,3 +43,11 @@ next-env.d.ts
 # firebase
 firebase-debug.log
 firestore-debug.log
+# Google Cloud Service Account Key - NEVER COMMIT THIS!
+cardcraft-ee12e-e57edfd10dea.json
+# Google Cloud Service Account Key - NEVER COMMIT THIS!
+cardcraft-ee12e-e57edfd10dea.json
+# Google Cloud Service Account Key - NEVER COMMIT THIS!
+cardcraft-ee12e-e57edfd10dea.json
+# Google Cloud Service Account Key - NEVER COMMIT THIS!
+cardcraft-ee12e-396d28805711.json
