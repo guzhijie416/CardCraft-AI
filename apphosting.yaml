@@ -1,4 +1,4 @@
-# Settings to manage and configure a Firebase App Hosting backend.
+#  Settings to manage and configure a Firebase App Hosting backend.
 # https://firebase.google.com/docs/app-hosting/configure
 
 # --- BUILD CONFIGURATION ---
@@ -22,10 +22,9 @@ runConfig:
 # --- ENVIRONMENT VARIABLES & SECRETS ---
 # This section defines environment variables your app needs at runtime.
 env:
-  # This injects your Gemini API key from Secret Manager into your app's environment.
-  # The 'secret' value MUST EXACTLY match the name you gave your secret in Secret Manager.
-  GEMINI_API_KEY:
-    secret: gemini-api-key-cardcraft # <-- DOUBLE-CHECK THIS NAME!
-  # Standard environment variable for production builds.
-  NODE_ENV:
-    value: production
+  # Each environment variable definition needs to start with a hyphen (-)
+  # to signify it's an item in a list.
+  - variable: GEMINI_API_KEY          # The name of the environment variable in your app
+    secret: gemini-api-key-cardcraft  # The name of the secret in Secret Manager
+  - variable: NODE_ENV                # Another environment variable
+    value: production                 # Its literal value
