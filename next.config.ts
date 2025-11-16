@@ -1,4 +1,5 @@
-import type {NextConfig} from 'next';
+import type { NextConfig } from 'next';
+import path from 'path'; // Import the path module
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -23,6 +24,14 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  // ADD THIS WEBPACK CONFIGURATION
+  webpack: (config, { isServer }) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(__dirname, './src'), // Explicitly map @ to your src directory
+    };
+    return config;
   },
 };
 
