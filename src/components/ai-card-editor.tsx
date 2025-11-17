@@ -235,10 +235,10 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
           <CardDescription>Download your creation or add a personal message.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="aspect-[4/5] w-full rounded-lg overflow-hidden border relative">
+          <div className="aspect-[4/5] w-full rounded-lg overflow-hidden border relative bg-muted">
             <Image src={finalCardUri} alt="Generated AI card" fill className="object-cover" />
             {personalMessage && (
-                <div className="absolute inset-0 bg-black/30 flex items-center justify-center p-8">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 flex items-end justify-center p-8">
                     <p className="text-white text-center text-xl font-body">{personalMessage}</p>
                 </div>
             )}
