@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -78,6 +79,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   const [refinedPrompt, setRefinedPrompt] = useState<GenerateRefinedPromptOutput | null>(null);
   
   const [finalCardUri, setFinalCardUri] = useState<string | null>(null);
+  const [personalMessage, setPersonalMessage] = useState<string>('');
   const [suggestedMessages, setSuggestedMessages] = useState<string[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -218,6 +220,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     setFinalCardUri(null);
     setSuggestedMessages([]);
     setErrorMessage(null);
+    setPersonalMessage('');
     form.reset();
   }
 
@@ -229,11 +232,16 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
       <Card className="w-full max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle className="font-headline">Your Card is Ready!</CardTitle>
-          <CardDescription>Download your creation or get some AI-powered message ideas.</CardDescription>
+          <CardDescription>Download your creation or add a personal message.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="aspect-[4/5] w-full rounded-lg overflow-hidden border">
+          <div className="aspect-[4/5] w-full rounded-lg overflow-hidden border relative">
             <Image src={finalCardUri} alt="Generated AI card" width={400} height={500} className="w-full h-full object-contain" />
+            {personalMessage && (
+                <div className="absolute inset-0 bg-black/30 flex items-center justify-center p-8">
+                    <p className="text-white text-center text-xl font-body">{personalMessage}</p>
+                </div>
+            )}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <Button><Download className="mr-2 h-4 w-4" /> Download</Button>
@@ -242,28 +250,39 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
           </div>
         </CardContent>
         <CardFooter className="flex-col items-start gap-4 pt-4 border-t">
+            <div className="w-full space-y-2">
+                <Label htmlFor="personal-message">Add a Personal Message (optional)</Label>
+                <Textarea
+                  id="personal-message"
+                  placeholder="Write your heartfelt message here..."
+                  rows={3}
+                  value={personalMessage}
+                  onChange={(e) => setPersonalMessage(e.target.value)}
+                />
+            </div>
+
           {messageState !== 'done' && (
-             <Button onClick={handleGenerateMessages} disabled={messageState === 'generating'} className="w-full">
+             <Button onClick={handleGenerateMessages} disabled={messageState === 'generating'} className="w-full" variant="outline">
               {messageState === 'generating' ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 <MessageSquareQuote className="mr-2 h-4 w-4" />
               )}
-              Suggest Messages
+              Get Message Ideas
             </Button>
           )}
 
            {messageState === 'done' && suggestedMessages.length > 0 && (
                 <div className="space-y-2 w-full">
-                    <Label>AI Message Suggestions (click to copy)</Label>
+                    <Label>AI Message Suggestions (click to use)</Label>
                     <Carousel opts={{ align: "start", loop: false }} className="w-full">
                       <CarouselContent>
                         {suggestedMessages.map((msg, index) => (
                           <CarouselItem key={index} className="md:basis-1/2">
                             <div className="p-1">
                                <Card className="bg-muted/50 cursor-pointer hover:bg-muted" onClick={() => {
-                                 navigator.clipboard.writeText(msg);
-                                 toast({ title: 'Copied to clipboard!' });
+                                 setPersonalMessage(msg);
+                                 toast({ title: 'Message added!' });
                                }}>
                                 <CardContent className="p-4 text-sm">
                                   <p>{msg}</p>
@@ -456,5 +475,3 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     </Card>
   );
 }
-
-    
