@@ -236,7 +236,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="aspect-[4/5] w-full rounded-lg overflow-hidden border relative">
-            <Image src={finalCardUri} alt="Generated AI card" width={400} height={500} className="w-full h-full object-contain" />
+            <Image src={finalCardUri} alt="Generated AI card" fill className="object-cover" />
             {personalMessage && (
                 <div className="absolute inset-0 bg-black/30 flex items-center justify-center p-8">
                     <p className="text-white text-center text-xl font-body">{personalMessage}</p>
