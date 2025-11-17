@@ -21,7 +21,7 @@ import { Loader2, Sparkles, Wand2, Lightbulb, Download, Mail, Printer, MessageSq
 import type { MasterPrompt } from '@/lib/data';
 import { masterPrompts as allMasterPrompts } from '@/lib/data';
 import type { SummarizeAndImproveUserPromptOutput } from '@/ai/flows/summarize-and-improve-user-prompt';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 
 const formSchema = z.object({
   personalizedPrompt: z.string().min(10, {
@@ -203,8 +203,6 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                           </CarouselItem>
                         ))}
                       </CarouselContent>
-                      <CarouselPrevious className="ml-12" />
-                      <CarouselNext className="mr-12"/>
                     </Carousel>
                 </div>
               )}
@@ -297,8 +295,6 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                           </CarouselItem>
                         ))}
                       </CarouselContent>
-                      <CarouselPrevious className="-left-4" />
-                      <CarouselNext className="-right-4"/>
                     </Carousel>
                 </div>
             )}
