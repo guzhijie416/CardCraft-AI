@@ -12,6 +12,9 @@ import type { SummarizeAndImproveUserPromptInput } from '@/ai/flows/summarize-an
 import { generateCardMessage } from '@/ai/flows/generate-card-message';
 import type { GenerateCardMessageInput } from '@/ai/flows/generate-card-message';
 
+import { generateRefinedPrompt } from '@/ai/flows/generate-refined-prompt';
+import type { GenerateRefinedPromptInput } from '@/ai/flows/generate-refined-prompt';
+
 export async function analyzePromptAction(input: SummarizeAndImproveUserPromptInput) {
   try {
     return await summarizeAndImproveUserPrompt(input);
@@ -48,4 +51,13 @@ export async function generateMessagesAction(input: GenerateCardMessageInput) {
     console.error('Error in generateMessagesAction:', error);
     throw new Error('Failed to generate messages.');
   }
+}
+
+export async function generateRefinedPromptAction(input: GenerateRefinedPromptInput) {
+    try {
+        return await generateRefinedPrompt(input);
+    } catch (error) {
+        console.error('Error in generateRefinedPromptAction:', error);
+        throw new Error('Failed to generate refined prompt.');
+    }
 }
