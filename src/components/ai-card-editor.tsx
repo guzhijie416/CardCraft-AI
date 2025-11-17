@@ -17,8 +17,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, Wand2, Lightbulb, Download, Mail, Printer, MessageSquareQuote } from 'lucide-react';
+import { Loader2, Sparkles, Wand2, Lightbulb, Download, Mail, Printer, MessageSquareQuote, Star } from 'lucide-react';
 import type { MasterPrompt } from '@/lib/data';
+import { masterPrompts as allMasterPrompts } from '@/lib/data';
 import type { SummarizeAndImproveUserPromptOutput } from '@/ai/flows/summarize-and-improve-user-prompt';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
@@ -47,6 +48,8 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
       personalizedPrompt: '',
     },
   });
+
+  const relevantMasterPrompts = allMasterPrompts.filter(p => p.occasion === masterPrompt.occasion);
   
   const modifiedMasterPrompt = photoDataUri
     ? `${masterPrompt.prompt} Use the following image as the primary background and inspiration.`
@@ -270,6 +273,37 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                 </FormItem>
               )}
             />
+
+            {relevantMasterPrompts.length > 0 && (
+                <div className="space-y-2">
+                    <Label className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Star className="h-4 w-4 text-accent" />
+                        <span>Or, start with a Master Prompt (click to use)</span>
+                    </Label>
+                    <Carousel opts={{ align: "start", loop: false }} className="w-full">
+                      <CarouselContent>
+                        {relevantMasterPrompts.map((prompt) => (
+                          <CarouselItem key={prompt.id} className="md:basis-1/2">
+                            <div className="p-1">
+                               <Card className="bg-muted/50 cursor-pointer hover:bg-muted" onClick={() => form.setValue('personalizedPrompt', prompt.prompt)}>
+                                <CardHeader className="p-3">
+                                  <CardTitle className="text-sm font-semibold">{prompt.name}</CardTitle>
+                                </CardHeader>
+                                <CardContent className="p-3 pt-0 text-xs">
+                                  <p className="line-clamp-2">{prompt.prompt}</p>
+                                </CardContent>
+                              </Card>
+                            </div>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="-left-4" />
+                      <CarouselNext className="-right-4"/>
+                    </Carousel>
+                </div>
+            )}
+
+
             {errorMessage && (
               <p className="text-sm font-medium text-destructive">{errorMessage}</p>
             )}
