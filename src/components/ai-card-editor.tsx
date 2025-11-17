@@ -17,11 +17,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, Wand2, Lightbulb, Download, Mail, Printer, MessageSquareQuote, Star } from 'lucide-react';
+import { Loader2, Sparkles, Wand2, Lightbulb, Download, Mail, Printer, MessageSquareQuote } from 'lucide-react';
 import type { MasterPrompt } from '@/lib/data';
 import { masterPrompts as allMasterPrompts } from '@/lib/data';
 import type { SummarizeAndImproveUserPromptOutput } from '@/ai/flows/summarize-and-improve-user-prompt';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
+import { Label } from './ui/label';
 
 const formSchema = z.object({
   personalizedPrompt: z.string().min(10, {
@@ -189,7 +190,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                     <Carousel opts={{ align: "start", loop: false }} className="w-full">
                       <CarouselContent>
                         {suggestedMessages.map((msg, index) => (
-                          <CarouselItem key={index} className="basis-full md:basis-1/2">
+                          <CarouselItem key={index} className="md:basis-1/2">
                             <div className="p-1">
                                <Card className="bg-muted/50 cursor-pointer hover:bg-muted" onClick={() => {
                                  navigator.clipboard.writeText(msg);
@@ -275,7 +276,6 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
             {relevantMasterPrompts.length > 0 && (
                 <div className="space-y-2">
                     <Label className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Star className="h-4 w-4 text-accent" />
                         <span>Or, start with a Master Prompt (click to use)</span>
                     </Label>
                     <Carousel opts={{ align: "start", loop: false }} className="w-full">
