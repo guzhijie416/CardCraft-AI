@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { placeholderImages } from '@/lib/data';
+import { placeholderImages, occasions } from '@/lib/data';
 import { MainNav } from '@/components/main-nav';
 
 export default function Home() {
@@ -21,7 +21,7 @@ export default function Home() {
       title: 'Elegant Templates',
       description: 'Choose from a curated collection of beautiful templates for any occasion. Customize with your own words.',
       icon: <Paintbrush className="h-10 w-10 text-primary" />,
-      link: '/create',
+      link: '/create/template',
     },
     {
       title: 'AI-Powered Magic',
@@ -49,11 +49,8 @@ export default function Home() {
     },
   ];
 
-  const occasionExamples = [
-    { name: 'Birthday', icon: <Cake className="h-8 w-8 mx-auto text-accent" /> },
-    { name: 'Holiday', icon: <Gift className="h-8 w-8 mx-auto text-accent" /> },
-    { name: 'Anniversary', icon: <Heart className="h-8 w-8 mx-auto text-accent" /> },
-  ];
+  const occasionExamples = occasions.filter(o => ['birthday', 'holiday', 'wedding'].includes(o.id));
+
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -151,13 +148,22 @@ export default function Home() {
             <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl/relaxed mt-4">
               From birthdays to 'just because,' find the perfect way to express yourself.
             </p>
-            <div className="mt-8 grid grid-cols-3 gap-4 md:gap-8">
-              {occasionExamples.map((occasion) => (
-                <div key={occasion.name}>
-                  {occasion.icon}
-                  <p className="mt-2 font-semibold">{occasion.name}</p>
-                </div>
-              ))}
+            <div className="mt-12 grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-2xl mx-auto">
+              {occasionExamples.map((occasion) => {
+                const href = occasion.id === 'postcard' ? '/create/postcard' : `/create/ai/${occasion.id}`;
+                return(
+                  <Link href={href} key={occasion.id} className="block group">
+                    <Card className="text-center p-6 flex flex-col items-center justify-center aspect-square transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-primary/5">
+                      <CardContent className="p-0 flex flex-col items-center justify-center gap-4">
+                        <div className="bg-secondary p-4 rounded-full transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                          <occasion.icon className="h-8 w-8 text-primary transition-colors group-hover:text-primary-foreground" />
+                        </div>
+                        <span className="font-semibold font-headline text-lg">{occasion.name}</span>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                )
+              })}
             </div>
           </div>
         </section>
