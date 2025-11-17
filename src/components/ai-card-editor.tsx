@@ -10,6 +10,7 @@ import {
   filterContentAction,
   generateCardAction,
   generateMessagesAction,
+  generateRefinedPromptAction,
 } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -17,12 +18,16 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, Wand2, Lightbulb, Download, Mail, Printer, MessageSquareQuote } from 'lucide-react';
+import { Loader2, Sparkles, Wand2, Lightbulb, Download, Mail, Printer, MessageSquareQuote, Settings, ChevronDown, XCircle } from 'lucide-react';
 import type { MasterPrompt } from '@/lib/data';
 import { masterPrompts as allMasterPrompts } from '@/lib/data';
 import type { SummarizeAndImproveUserPromptOutput } from '@/ai/flows/summarize-and-improve-user-prompt';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { Label } from './ui/label';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
+import { RadioGroup, RadioGroupItem } from './ui/radio-group';
+import type { GenerateRefinedPromptOutput } from '@/ai/flows/generate-refined-prompt';
+
 
 const formSchema = z.object({
   personalizedPrompt: z.string().min(10, {
@@ -32,15 +37,57 @@ const formSchema = z.object({
 
 type EditorState = 'idle' | 'analyzing' | 'needs_improvement' | 'generating' | 'done' | 'error';
 type MessageState = 'idle' | 'generating' | 'done' | 'error';
+type RefinedPromptState = 'idle' | 'generating' | 'done' | 'error';
 
+
+const refinementOptions = {
+  artisticMedium: [
+    { id: 'am-1', value: 'watercolor painting', label: 'Watercolor' },
+    { id: 'am-2', value: 'oil painting', label: 'Oil Painting' },
+    { id: 'am-3', value: 'charcoal sketch', label: 'Charcoal Sketch' },
+    { id: 'am-4', value: 'vintage postcard', label: 'Vintage Postcard' },
+  ],
+  colorPalette: [
+    { id: 'cp-1', value: 'a soft pastel color palette', label: 'Soft Pastels' },
+    { id: 'cp-2', value: 'vibrant and bold colors', label: 'Vibrant & Bold' },
+    { id: 'cp-3', value: 'a warm and earthy palette', label: 'Warm & Earthy' },
+  ],
+  composition: [
+    { id: 'co-1', value: 'close-up portrait', label: 'Close-up Portrait' },
+    { id: 'co-2', value: 'cinematic wide shot', label: 'Cinematic Wide Shot' },
+    { id: 'co-3', value: 'symmetrical composition', label: 'Symmetrical' },
+  ],
+  lighting: [
+    { id: 'li-1', value: 'soft diffused lighting', label: 'Soft & Diffused' },
+    { id: 'li-2', value: 'dramatic, high-contrast lighting', label: 'High-Contrast' },
+    { id: 'li-3', value: 'golden hour glow', label: 'Golden Hour' },
+  ],
+  texture: [
+    { id: 'te-1', value: 'textured paper', label: 'Textured Paper' },
+    { id: 'te-2', value: 'embossed details', label: 'Embossed' },
+    { id: 'te-3', value: 'gold foil accents', label: 'Gold Foil' },
+  ],
+};
 
 export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: MasterPrompt, photoDataUri?: string }) {
   const [editorState, setEditorState] = useState<EditorState>('idle');
   const [messageState, setMessageState] = useState<MessageState>('idle');
+  const [refinedPromptState, setRefinedPromptState] = useState<RefinedPromptState>('idle');
+  
   const [analysis, setAnalysis] = useState<SummarizeAndImproveUserPromptOutput | null>(null);
+  const [refinedPrompt, setRefinedPrompt] = useState<GenerateRefinedPromptOutput | null>(null);
+  
   const [finalCardUri, setFinalCardUri] = useState<string | null>(null);
   const [suggestedMessages, setSuggestedMessages] = useState<string[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // State for refinement selections
+  const [artisticMedium, setArtisticMedium] = useState<string | undefined>();
+  const [colorPalette, setColorPalette] = useState<string | undefined>();
+  const [composition, setComposition] = useState<string | undefined>();
+  const [lighting, setLighting] = useState<string | undefined>();
+  const [texture, setTexture] = useState<string | undefined>();
+
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -67,14 +114,13 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     return input;
   }
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onAnalyze() {
     setEditorState('analyzing');
     setErrorMessage(null);
 
     try {
-      // Step 1: Analyze and improve prompt
       const analysisResult = await analyzePromptAction({
-        userPrompt: values.personalizedPrompt,
+        userPrompt: form.getValues('personalizedPrompt'),
         masterPrompt: modifiedMasterPrompt,
       });
 
@@ -90,12 +136,33 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     }
   }
 
+  async function onGenerateRefinedPrompt() {
+    setRefinedPromptState('generating');
+    setErrorMessage(null);
+
+    try {
+        const result = await generateRefinedPromptAction({
+            basePrompt: form.getValues('personalizedPrompt'),
+            artisticMedium,
+            colorPalette,
+            composition,
+            lighting,
+            texture
+        });
+        setRefinedPrompt(result);
+        setRefinedPromptState('done');
+    } catch (error) {
+        handleError(error, 'Could not generate a refined prompt.');
+        setRefinedPromptState('error');
+    }
+  }
+
+
   async function proceedToGeneration(promptToUse: string) {
     setEditorState('generating');
     setErrorMessage(null);
 
     try {
-      // Step 2: Filter content
       const filterResult = await filterContentAction({ content: promptToUse });
       if (!filterResult.isSafe) {
         handleError(new Error(filterResult.reason), 'Your prompt was flagged as inappropriate. Please revise it.');
@@ -103,7 +170,6 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
         return;
       }
 
-      // Step 3: Generate card
       const cardResult = await generateCardAction(generateCardInput(promptToUse));
 
       setFinalCardUri(cardResult.cardDataUri);
@@ -135,7 +201,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   function handleError(error: unknown, defaultMessage: string) {
     const message = error instanceof Error ? error.message : defaultMessage;
     setErrorMessage(message);
-    setEditorState('error'); // It might be better to have a separate error state for messages
+    setEditorState('error');
     toast({
       variant: 'destructive',
       title: 'An error occurred',
@@ -146,7 +212,9 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   function handleReset() {
     setEditorState('idle');
     setMessageState('idle');
+    setRefinedPromptState('idle');
     setAnalysis(null);
+    setRefinedPrompt(null);
     setFinalCardUri(null);
     setSuggestedMessages([]);
     setErrorMessage(null);
@@ -154,6 +222,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   }
 
   const isLoading = editorState === 'analyzing' || editorState === 'generating';
+  const isRefining = refinedPromptState === 'generating';
 
   if (editorState === 'done' && finalCardUri) {
     return (
@@ -216,6 +285,26 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     );
   }
 
+  const RefinementSection = ({ title, options, value, onValueChange, categoryKey }: { title: string, options: {id: string, value: string, label: string}[], value: string | undefined, onValueChange: (value: string) => void, categoryKey: keyof typeof refinementOptions }) => (
+    <Collapsible>
+        <CollapsibleTrigger className="flex justify-between items-center w-full p-2 bg-muted/50 rounded-md">
+            <span className="font-semibold">{title}</span>
+            <ChevronDown className="h-4 w-4" />
+        </CollapsibleTrigger>
+        <CollapsibleContent className="p-2">
+            <RadioGroup value={value} onValueChange={onValueChange}>
+                {options.map(option => (
+                    <div key={option.id} className="flex items-center space-x-2">
+                        <RadioGroupItem value={option.value} id={option.id} />
+                        <Label htmlFor={option.id}>{option.label}</Label>
+                    </div>
+                ))}
+            </RadioGroup>
+            {value && <Button variant="ghost" size="sm" className="mt-2 text-destructive" onClick={() => onValueChange(undefined as any)}><XCircle className="mr-1 h-4 w-4" />Clear</Button>}
+        </CollapsibleContent>
+    </Collapsible>
+  );
+
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
@@ -229,37 +318,17 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
         )}
       </CardHeader>
       <CardContent className="space-y-6">
-        {editorState === 'needs_improvement' && analysis && (
-          <Alert variant="default" className="bg-accent/20 border-accent/50">
-            <Lightbulb className="h-4 w-4 text-accent" />
-            <AlertTitle className="font-headline text-accent">Prompt Improvement Suggestion</AlertTitle>
-            <AlertDescription className="space-y-4">
-              <p>{analysis.summary}</p>
-              <div>
-                <p className="font-semibold mb-1">Suggested Prompt:</p>
-                <blockquote className="border-l-2 pl-4 italic text-sm">{analysis.improvedPrompt}</blockquote>
-              </div>
-              <div className="flex gap-2">
-                <Button onClick={() => proceedToGeneration(analysis.improvedPrompt)}>
-                  {isLoading ? ( <Loader2 className="mr-2 h-4 w-4 animate-spin" />) : (<Wand2 className="mr-2 h-4 w-4" />)}
-                  Use Suggestion & Generate
-                </Button>
-                <Button variant="outline" onClick={() => setEditorState('idle')}>
-                  Let Me Edit
-                </Button>
-              </div>
-            </AlertDescription>
-          </Alert>
-        )}
-
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onAnalyze)} className="space-y-4">
             <FormField
               control={form.control}
               name="personalizedPrompt"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base">Describe your card</FormLabel>
+                  <FormLabel className="text-base">Describe what you want to create</FormLabel>
+                   <div className="text-xs p-2 rounded-md bg-muted/80 text-muted-foreground">
+                    Try a structured prompt: [Occasion] card, [Subject], in the style of [Artistic Style], with a [Mood] atmosphere, featuring [Key Visuals], in a [Color Palette].
+                   </div>
                   <FormControl>
                     <Textarea
                       placeholder="e.g., 'A watercolor painting of a calico cat wearing a tiny crown, sitting on a pile of books. Soft, dreamy lighting.'"
@@ -272,11 +341,11 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                 </FormItem>
               )}
             />
-
+            
             {relevantMasterPrompts.length > 0 && (
                 <div className="space-y-2">
-                    <Label className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span>Or, start with a Master Prompt (click to use)</span>
+                    <Label className="text-sm text-muted-foreground">
+                        Or, start with a high-quality Master Prompt (click to use)
                     </Label>
                     <Carousel opts={{ align: "start", loop: false }} className="w-full">
                       <CarouselContent>
@@ -298,27 +367,94 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                     </Carousel>
                 </div>
             )}
+            
+            <Card className="bg-muted/30">
+                <CardHeader>
+                    <CardTitle className="text-lg font-semibold flex items-center gap-2"><Settings className="h-5 w-5 text-primary"/> Prompt Refinements</CardTitle>
+                    <CardDescription>Select options to generate a more detailed prompt suggestion.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                    <RefinementSection title="Artistic Medium" options={refinementOptions.artisticMedium} value={artisticMedium} onValueChange={setArtisticMedium} categoryKey="artisticMedium" />
+                    <RefinementSection title="Color Palette" options={refinementOptions.colorPalette} value={colorPalette} onValueChange={setColorPalette} categoryKey="colorPalette" />
+                    <RefinementSection title="Composition" options={refinementOptions.composition} value={composition} onValueChange={setComposition} categoryKey="composition" />
+                    <RefinementSection title="Lighting" options={refinementOptions.lighting} value={lighting} onValueChange={setLighting} categoryKey="lighting" />
+                    <RefinementSection title="Texture" options={refinementOptions.texture} value={texture} onValueChange={setTexture} categoryKey="texture" />
+                </CardContent>
+                <CardFooter>
+                     <Button type="button" onClick={onGenerateRefinedPrompt} className="w-full" disabled={isRefining || !form.getValues('personalizedPrompt')}>
+                        {isRefining ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
+                        Generate Refined Prompt
+                    </Button>
+                </CardFooter>
+            </Card>
 
+            {refinedPromptState === 'done' && refinedPrompt && (
+              <Alert variant="default" className="bg-accent/20 border-accent/50">
+                <Lightbulb className="h-4 w-4 text-accent" />
+                <AlertTitle className="font-headline text-accent">Refined Prompt Suggestion</AlertTitle>
+                <AlertDescription className="space-y-4">
+                  <div>
+                    <p className="font-semibold mb-1">Suggested Prompt:</p>
+                    <blockquote className="border-l-2 pl-4 italic text-sm">{refinedPrompt.refinedPrompt}</blockquote>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button onClick={() => proceedToGeneration(refinedPrompt.refinedPrompt)}>
+                      {isLoading ? ( <Loader2 className="mr-2 h-4 w-4 animate-spin" />) : (<Sparkles className="mr-2 h-4 w-4" />)}
+                      Use Suggestion & Generate
+                    </Button>
+                     <Button variant="outline" onClick={() => form.setValue('personalizedPrompt', refinedPrompt.refinedPrompt)}>
+                        Copy to Editor
+                    </Button>
+                  </div>
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {editorState === 'needs_improvement' && analysis && (
+              <Alert variant="default" className="bg-accent/20 border-accent/50">
+                <Lightbulb className="h-4 w-4 text-accent" />
+                <AlertTitle className="font-headline text-accent">Instant Prompt Suggestion</AlertTitle>
+                <AlertDescription className="space-y-4">
+                  <p>{analysis.summary}</p>
+                  <div>
+                    <p className="font-semibold mb-1">Suggested Prompt:</p>
+                    <blockquote className="border-l-2 pl-4 italic text-sm">{analysis.improvedPrompt}</blockquote>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button onClick={() => proceedToGeneration(analysis.improvedPrompt)}>
+                      {isLoading ? ( <Loader2 className="mr-2 h-4 w-4 animate-spin" />) : (<Sparkles className="mr-2 h-4 w-4" />)}
+                      Use Suggestion & Generate
+                    </Button>
+                    <Button variant="outline" onClick={() => setEditorState('idle')}>
+                      Let Me Edit
+                    </Button>
+                  </div>
+                </AlertDescription>
+              </Alert>
+            )}
 
             {errorMessage && (
               <p className="text-sm font-medium text-destructive">{errorMessage}</p>
             )}
-            <Button type="submit" className="w-full" disabled={isLoading || editorState === 'needs_improvement'}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {editorState === 'analyzing' ? 'Analyzing...' : 'Generating...'}
-                </>
-              ) : (
-                <>
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Generate My Card
-                </>
-              )}
-            </Button>
+            <div className="pt-4 space-y-2">
+                <Button type="button" onClick={onAnalyze} className="w-full" variant="secondary" disabled={isLoading || editorState === 'needs_improvement'}>
+                    {isLoading ? (
+                        <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Analyzing...</>
+                    ) : (
+                        <><Lightbulb className="mr-2 h-4 w-4" /> Get Instant Suggestion</>
+                    )}
+                </Button>
+
+                <Button type="submit" className="w-full" disabled={isLoading || editorState === 'needs_improvement'}>
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Generate My Card (Original Prompt)
+                </Button>
+            </div>
           </form>
         </Form>
       </CardContent>
     </Card>
   );
 }
+
+    
