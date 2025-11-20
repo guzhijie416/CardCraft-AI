@@ -183,7 +183,7 @@ export default function StyleRemixPage() {
 
             <div className="space-y-4">
                 <Label>Result</Label>
-                <Card className="flex items-center justify-center bg-muted/50 border-dashed aspect-video">
+                <Card className="relative flex items-center justify-center bg-muted/50 border-dashed aspect-video">
                   {isLoading && (
                      <div className="text-center text-muted-foreground">
                         <Loader2 className="mx-auto h-12 w-12 animate-spin mb-2" />
