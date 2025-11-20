@@ -78,6 +78,12 @@ const animationOptions = [
     { id: 'anim-2', label: 'Twinkling Stars', prompt: 'Subtle twinkling stars in the sky' },
     { id: 'anim-3', label: 'Confetti Burst', prompt: 'A gentle burst of colorful confetti' },
     { id: 'anim-4', label: 'Falling Petals', prompt: 'Delicate flower petals falling slowly' },
+    { id: 'anim-5', label: 'Glowing Candle', prompt: 'A single candle flame gently flickering' },
+    { id: 'anim-6', label: 'Fireworks', prompt: 'Colorful fireworks bursting in the background' },
+    { id: 'anim-7', label: 'Flying Pigeon', prompt: 'A white pigeon flies across the scene' },
+    { id: 'anim-8', label: 'Waterfall', prompt: 'A gentle waterfall cascades down' },
+    { id: 'anim-9', label: 'Sunrise', prompt: 'A time-lapse of a sun rising' },
+    { id: 'anim-10', label: 'Moving Clouds', prompt: 'Fluffy clouds slowly drifting across the sky' },
 ];
 
 export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: MasterPrompt, photoDataUri?: string }) {
