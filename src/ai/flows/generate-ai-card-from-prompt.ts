@@ -13,7 +13,7 @@ import {z} from 'genkit';
 const GenerateAiCardFromPromptInputSchema = z.object({
   masterPrompt: z.string().describe('A pre-selected master prompt for the overall theme of the card.'),
   personalizedPrompt: z.string().describe('A personalized prompt for specific details of the card design.'),
-  photoDataUri: z.string().optional().describe("An optional photo of a user, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."),
+  photoDataUri: z.string().optional().describe("An optional photo of a user, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'. This can be a style reference image."),
 });
 export type GenerateAiCardFromPromptInput = z.infer<typeof GenerateAiCardFromPromptInputSchema>;
 
@@ -41,7 +41,8 @@ const generateAiCardFromPromptFlow = ai.defineFlow(
         model = 'googleai/gemini-2.5-flash-image-preview';
         prompt = [
             { media: { url: input.photoDataUri } },
-            { text: `${input.masterPrompt}, ${input.personalizedPrompt}` },
+            // Add a specific instruction for style transfer
+            { text: `Use the provided image as a style reference for the following prompt: ${input.masterPrompt}, ${input.personalizedPrompt}` },
         ];
         config = {
             responseModalities: ['TEXT', 'IMAGE'],
