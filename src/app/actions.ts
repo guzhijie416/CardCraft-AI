@@ -19,6 +19,9 @@ import type { GenerateRefinedPromptInput } from '@/ai/flows/generate-refined-pro
 import { generatePromptFromImage } from '@/ai/flows/generate-prompt-from-image';
 import type { GeneratePromptFromImageInput } from '@/ai/flows/generate-prompt-from-image';
 
+import { generateVideoFromImage } from '@/ai/flows/generate-video-from-image';
+import type { GenerateVideoFromImageInput } from '@/ai/flows/generate-video-from-image';
+
 
 export async function analyzePromptAction(input: SummarizeAndImproveUserPromptInput) {
   try {
@@ -75,5 +78,14 @@ export async function generatePromptFromImageAction(input: GeneratePromptFromIma
     } catch (error) {
         console.error('Error in generatePromptFromImageAction:', error);
         throw new Error('Failed to generate a prompt from the image.');
+    }
+}
+
+export async function generateVideoAction(input: GenerateVideoFromImageInput) {
+    try {
+        return await generateVideoFromImage(input);
+    } catch (error) {
+        console.error('Error in generateVideoAction:', error);
+        throw new Error('Failed to generate a video from the image.');
     }
 }

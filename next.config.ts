@@ -1,3 +1,4 @@
+
 import type { NextConfig } from 'next';
 import path from 'path'; // Import the path module
 
@@ -32,6 +33,12 @@ const nextConfig: NextConfig = {
       '@': path.resolve(__dirname, './src'), // Explicitly map @ to your src directory
     };
     return config;
+  },
+  // Increase server action timeout for video generation
+  serverActions: {
+    bodySizeLimit: '4.5mb',
+    // Timeout in seconds
+    timeout: 120,
   },
 };
 
