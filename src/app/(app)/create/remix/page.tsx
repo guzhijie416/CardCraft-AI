@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -18,7 +17,7 @@ export default function CreateRemixPage() {
       title: 'Remix with Style',
       description: 'Upload an image to transfer its artistic style to a new AI-generated creation.',
       icon: ImageIcon,
-      href: '/create/ai/birthday', // Temporary link, will build the style upload page next
+      href: '/create/remix/style', // <-- Updated Link
       linkText: 'Upload Style Image',
     },
 ];
