@@ -38,14 +38,11 @@ const generateAiCardFromPromptFlow = ai.defineFlow(
   async (input) => {
     let prompt;
     let model = 'googleai/imagen-4.0-fast-generate-001';
-    let config: any = {}; // Always initialize config
-
-    if (input.aspectRatio) {
-      config.aspectRatio = input.aspectRatio;
-    }
+    let config: any;
 
     if (input.photoDataUri) {
         model = 'googleai/gemini-2.5-flash-image-preview';
+        config = { responseModalities: ['IMAGE'] };
         
         let instructionText = '';
         if (input.modificationStrength !== undefined) {
@@ -64,15 +61,16 @@ const generateAiCardFromPromptFlow = ai.defineFlow(
             { media: { url: input.photoDataUri } },
             { text: instructionText },
         ];
-        
-        config.responseModalities = ['IMAGE'];
 
     } else {
         prompt = `${input.masterPrompt}, ${input.personalizedPrompt}`;
+        if (input.aspectRatio) {
+            config = { aspectRatio: input.aspectRatio };
+        }
     }
     
     const generationRequest: any = { model, prompt };
-    if (Object.keys(config).length > 0) {
+    if (config) {
       generationRequest.config = config;
     }
 

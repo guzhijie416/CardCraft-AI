@@ -16,15 +16,11 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Wand2, UploadCloud, Download, Repeat } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-
-type AspectRatioType = '9:16' | '16:9' | '1:1';
 
 const modifyFormSchema = z.object({
   prompt: z.string().min(5, 'Please describe your desired modification in at least 5 characters.'),
   baseImage: z.any().refine(fileList => fileList.length === 1, 'Please upload one image file.'),
   strength: z.number().min(0.1).max(1.0),
-  aspectRatio: z.enum(['9:16', '16:9', '1:1']),
 });
 
 type ModifyFormValues = z.infer<typeof modifyFormSchema>;
@@ -46,7 +42,6 @@ export default function ModifyImagePage() {
       prompt: '',
       baseImage: undefined,
       strength: 0.5,
-      aspectRatio: '9:16',
     },
   });
 
@@ -85,7 +80,6 @@ export default function ModifyImagePage() {
         personalizedPrompt: data.prompt,
         photoDataUri: photoDataUri,
         modificationStrength: data.strength,
-        aspectRatio: data.aspectRatio,
       });
 
       setGeneratedCardUri(result.cardDataUri);
@@ -107,7 +101,7 @@ export default function ModifyImagePage() {
   };
   
   const handleReset = () => {
-    form.reset({ strength: 0.5, aspectRatio: '9:16' });
+    form.reset({ strength: 0.5 });
     setImagePreview(null);
     setGeneratedCardUri(null);
     setGenerationState('idle');
@@ -126,7 +120,6 @@ export default function ModifyImagePage() {
   }
 
   const isLoading = generationState === 'generating';
-  const finalAspectRatio = form.watch('aspectRatio');
 
   return (
     <div className="container mx-auto py-8">
@@ -213,44 +206,6 @@ export default function ModifyImagePage() {
                     )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="aspectRatio"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>4. Aspect Ratio</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex space-x-4"
-                          disabled={isLoading}
-                        >
-                          <FormItem className="flex items-center space-x-2 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="9:16" />
-                            </FormControl>
-                            <FormLabel className="font-normal">Portrait</FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-2 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="16:9" />
-                            </FormControl>
-                            <FormLabel className="font-normal">Landscape</FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-2 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="1:1" />
-                            </FormControl>
-                            <FormLabel className="font-normal">Square</FormLabel>
-                          </FormItem>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? (
                     <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Modifying...</>
@@ -263,7 +218,7 @@ export default function ModifyImagePage() {
 
             <div className="space-y-4">
                 <Label>Result</Label>
-                <Card className="flex items-center justify-center bg-muted/50 border-dashed" style={{ aspectRatio: finalAspectRatio.replace(':', '/') }}>
+                <Card className="flex items-center justify-center bg-muted/50 border-dashed aspect-video">
                   {isLoading && (
                      <div className="text-center text-muted-foreground">
                         <Loader2 className="mx-auto h-12 w-12 animate-spin mb-2" />
