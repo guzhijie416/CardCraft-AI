@@ -42,10 +42,10 @@ const generateAiCardFromPromptFlow = ai.defineFlow(
         prompt = [
             { media: { url: input.photoDataUri } },
             // Add a specific instruction for style transfer
-            { text: `Use the provided image as a style reference for the following prompt: ${input.masterPrompt}, ${input.personalizedPrompt}` },
+            { text: `Analyze the artistic style, color palette, and composition of the provided image. Then, generate a new image that applies that exact style to the following subject: ${input.masterPrompt}, ${input.personalizedPrompt}` },
         ];
         config = {
-            responseModalities: ['TEXT', 'IMAGE'],
+            responseModalities: ['IMAGE'],
         };
     } else {
         prompt = `${input.masterPrompt}, ${input.personalizedPrompt}`;
