@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview Generates a unique card design using AI based on a master prompt and a personalized prompt.
@@ -37,7 +38,7 @@ const generateAiCardFromPromptFlow = ai.defineFlow(
   async (input) => {
     let prompt;
     let model = 'googleai/imagen-4.0-fast-generate-001';
-    let config: any = {};
+    let config: any = {}; // Always initialize config
 
     if (input.aspectRatio) {
       config.aspectRatio = input.aspectRatio;
