@@ -15,6 +15,10 @@ import type { GenerateCardMessageInput } from '@/ai/flows/generate-card-message'
 import { generateRefinedPrompt } from '@/ai/flows/generate-refined-prompt';
 import type { GenerateRefinedPromptInput } from '@/ai/flows/generate-refined-prompt';
 
+import { generatePromptFromImage } from '@/ai/flows/generate-prompt-from-image';
+import type { GeneratePromptFromImageInput } from '@/ai/flows/generate-prompt-from-image';
+
+
 export async function analyzePromptAction(input: SummarizeAndImproveUserPromptInput) {
   try {
     return await summarizeAndImproveUserPrompt(input);
@@ -59,5 +63,14 @@ export async function generateRefinedPromptAction(input: GenerateRefinedPromptIn
     } catch (error) {
         console.error('Error in generateRefinedPromptAction:', error);
         throw new Error('Failed to generate refined prompt.');
+    }
+}
+
+export async function generatePromptFromImageAction(input: GeneratePromptFromImageInput) {
+    try {
+        return await generatePromptFromImage(input);
+    } catch (error) {
+        console.error('Error in generatePromptFromImageAction:', error);
+        throw new Error('Failed to generate a prompt from the image.');
     }
 }
