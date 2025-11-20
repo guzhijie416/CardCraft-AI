@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Camera, Image as ImageIcon, TextSearch } from 'lucide-react';
+import { Camera, Image as ImageIcon, TextSearch, Brush } from 'lucide-react';
 
 export default function CreateRemixPage() {
   const creationOptions = [
@@ -22,7 +22,14 @@ export default function CreateRemixPage() {
       linkText: 'Upload Style Image',
     },
     {
-      title: 'Generate a Text Prompt from It',
+      title: 'Modify This Image',
+      description: 'Upload a photo and use a prompt to make direct edits, big or small.',
+      icon: Brush,
+      href: '/create/remix/modify',
+      linkText: 'Start Editing',
+    },
+    {
+      title: 'Generate a Text Prompt',
       description: 'Upload an image and have our AI create a detailed text prompt describing it for you.',
       icon: TextSearch,
       href: '/create/remix/prompt',
@@ -37,7 +44,7 @@ export default function CreateRemixPage() {
         <p className="text-muted-foreground mt-2 text-lg">Use your photos to create something amazing.</p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+      <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
         {creationOptions.map((option) => (
           <Link href={option.href} key={option.title} className="block">
             <Card className="h-full text-center p-8 flex flex-col items-center justify-center transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:border-primary">

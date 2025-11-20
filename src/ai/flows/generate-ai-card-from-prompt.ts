@@ -13,7 +13,8 @@ import {z} from 'genkit';
 const GenerateAiCardFromPromptInputSchema = z.object({
   masterPrompt: z.string().describe('A pre-selected master prompt for the overall theme of the card.'),
   personalizedPrompt: z.string().describe('A personalized prompt for specific details of the card design.'),
-  photoDataUri: z.string().optional().describe("An optional photo of a user, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'. This can be a style reference image."),
+  photoDataUri: z.string().optional().describe("An optional photo of a user, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'. This can be a style reference image or a base image for modification."),
+  modificationStrength: z.number().optional().describe('A value from 0 to 1 indicating the desired strength of image modification. 0.1-0.4 for minor changes, 0.6-0.9 for major transformations.'),
 });
 export type GenerateAiCardFromPromptInput = z.infer<typeof GenerateAiCardFromPromptInputSchema>;
 
@@ -39,10 +40,23 @@ const generateAiCardFromPromptFlow = ai.defineFlow(
 
     if (input.photoDataUri) {
         model = 'googleai/gemini-2.5-flash-image-preview';
+        
+        let instructionText = '';
+        if (input.modificationStrength !== undefined) {
+          // This is an img2img modification request
+          if (input.modificationStrength <= 0.5) {
+            instructionText = `Perform minor modifications on the provided image based on the following instruction: ${input.personalizedPrompt}. Keep the original composition and subjects largely intact.`;
+          } else {
+            instructionText = `Perform a major transformation on the provided image based on the following instruction: ${input.personalizedPrompt}. Use the original image as a base for composition, but take significant creative liberties.`;
+          }
+        } else {
+          // This is a style transfer request
+          instructionText = `Analyze the artistic style, color palette, and composition of the provided image. Then, generate a new image that applies that exact style to the following subject: ${input.masterPrompt}, ${input.personalizedPrompt}`;
+        }
+        
         prompt = [
             { media: { url: input.photoDataUri } },
-            // Add a specific instruction for style transfer
-            { text: `Analyze the artistic style, color palette, and composition of the provided image. Then, generate a new image that applies that exact style to the following subject: ${input.masterPrompt}, ${input.personalizedPrompt}` },
+            { text: instructionText },
         ];
         config = {
             responseModalities: ['IMAGE'],
