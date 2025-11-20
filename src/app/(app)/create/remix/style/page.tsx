@@ -13,12 +13,16 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, UploadCloud, Wand2 } from 'lucide-react';
+import { Loader2, UploadCloud, Wand2, Download, Repeat } from 'lucide-react';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
+
 
 const styleFormSchema = z.object({
   prompt: z.string().min(10, 'Please describe your desired image in at least 10 characters.'),
   styleImage: z.any().refine(fileList => fileList.length === 1, 'Please upload one image file.'),
+  layoutLock: z.boolean(),
 });
 
 type StyleFormValues = z.infer<typeof styleFormSchema>;
@@ -38,6 +42,7 @@ export default function StyleRemixPage() {
     defaultValues: {
       prompt: '',
       styleImage: undefined,
+      layoutLock: false,
     },
   });
 
@@ -72,16 +77,19 @@ export default function StyleRemixPage() {
       const photoDataUri = await fileToBase64(imageFile);
       
       const result = await generateCardAction({
-        masterPrompt: "Apply the artistic style from the provided image.",
+        masterPrompt: data.layoutLock
+          ? "Generate an image using the layout from the reference photo."
+          : "Apply the artistic style from the provided image.",
         personalizedPrompt: data.prompt,
         photoDataUri: photoDataUri,
+        layoutLock: data.layoutLock,
       });
 
       setGeneratedCardUri(result.cardDataUri);
       setGenerationState('done');
       toast({
-        title: 'Style Transfer Complete!',
-        description: 'Your new image has been generated.',
+        title: 'Image Generated!',
+        description: 'Your new creation is ready.',
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred.';
@@ -96,7 +104,7 @@ export default function StyleRemixPage() {
   };
   
   const handleReset = () => {
-    form.reset();
+    form.reset({ prompt: '', layoutLock: false });
     setStylePreview(null);
     setGeneratedCardUri(null);
     setGenerationState('idle');
@@ -112,7 +120,7 @@ export default function StyleRemixPage() {
       <Card className="w-full max-w-4xl mx-auto">
         <CardHeader>
           <CardTitle className="font-headline text-3xl">Remix with Style</CardTitle>
-          <CardDescription>Upload an image to use as a style reference, then describe the new image you want the AI to create.</CardDescription>
+          <CardDescription>Upload an image to use as a style or layout reference, then describe the new image you want the AI to create.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-2 gap-8 items-start">
@@ -123,7 +131,7 @@ export default function StyleRemixPage() {
                   name="styleImage"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>1. Upload Style Image</FormLabel>
+                      <FormLabel>1. Upload Reference Image</FormLabel>
                       <FormControl>
                         <Input
                           type="file"
@@ -170,6 +178,31 @@ export default function StyleRemixPage() {
                     </FormItem>
                   )}
                 />
+
+                <FormField
+                  control={form.control}
+                  name="layoutLock"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-muted/30">
+                      <div className="space-y-0.5">
+                        <FormLabel className="flex items-center gap-2">
+                           Lock Original Composition 
+                           <Badge variant="outline" className="text-primary border-primary">Premium</Badge>
+                        </FormLabel>
+                        <CardDescription>
+                          Keeps the layout, replaces the style.
+                        </CardDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
                 
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? (
@@ -200,11 +233,15 @@ export default function StyleRemixPage() {
                      <p className="text-destructive p-4 text-center">{errorMessage || "An error occurred."}</p>
                   )}
                 </Card>
-                {generationState === 'done' && (
+                {generationState === 'done' && generatedCardUri && (
                     <div className="grid grid-cols-2 gap-2">
-                        <Button onClick={handleReset} variant="outline">Create Another</Button>
+                         <Button onClick={handleReset} variant="outline">
+                            <Repeat className="mr-2 h-4 w-4" /> Create Another
+                        </Button>
                         <a href={generatedCardUri!} download="styled-creation.png">
-                            <Button className="w-full">Download Image</Button>
+                            <Button className="w-full">
+                                <Download className="mr-2 h-4 w-4" /> Download
+                            </Button>
                         </a>
                     </div>
                 )}

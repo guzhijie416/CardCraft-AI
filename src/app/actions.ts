@@ -45,7 +45,9 @@ export async function generateCardAction(input: GenerateAiCardFromPromptInput) {
     return await generateAiCardFromPrompt(input);
   } catch (error) {
     console.error('Error in generateCardAction:', error);
-    throw new Error('Failed to generate the card. Please try again.');
+    // Propagate a more specific error message if available
+    const message = error instanceof Error ? error.message : 'Failed to generate the card. Please try again.';
+    throw new Error(message);
   }
 }
 

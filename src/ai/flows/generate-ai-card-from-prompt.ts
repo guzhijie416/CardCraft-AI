@@ -17,6 +17,7 @@ const GenerateAiCardFromPromptInputSchema = z.object({
   photoDataUri: z.string().optional().describe("An optional photo of a user, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'. This can be a style reference image or a base image for modification."),
   modificationStrength: z.number().optional().describe('A value from 0 to 1 indicating the desired strength of image modification. 0.1-0.4 for minor changes, 0.6-0.9 for major transformations.'),
   aspectRatio: z.enum(['1:1', '16:9', '9:16']).optional().describe('The desired aspect ratio for the generated image.'),
+  layoutLock: z.boolean().optional().describe('If true, lock the composition of the provided image and apply the prompt as a new theme.')
 });
 export type GenerateAiCardFromPromptInput = z.infer<typeof GenerateAiCardFromPromptInputSchema>;
 
@@ -38,14 +39,16 @@ const generateAiCardFromPromptFlow = ai.defineFlow(
   async (input) => {
     let prompt;
     let model = 'googleai/imagen-4.0-fast-generate-001';
-    let config: any;
+    let config: any = {};
 
     if (input.photoDataUri) {
         model = 'googleai/gemini-2.5-flash-image-preview';
         config = { responseModalities: ['IMAGE'] };
         
         let instructionText = '';
-        if (input.modificationStrength !== undefined) {
+        if (input.layoutLock) {
+            instructionText = `Use the exact composition and layout of the provided image as a structural guide, but replace the subject and style entirely based on the following text: ${input.personalizedPrompt}`;
+        } else if (input.modificationStrength !== undefined) {
           // This is an img2img modification request
           if (input.modificationStrength <= 0.5) {
             instructionText = `Perform minor modifications on the provided image based on the following instruction: ${input.personalizedPrompt}. Keep the original composition and subjects largely intact.`;
@@ -64,11 +67,12 @@ const generateAiCardFromPromptFlow = ai.defineFlow(
 
     } else {
         prompt = `${input.masterPrompt}, ${input.personalizedPrompt}`;
-        if (input.aspectRatio) {
-            config = { aspectRatio: input.aspectRatio };
-        }
     }
     
+    if (input.aspectRatio) {
+        config.aspectRatio = input.aspectRatio;
+    }
+
     const generationRequest: any = { model, prompt };
     if (config) {
       generationRequest.config = config;
