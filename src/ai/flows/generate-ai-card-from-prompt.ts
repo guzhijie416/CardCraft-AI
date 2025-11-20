@@ -15,6 +15,7 @@ const GenerateAiCardFromPromptInputSchema = z.object({
   personalizedPrompt: z.string().describe('A personalized prompt for specific details of the card design.'),
   photoDataUri: z.string().optional().describe("An optional photo of a user, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'. This can be a style reference image or a base image for modification."),
   modificationStrength: z.number().optional().describe('A value from 0 to 1 indicating the desired strength of image modification. 0.1-0.4 for minor changes, 0.6-0.9 for major transformations.'),
+  aspectRatio: z.enum(['1:1', '16:9', '9:16']).optional().describe('The desired aspect ratio for the generated image.'),
 });
 export type GenerateAiCardFromPromptInput = z.infer<typeof GenerateAiCardFromPromptInputSchema>;
 
@@ -36,7 +37,11 @@ const generateAiCardFromPromptFlow = ai.defineFlow(
   async (input) => {
     let prompt;
     let model = 'googleai/imagen-4.0-fast-generate-001';
-    let config;
+    let config: any = {};
+
+    if (input.aspectRatio) {
+      config.aspectRatio = input.aspectRatio;
+    }
 
     if (input.photoDataUri) {
         model = 'googleai/gemini-2.5-flash-image-preview';
@@ -58,15 +63,15 @@ const generateAiCardFromPromptFlow = ai.defineFlow(
             { media: { url: input.photoDataUri } },
             { text: instructionText },
         ];
-        config = {
-            responseModalities: ['IMAGE'],
-        };
+        
+        config.responseModalities = ['IMAGE'];
+
     } else {
         prompt = `${input.masterPrompt}, ${input.personalizedPrompt}`;
     }
     
     const generationRequest: any = { model, prompt };
-    if (config) {
+    if (Object.keys(config).length > 0) {
       generationRequest.config = config;
     }
 

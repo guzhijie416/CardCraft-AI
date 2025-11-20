@@ -18,7 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, Wand2, Lightbulb, Download, Mail, Printer, MessageSquareQuote, Settings, ChevronDown, XCircle } from 'lucide-react';
+import { Loader2, Sparkles, Wand2, Lightbulb, Download, Mail, Printer, MessageSquareQuote, Settings, ChevronDown, XCircle, AspectRatio } from 'lucide-react';
 import type { MasterPrompt } from '@/lib/data';
 import { masterPrompts as allMasterPrompts } from '@/lib/data';
 import type { SummarizeAndImproveUserPromptOutput } from '@/ai/flows/summarize-and-improve-user-prompt';
@@ -38,6 +38,7 @@ const formSchema = z.object({
 type EditorState = 'idle' | 'analyzing' | 'needs_improvement' | 'generating' | 'done' | 'error';
 type MessageState = 'idle' | 'generating' | 'done' | 'error';
 type RefinedPromptState = 'idle' | 'generating' | 'done' | 'error';
+type AspectRatioType = '9:16' | '16:9' | '1:1';
 
 
 const refinementOptions = {
@@ -88,6 +89,8 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   const [composition, setComposition] = useState<string | undefined>();
   const [lighting, setLighting] = useState<string | undefined>();
   const [texture, setTexture] = useState<string | undefined>();
+  const [aspectRatio, setAspectRatio] = useState<AspectRatioType>('9:16');
+
 
   const { toast } = useToast();
 
@@ -108,6 +111,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     let input: any = {
         masterPrompt: modifiedMasterPrompt,
         personalizedPrompt: promptToUse,
+        aspectRatio: aspectRatio
     }
     if (photoDataUri) {
         input.photoDataUri = photoDataUri
@@ -234,8 +238,8 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
           <CardDescription>Download your creation or add a personal message.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="aspect-[4/5] w-full rounded-lg overflow-hidden border relative bg-muted">
-            <Image src={finalCardUri} alt="Generated AI card" fill className="object-cover" />
+          <div className="w-full rounded-lg overflow-hidden border relative bg-muted" style={{ aspectRatio: aspectRatio.replace(':', '/') }}>
+            <Image src={finalCardUri} alt="Generated AI card" fill className="object-contain" />
             {personalMessage && (
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 flex items-end justify-center p-8">
                     <p className="text-white text-center text-xl font-body">{personalMessage}</p>
@@ -322,6 +326,31 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
         </CollapsibleContent>
     </Collapsible>
   );
+  
+  const AspectRatioSection = () => (
+    <Collapsible defaultOpen>
+        <CollapsibleTrigger className="flex justify-between items-center w-full p-2 bg-muted/50 rounded-md">
+            <span className="font-semibold">Aspect Ratio</span>
+            <ChevronDown className="h-4 w-4" />
+        </CollapsibleTrigger>
+        <CollapsibleContent className="p-2">
+            <RadioGroup value={aspectRatio} onValueChange={(val) => setAspectRatio(val as AspectRatioType)}>
+                <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="9:16" id="ar-portrait" />
+                    <Label htmlFor="ar-portrait">Portrait (Card)</Label>
+                </div>
+                 <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="16:9" id="ar-landscape" />
+                    <Label htmlFor="ar-landscape">Landscape</Label>
+                </div>
+                 <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="1:1" id="ar-square" />
+                    <Label htmlFor="ar-square">Square</Label>
+                </div>
+            </RadioGroup>
+        </CollapsibleContent>
+    </Collapsible>
+  );
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
@@ -392,6 +421,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                     <CardDescription>Select options to generate a more detailed prompt suggestion.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
+                    <AspectRatioSection />
                     <RefinementSection title="Artistic Medium" options={refinementOptions.artisticMedium} value={artisticMedium} onValueChange={setArtisticMedium} categoryKey="artisticMedium" />
                     <RefinementSection title="Color Palette" options={refinementOptions.colorPalette} value={colorPalette} onValueChange={setColorPalette} categoryKey="colorPalette" />
                     <RefinementSection title="Composition" options={refinementOptions.composition} value={composition} onValueChange={setComposition} categoryKey="composition" />

@@ -16,11 +16,15 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Wand2, UploadCloud, Download, Repeat } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+
+type AspectRatioType = '9:16' | '16:9' | '1:1';
 
 const modifyFormSchema = z.object({
   prompt: z.string().min(5, 'Please describe your desired modification in at least 5 characters.'),
   baseImage: z.any().refine(fileList => fileList.length === 1, 'Please upload one image file.'),
   strength: z.number().min(0.1).max(1.0),
+  aspectRatio: z.enum(['9:16', '16:9', '1:1']),
 });
 
 type ModifyFormValues = z.infer<typeof modifyFormSchema>;
@@ -42,6 +46,7 @@ export default function ModifyImagePage() {
       prompt: '',
       baseImage: undefined,
       strength: 0.5,
+      aspectRatio: '9:16',
     },
   });
 
@@ -79,7 +84,8 @@ export default function ModifyImagePage() {
         masterPrompt: "Modify the provided image based on the user's prompt.", // Master prompt not as important here
         personalizedPrompt: data.prompt,
         photoDataUri: photoDataUri,
-        modificationStrength: data.strength
+        modificationStrength: data.strength,
+        aspectRatio: data.aspectRatio,
       });
 
       setGeneratedCardUri(result.cardDataUri);
@@ -101,7 +107,7 @@ export default function ModifyImagePage() {
   };
   
   const handleReset = () => {
-    form.reset({ strength: 0.5 });
+    form.reset({ strength: 0.5, aspectRatio: '9:16' });
     setImagePreview(null);
     setGeneratedCardUri(null);
     setGenerationState('idle');
@@ -120,13 +126,14 @@ export default function ModifyImagePage() {
   }
 
   const isLoading = generationState === 'generating';
+  const finalAspectRatio = form.watch('aspectRatio');
 
   return (
     <div className="container mx-auto py-8">
       <Card className="w-full max-w-4xl mx-auto">
         <CardHeader>
           <CardTitle className="font-headline text-3xl">Modify an Image</CardTitle>
-          <CardDescription>Upload a starting image, then use a prompt and the strength slider to transform it.</CardDescription>
+          <CardDescription>Upload a starting image, then use a prompt and sliders to transform it.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-2 gap-8 items-start">
@@ -205,7 +212,45 @@ export default function ModifyImagePage() {
                         </FormItem>
                     )}
                 />
-                
+
+                <FormField
+                  control={form.control}
+                  name="aspectRatio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>4. Aspect Ratio</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          className="flex space-x-4"
+                          disabled={isLoading}
+                        >
+                          <FormItem className="flex items-center space-x-2 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="9:16" />
+                            </FormControl>
+                            <FormLabel className="font-normal">Portrait</FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-2 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="16:9" />
+                            </FormControl>
+                            <FormLabel className="font-normal">Landscape</FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-2 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="1:1" />
+                            </FormControl>
+                            <FormLabel className="font-normal">Square</FormLabel>
+                          </FormItem>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? (
                     <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Modifying...</>
@@ -218,7 +263,7 @@ export default function ModifyImagePage() {
 
             <div className="space-y-4">
                 <Label>Result</Label>
-                <Card className="aspect-video flex items-center justify-center bg-muted/50 border-dashed">
+                <Card className="flex items-center justify-center bg-muted/50 border-dashed" style={{ aspectRatio: finalAspectRatio.replace(':', '/') }}>
                   {isLoading && (
                      <div className="text-center text-muted-foreground">
                         <Loader2 className="mx-auto h-12 w-12 animate-spin mb-2" />
@@ -226,10 +271,10 @@ export default function ModifyImagePage() {
                      </div>
                   )}
                   {generationState === 'done' && generatedCardUri && (
-                     <Image src={generatedCardUri} alt="Modified image result" width={500} height={300} className="object-contain h-full w-full rounded-md"/>
+                     <Image src={generatedCardUri} alt="Modified image result" fill className="object-contain rounded-md"/>
                   )}
                    {generationState === 'idle' && !generatedCardUri && (
-                     <p className="text-muted-foreground">Your modified image will appear here.</p>
+                     <p className="text-muted-foreground p-4 text-center">Your modified image will appear here.</p>
                   )}
                   {generationState === 'error' && (
                      <p className="text-destructive p-4 text-center">{errorMessage || "An error occurred."}</p>

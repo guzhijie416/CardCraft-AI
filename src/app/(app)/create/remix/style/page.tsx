@@ -14,10 +14,14 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Sparkles, UploadCloud, Wand2 } from 'lucide-react';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+
+type AspectRatioType = '9:16' | '16:9' | '1:1';
 
 const styleFormSchema = z.object({
   prompt: z.string().min(10, 'Please describe your desired image in at least 10 characters.'),
   styleImage: z.any().refine(fileList => fileList.length === 1, 'Please upload one image file.'),
+  aspectRatio: z.enum(['9:16', '16:9', '1:1']),
 });
 
 type StyleFormValues = z.infer<typeof styleFormSchema>;
@@ -37,6 +41,7 @@ export default function StyleRemixPage() {
     defaultValues: {
       prompt: '',
       styleImage: undefined,
+      aspectRatio: '9:16',
     },
   });
 
@@ -73,7 +78,8 @@ export default function StyleRemixPage() {
       const result = await generateCardAction({
         masterPrompt: "Apply the artistic style from the provided image.",
         personalizedPrompt: data.prompt,
-        photoDataUri: photoDataUri
+        photoDataUri: photoDataUri,
+        aspectRatio: data.aspectRatio,
       });
 
       setGeneratedCardUri(result.cardDataUri);
@@ -95,7 +101,7 @@ export default function StyleRemixPage() {
   };
   
   const handleReset = () => {
-    form.reset();
+    form.reset({ aspectRatio: '9:16' });
     setStylePreview(null);
     setGeneratedCardUri(null);
     setGenerationState('idle');
@@ -105,6 +111,7 @@ export default function StyleRemixPage() {
   };
 
   const isLoading = generationState === 'generating';
+  const finalAspectRatio = form.watch('aspectRatio');
 
   return (
     <div className="container mx-auto py-8">
@@ -169,6 +176,44 @@ export default function StyleRemixPage() {
                     </FormItem>
                   )}
                 />
+
+                <FormField
+                  control={form.control}
+                  name="aspectRatio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>3. Aspect Ratio</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          className="flex space-x-4"
+                          disabled={isLoading}
+                        >
+                          <FormItem className="flex items-center space-x-2 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="9:16" />
+                            </FormControl>
+                            <FormLabel className="font-normal">Portrait</FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-2 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="16:9" />
+                            </FormControl>
+                            <FormLabel className="font-normal">Landscape</FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-2 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="1:1" />
+                            </FormControl>
+                            <FormLabel className="font-normal">Square</FormLabel>
+                          </FormItem>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? (
@@ -182,7 +227,7 @@ export default function StyleRemixPage() {
 
             <div className="space-y-4">
                 <Label>Result</Label>
-                <Card className="aspect-video flex items-center justify-center bg-muted/50 border-dashed">
+                <Card className="flex items-center justify-center bg-muted/50 border-dashed" style={{ aspectRatio: finalAspectRatio.replace(':', '/') }}>
                   {isLoading && (
                      <div className="text-center text-muted-foreground">
                         <Loader2 className="mx-auto h-12 w-12 animate-spin mb-2" />
@@ -190,10 +235,10 @@ export default function StyleRemixPage() {
                      </div>
                   )}
                   {generationState === 'done' && generatedCardUri && (
-                     <Image src={generatedCardUri} alt="Generated card from style" width={500} height={300} className="object-contain h-full w-full rounded-md"/>
+                     <Image src={generatedCardUri} alt="Generated card from style" fill className="object-contain rounded-md"/>
                   )}
                    {generationState === 'idle' && !generatedCardUri && (
-                     <p className="text-muted-foreground">Your generated image will appear here.</p>
+                     <p className="text-muted-foreground p-4 text-center">Your generated image will appear here.</p>
                   )}
                   {generationState === 'error' && (
                      <p className="text-destructive p-4 text-center">{errorMessage || "An error occurred."}</p>
