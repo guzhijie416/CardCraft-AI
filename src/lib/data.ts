@@ -24,7 +24,7 @@ export const allOccasions: Occasion[] = [
   { id: 'abstract', name: 'Abstract', icon: Zap },
 ];
 
-export const occasions: Occasion[] = allOccasions.filter(o => !['nature', 'architecture', 'abstract', 'lovers', 'group'].includes(o.id));
+export const occasions: Occasion[] = allOccasions.filter(o => !['nature', 'architecture', 'abstract', 'lovers', 'group', 'postcard'].includes(o.id));
 export const templateOccasions: Occasion[] = allOccasions.filter(o => ['nature', 'architecture', 'abstract', 'birthday', 'holiday', 'wedding', 'graduation'].includes(o.id));
 
 

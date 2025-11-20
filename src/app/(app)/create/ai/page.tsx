@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { occasions } from '@/lib/data';
@@ -12,7 +13,8 @@ export default function AiCreatePage() {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
         {occasions.map((occasion) => {
-          const href = occasion.id === 'postcard' ? '/create/postcard' : `/create/ai/${occasion.id}`;
+          if (occasion.id === 'postcard') return null; // Exclude postcard from this page
+          const href = `/create/ai/${occasion.id}`;
           return (
             <Link href={href} key={occasion.id} className="block group">
               <Card className="text-center p-6 flex flex-col items-center justify-center aspect-square transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-primary/5">

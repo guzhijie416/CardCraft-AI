@@ -1,32 +1,33 @@
+
 'use client';
 
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Sparkles, Camera } from 'lucide-react';
+import { Camera, Image as ImageIcon } from 'lucide-react';
 
-export default function CreatePostcardPage() {
+export default function CreateRemixPage() {
   const creationOptions = [
     {
-      title: 'Use Your Camera',
-      description: 'Take a photo and use it as the background for your postcard. Perfect for capturing moments on the go.',
+      title: 'Postcard from Camera',
+      description: 'Take a photo and use it as the background for a fun, AI-enhanced postcard.',
       icon: Camera,
-      href: '/create/postcard/camera',
+      href: '/create/remix/camera',
       linkText: 'Use Camera',
     },
     {
-      title: 'Generate with AI',
-      description: 'Don\'t have a photo? Describe the scene you want and our AI will create a stunning image for your postcard.',
-      icon: Sparkles,
-      href: '/create/ai/postcard',
-      linkText: 'Start with AI',
+      title: 'Remix with Style',
+      description: 'Upload an image to transfer its artistic style to a new AI-generated creation.',
+      icon: ImageIcon,
+      href: '/create/ai/birthday', // Temporary link, will build the style upload page next
+      linkText: 'Upload Style Image',
     },
 ];
 
   return (
     <div className="container mx-auto py-8">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold font-headline">Create a Postcard</h1>
-        <p className="text-muted-foreground mt-2 text-lg">How would you like to create your postcard?</p>
+        <h1 className="text-4xl font-bold font-headline">Photo Remix</h1>
+        <p className="text-muted-foreground mt-2 text-lg">Use your photos to create something amazing.</p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
