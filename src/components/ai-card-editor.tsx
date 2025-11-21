@@ -64,6 +64,13 @@ type ArtisticMediumState = {
   digital?: string;
 };
 
+type ColorPaletteState = {
+  vibe?: string;
+  thematic?: string;
+  artistic?: string;
+  harmonies?: string;
+};
+
 
 const refinementOptions = {
   artisticMedium: [
@@ -121,9 +128,52 @@ const refinementOptions = {
     }
   ],
   colorPalette: [
-    { id: 'cp-1', value: 'a soft pastel color palette', label: 'Soft Pastels' },
-    { id: 'cp-2', value: 'vibrant and bold colors', label: 'Vibrant & Bold' },
-    { id: 'cp-3', value: 'a warm and earthy palette', label: 'Warm & Earthy' },
+    {
+        key: 'vibe',
+        category: 'Vibe & Mood',
+        description: 'Palettes defined by the feeling they evoke.',
+        options: [
+            { id: 'cp-1', label: 'Soft Pastels', description: 'Gentle, dreamy, and light. Perfect for baby showers, spring themes, and soft, whimsical designs.', value: 'soft pastel color palette, light and airy, baby pink, mint green, lavender, soft hues, gentle colors' },
+            { id: 'cp-2', label: 'Vibrant & Bold', description: 'Energetic, eye-catching, and full of life. Creates a modern, joyful, and high-impact look.', value: 'vibrant and bold color palette, saturated colors, high contrast, pop art colors, electric blue, fuchsia, bright yellow' },
+            { id: 'cp-3', label: 'Warm & Earthy', description: 'Cozy, natural, and inviting. Uses colors from nature like terracotta, olive green, and sand. Perfect for a rustic or comforting feel.', value: 'warm and earthy color palette, terracotta, olive green, mustard yellow, burnt sienna, natural tones, rustic' },
+            { id: 'cp-4', label: 'Cool & Serene', description: 'Calm, tranquil, and refreshing. Dominated by blues, greens, and cool grays, evoking a sense of peace and clarity.', value: 'cool color palette, serene, tranquil, shades of blue and green, seafoam, cool gray, calming' },
+            { id: 'cp-5', label: 'Dark & Moody', description: 'Dramatic, mysterious, and sophisticated. Uses deep, rich colors like charcoal, navy, and burgundy with occasional highlights.', value: 'dark and moody color palette, deep jewel tones, charcoal gray, navy blue, burgundy, high contrast, dramatic' },
+            { id: 'cp-6', label: 'Rich Jewel Tones', description: 'Luxurious, opulent, and elegant. Features deep, saturated colors like emerald green, sapphire blue, ruby red, and amethyst purple.', value: 'rich jewel tone palette, emerald green, sapphire blue, ruby red, amethyst, opulent, luxurious, deep saturated colors' },
+        ]
+    },
+    {
+        key: 'thematic',
+        category: 'Thematic & Seasonal',
+        description: 'Palettes associated with specific themes, seasons, or holidays.',
+        options: [
+            { id: 'cp-7', label: 'Autumnal Warmth', description: 'The cozy and nostalgic colors of a crisp autumn day. Think falling leaves, pumpkins, and warm sweaters.', value: 'autumnal color palette, warm oranges, deep reds, mustard yellows, forest greens, cozy, harvest colors' },
+            { id: 'cp-8', label: 'Winter Frost', description: 'The crisp, cool, and magical palette of a winter landscape. Dominated by icy blues, silver, and stark whites.', value: 'winter color palette, icy blues, silver, crisp white, cool tones, frosty, monochromatic blue' },
+            { id: 'cp-9', label: 'Coastal & Nautical', description: 'Breezy, clean, and relaxing. The classic combination of sandy beige, crisp white, and various shades of navy and sea blue.', value: 'nautical color palette, navy blue, crisp white, sandy beige, seaside colors, coastal' },
+            { id: 'cp-10', label: 'Summer Sunshine', description: 'Bright, vibrant, and fun. The energetic colors of a tropical beach or a sunny day, with bright yellows, ocean blues, and hot pinks.', value: 'summer color palette, bright yellow, turquoise, hot pink, tropical colors, vibrant, sun-drenched' },
+        ]
+    },
+    {
+        key: 'artistic',
+        category: 'Artistic & Cinematic',
+        description: 'Palettes inspired by specific art movements or film styles.',
+        options: [
+            { id: 'cp-11', label: 'Retro 70s Vibe', description: 'A groovy and nostalgic palette with avocado green, harvest gold, and burnt orange. Fun, funky, and full of personality.', value: 'retro 1970s color palette, avocado green, harvest gold, burnt orange, groovy, vintage, nostalgic' },
+            { id: 'cp-12', label: 'Art Deco Glamour', description: 'The sophisticated and luxurious palette of the 1920s. Features black, cream, and striking metallic gold or silver accents.', value: 'Art Deco color palette, black and gold, geometric, luxurious, glamorous, metallic accents, style of the 1920s' },
+            { id: 'cp-13', label: 'Cinematic Teal & Orange', description: 'A modern, high-impact movie look. This popular film color grade creates a dramatic contrast between cool blues/teals and warm skin tones/oranges.', value: 'cinematic teal and orange color palette, film look, high contrast, movie color grading' },
+            { id: 'cp-14', label: 'Neon Noir', description: 'The electric, futuristic colors of a cyberpunk city at night. Dominated by glowing neons (pinks, blues, purples) against a dark, moody background.', value: 'neon noir color palette, cyberpunk, glowing neon, electric pink, cyan, against a dark background, Blade Runner style' },
+        ]
+    },
+    {
+        key: 'harmonies',
+        category: 'Color Harmonies',
+        description: 'Palettes based on classic color theory for users who want a more technical approach.',
+        options: [
+            { id: 'cp-15', label: 'Monochromatic', description: 'Sophisticated and cohesive. Uses various shades, tints, and tones of a single color for a clean and elegant effect.', value: 'monochromatic color scheme, shades of blue, single color, tonal, minimalist' },
+            { id: 'cp-16', label: 'Analogous', description: 'Calm and pleasing. Uses colors that are next to each other on the color wheel (e.g., yellow, yellow-green, and green) for a serene and unified look.', value: 'analogous color scheme, harmonious, pleasing, colors next to each other on the color wheel' },
+            { id: 'cp-17', label: 'Complementary', description: 'Bold and high-impact. Uses colors that are opposite each other on the color wheel (e.g., red and green) to make each other pop.', value: 'complementary color scheme, high contrast, vibrant, colors opposite on the color wheel' },
+            { id: 'cp-18', label: 'Faded & Desaturated', description: 'A soft, muted, and often vintage look. Colors are less intense, creating a gentle, understated, and sometimes melancholic mood.', value: 'faded color palette, desaturated colors, muted tones, vintage film look, low saturation' },
+        ]
+    }
   ],
   composition: [
     {
@@ -239,7 +289,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
 
   // State for refinement selections
   const [artisticMedium, setArtisticMedium] = useState<ArtisticMediumState>({});
-  const [colorPalette, setColorPalette] = useState<string | undefined>();
+  const [colorPalette, setColorPalette] = useState<ColorPaletteState>({});
   const [composition, setComposition] = useState<CompositionState>({});
   const [lighting, setLighting] = useState<LightingState>({});
   const [texture, setTexture] = useState<string | undefined>();
@@ -312,11 +362,12 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
         const fullArtisticMediumPrompt = Object.values(artisticMedium).filter(Boolean).join(', ');
         const fullCompositionPrompt = Object.values(composition).filter(Boolean).join(', ');
         const fullLightingPrompt = Object.values(lighting).filter(Boolean).join(', ');
+        const fullColorPalettePrompt = Object.values(colorPalette).filter(Boolean).join(', ');
 
         const result = await generateRefinedPromptAction({
             basePrompt: form.getValues('personalizedPrompt'),
             artisticMedium: fullArtisticMediumPrompt,
-            colorPalette,
+            colorPalette: fullColorPalettePrompt,
             composition: fullCompositionPrompt,
             lighting: fullLightingPrompt,
             texture
@@ -404,7 +455,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   const isLoading = editorState === 'analyzing' || editorState === 'generating';
   const isRefining = refinedPromptState === 'generating';
 
-  const isAnyRefinementSelected = !!artisticMedium || !!colorPalette || Object.values(lighting).some(Boolean) || !!texture || Object.values(composition).some(Boolean);
+  const isAnyRefinementSelected = Object.values(artisticMedium).some(Boolean) || Object.values(colorPalette).some(Boolean) || Object.values(lighting).some(Boolean) || !!texture || Object.values(composition).some(Boolean);
   const canGenerateRefinedPrompt = isLoading || isRefining || (!form.getValues('personalizedPrompt') && !isAnyRefinementSelected);
 
   if (editorState === 'done' && finalCardUri) {
@@ -487,7 +538,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   }
 
   const RefinementSection = ({ title, options, value, onValueChange, categoryKey }: { title: string, options: any[], value: any, onValueChange: (value: any) => void, categoryKey: string }) => {
-    const isMultiSelect = categoryKey === 'composition' || categoryKey === 'lighting' || categoryKey === 'artisticMedium';
+    const isMultiSelect = categoryKey === 'composition' || categoryKey === 'lighting' || categoryKey === 'artisticMedium' || categoryKey === 'colorPalette';
     const isOpen = openSections[categoryKey];
     const onOpenChange = (open: boolean) => setOpenSections(prev => ({ ...prev, [categoryKey]: open }));
 
@@ -570,7 +621,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                     <Label htmlFor="ar-square">Square</Label>
                 </div>
             </RadioGroup>
-        </CollapsibleContent>
+        </Collapsib_leContent>
     </Collapsible>
     )
   };
@@ -727,7 +778,5 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     </Card>
   );
 }
-
-    
 
     
