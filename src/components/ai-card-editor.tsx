@@ -19,7 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, Wand2, Lightbulb, Download, Share2, Printer, MessageSquareQuote, Settings, ChevronDown, XCircle, AspectRatio, Clapperboard, Film, Wind, Sunrise } from 'lucide-react';
+import { Loader2, Sparkles, Wand2, Lightbulb, Download, Share2, Printer, MessageSquareQuote, Settings, ChevronDown, XCircle, AspectRatio } from 'lucide-react';
 import type { MasterPrompt } from '@/lib/data';
 import { masterPrompts as allMasterPrompts } from '@/lib/data';
 import type { SummarizeAndImproveUserPromptOutput } from '@/ai/flows/summarize-and-improve-user-prompt';
@@ -41,14 +41,19 @@ type EditorState = 'idle' | 'analyzing' | 'needs_improvement' | 'generating' | '
 type MessageState = 'idle' | 'generating' | 'done' | 'error';
 type RefinedPromptState = 'idle' | 'generating' | 'done' | 'error';
 type AspectRatioType = '9:16' | '16:9' | '1:1';
-type AnimationState = 'idle' | 'generating' | 'done' | 'error';
 
-// New type for composition state
 type CompositionState = {
   framing?: string;
   balance?: string;
   pattern?: string;
   cinematic?: string;
+};
+
+type LightingState = {
+  natural?: string;
+  atmospheric?: string;
+  cinematic?: string;
+  fantastical?: string;
 };
 
 
@@ -110,9 +115,50 @@ const refinementOptions = {
     }
   ],
   lighting: [
-    { id: 'li-1', value: 'soft diffused lighting', label: 'Soft & Diffused' },
-    { id: 'li-2', value: 'dramatic, high-contrast lighting', label: 'High-Contrast' },
-    { id: 'li-3', value: 'golden hour glow', label: 'Golden Hour' },
+    {
+      key: 'natural',
+      category: 'Natural Light (Time of Day)',
+      description: 'For capturing the feeling of a specific time of day.',
+      options: [
+        { id: 'li-1', label: 'Golden Hour Glow', description: 'The warm, soft, and nostalgic light just before sunset or after sunrise. Perfect for beautiful portraits and dreamy landscapes.', value: 'golden hour, magic hour, warm soft light, long shadows, cinematic, sunset lighting' },
+        { id: 'li-2', label: 'Bright Midday Sun', description: 'The strong, direct light of a clear day. Creates vibrant colors and sharp, defined shadows. Great for energetic and lively scenes.', value: 'direct midday sun, harsh shadows, bright sunlight, high contrast, vibrant' },
+        { id: 'li-3', label: 'Blue Hour Serenity', description: 'The cool, calm, and moody light in the twilight sky just after the sun has set. Creates a serene and often magical atmosphere.', value: 'blue hour, twilight, deep blue sky, cool tones, ambient light, tranquil' },
+        { id: 'li-4', label: 'Crisp Morning Light', description: 'The clean, clear light of the early morning. It\'s bright but not as harsh as midday, giving a feeling of freshness and optimism.', value: 'soft morning light, crisp, clean, gentle shadows, bright and airy, window light' },
+      ],
+    },
+    {
+      key: 'atmospheric',
+      category: 'Atmospheric & Weather',
+      description: 'For when the weather itself is the source of the mood.',
+      options: [
+        { id: 'li-5', label: 'Soft & Diffused', description: 'The even, gentle light of an overcast day. It minimizes shadows and is very flattering for subjects. Perfect for a calm, soft look.', value: 'soft diffused light, overcast sky, minimal shadows, even lighting, cloudy day' },
+        { id: 'li-6', label: 'Dramatic High Contrast', description: 'Strong light and deep, dark shadows. This creates a bold, intense, and focused look, often seen in film noir and fine art.', value: 'high contrast, dramatic lighting, chiaroscuro, hard shadows, film noir style, moody' },
+        { id: 'li-7', label: 'Dappled Sunlight', description: 'The playful light that filters down through tree leaves, creating a pattern of light and shadow. Evokes a feeling of nature and a peaceful afternoon.', value: 'dappled sunlight, light filtering through leaves, speckled light, forest light' },
+        { id: 'li-8', label: 'Misty & Ethereal', description: 'Light that passes through fog or mist, creating visible beams and a soft, mysterious, and dreamy atmosphere.', value: 'misty, foggy atmosphere, volumetric light, light rays, god rays, ethereal, moody' },
+      ],
+    },
+    {
+      key: 'cinematic',
+      category: 'Cinematic & Artistic',
+      description: 'For stylized looks that tell a story.',
+      options: [
+        { id: 'li-9', label: 'Rim Lighting (Backlit)', description: 'The subject is lit from behind, creating a bright, glowing outline or "rim" of light. It\'s dramatic and helps separate the subject from the background.', value: 'rim lighting, backlit, glowing edges, silhouetted, dramatic silhouette' },
+        { id: 'li-10', label: 'Low-Key Lighting', description: 'The scene is mostly dark, with only a few key areas selectively illuminated. Creates a sense of mystery, intimacy, or drama.', value: 'low-key lighting, dark and moody, deep shadows, selective illumination, mysterious' },
+        { id: 'li-11', label: 'Cinematic Color Grade', description: 'A professional, movie-like look with stylized colors (like the popular teal and orange look). This option focuses on the color of the light itself.', value: 'cinematic lighting, cinematic color grade, volumetric lighting, moody film look' },
+        { id: 'li-12', label: 'Professional Studio Light', description: 'The clean, perfect, and controlled lighting of a professional photo studio. Ideal for product shots, fashion, and flawless portraits.', value: 'professional studio lighting, three-point lighting, clean, even light, softbox, flawless' },
+      ],
+    },
+    {
+      key: 'fantastical',
+      category: 'Artificial & Fantastical',
+      description: 'For unique and magical effects that only AI can create perfectly every time.',
+      options: [
+        { id: 'li-13', label: 'Cozy Candlelight', description: 'The warm, flickering, and intimate glow of candlelight. Perfect for romantic, historical, or cozy holiday scenes.', value: 'lit by candlelight, warm flickering light, intimate, cozy glow, firelight' },
+        { id: 'li-14', label: 'Neon & Cyberpunk', description: 'The vibrant, electric glow of neon signs in a dark, often rainy, setting. Creates a futuristic, edgy, and high-tech feel.', value: 'neon lighting, cyberpunk, vibrant glowing lights, reflections on wet streets, futuristic' },
+        { id: 'li-15', label: 'Bioluminescent Glow', description: 'A magical, otherworldly light that seems to come from nature itself—glowing mushrooms, plants, or fantasy creatures.', value: 'bioluminescent, glowing flora, ethereal glow, magical light, fantasy, enchanting' },
+        { id: 'li-16', label: 'Iridescent & Pearlescent', description: 'A shimmering, multi-colored light that shifts and changes like a soap bubble or an opal. Creates a dreamy, surreal, and magical effect.', value: 'iridescent light, pearlescent, shimmering, opalescent, holographic sheen, rainbow reflections' },
+      ],
+    },
   ],
   texture: [
     { id: 'te-1', value: 'textured paper', label: 'Textured Paper' },
@@ -139,7 +185,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   const [artisticMedium, setArtisticMedium] = useState<string | undefined>();
   const [colorPalette, setColorPalette] = useState<string | undefined>();
   const [composition, setComposition] = useState<CompositionState>({});
-  const [lighting, setLighting] = useState<string | undefined>();
+  const [lighting, setLighting] = useState<LightingState>({});
   const [texture, setTexture] = useState<string | undefined>();
   const [aspectRatio, setAspectRatio] = useState<AspectRatioType>('9:16');
 
@@ -152,10 +198,6 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     lighting: false,
     texture: false,
   });
-
-  const [animationState, setAnimationState] = useState<AnimationState>('idle');
-  const [animationPrompt, setAnimationPrompt] = useState('');
-  const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | null>(null);
 
   const { toast } = useToast();
 
@@ -212,13 +254,14 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
 
     try {
         const fullCompositionPrompt = Object.values(composition).filter(Boolean).join(', ');
+        const fullLightingPrompt = Object.values(lighting).filter(Boolean).join(', ');
 
         const result = await generateRefinedPromptAction({
             basePrompt: form.getValues('personalizedPrompt'),
             artisticMedium,
             colorPalette,
             composition: fullCompositionPrompt,
-            lighting,
+            lighting: fullLightingPrompt,
             texture
         });
         setRefinedPrompt(result);
@@ -285,11 +328,9 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     setEditorState('idle');
     setMessageState('idle');
     setRefinedPromptState('idle');
-    setAnimationState('idle');
     setAnalysis(null);
     setRefinedPrompt(null);
     setFinalCardUri(null);
-    setGeneratedVideoUrl(null);
     setSuggestedMessages([]);
     setErrorMessage(null);
     setPersonalMessage('');
@@ -306,8 +347,8 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   const isLoading = editorState === 'analyzing' || editorState === 'generating';
   const isRefining = refinedPromptState === 'generating';
 
-  const isAnyRefinementSelected = !!artisticMedium || !!colorPalette || !!lighting || !!texture || Object.values(composition).some(Boolean);
-  const canGenerateRefinedPrompt = isRefining || !form.getValues('personalizedPrompt') && !isAnyRefinementSelected;
+  const isAnyRefinementSelected = !!artisticMedium || !!colorPalette || Object.values(lighting).some(Boolean) || !!texture || Object.values(composition).some(Boolean);
+  const canGenerateRefinedPrompt = isLoading || isRefining || (!form.getValues('personalizedPrompt') && !isAnyRefinementSelected);
 
   if (editorState === 'done' && finalCardUri) {
     return (
@@ -318,53 +359,22 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="w-full rounded-lg overflow-hidden border relative bg-muted" style={{ aspectRatio: aspectRatio.replace(':', '/') }}>
-            {animationState === 'done' && generatedVideoUrl ? (
-                <video src={generatedVideoUrl} className="w-full h-full object-contain" autoPlay loop muted playsInline />
-            ) : (
-                <Image src={finalCardUri} alt="Generated AI card" fill className="object-contain" />
-            )}
-
-            {personalMessage && animationState !== 'done' && (
+            <Image src={finalCardUri} alt="Generated AI card" fill className="object-contain" />
+            {personalMessage && (
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 flex items-end justify-center p-8">
                     <p className="text-white text-center text-xl font-body">{personalMessage}</p>
                 </div>
             )}
-            
-            {animationState === 'generating' && (
-                <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white">
-                    <Loader2 className="h-12 w-12 animate-spin" />
-                    <p className="mt-4">Animating your card...</p>
-                    <p className="text-sm text-white/80">(This can take up to a minute)</p>
-                </div>
-            )}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <a href={animationState === 'done' && generatedVideoUrl ? generatedVideoUrl : finalCardUri} download={animationState === 'done' ? "cardcraft-animation.mp4" : "cardcraft-creation.png"}>
-              <Button className="w-full">
-                <Download className="mr-2 h-4 w-4" /> 
-                {animationState === 'done' ? 'Download Video' : 'Download Image'}
-                </Button>
+            <a href={finalCardUri} download="cardcraft-creation.png">
+              <Button className="w-full"><Download className="mr-2 h-4 w-4" /> Download</Button>
             </a>
-            <Button variant="secondary" onClick={handleShare}><Share2 className="mr-2 h-4 w-4" /> Share Card</Button>
+            <Button variant="secondary" onClick={handleShare}><Share2 className="mr-2 h-4 w-4" /> Share</Button>
             <Button variant="secondary"><Printer className="mr-2 h-4 w-4" /> Print</Button>
           </div>
         </CardContent>
         <CardFooter className="flex-col items-start gap-4 pt-4 border-t">
-          
-           {/* Animation Section */}
-          <Collapsible className="w-full">
-              <CollapsibleTrigger className="flex justify-between items-center w-full p-3 bg-muted/50 rounded-md">
-                  <div className="flex items-center gap-2">
-                    <Clapperboard className="h-5 w-5 text-primary"/>
-                    <span className="font-semibold">Animate It (Beta)</span>
-                  </div>
-                  <ChevronDown className="h-4 w-4" />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="p-4 space-y-4">
-                  <p className="text-sm text-muted-foreground">This feature is temporarily disabled while we make improvements.</p>
-              </CollapsibleContent>
-          </Collapsible>
-          
           <div className="w-full space-y-2">
               <Label htmlFor="personal-message">Add a Personal Message (optional)</Label>
               <Textarea
@@ -420,7 +430,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   }
 
   const RefinementSection = ({ title, options, value, onValueChange, categoryKey }: { title: string, options: any[], value: any, onValueChange: (value: any) => void, categoryKey: string }) => {
-    const isComposition = categoryKey === 'composition';
+    const isMultiSelect = categoryKey === 'composition' || categoryKey === 'lighting';
     const isOpen = openSections[categoryKey];
     const onOpenChange = (open: boolean) => setOpenSections(prev => ({ ...prev, [categoryKey]: open }));
 
@@ -432,7 +442,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
             <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="p-2">
-              {isComposition ? (
+              {isMultiSelect ? (
                 options.map(category => (
                   <div key={category.category} className="mt-4 first:mt-0">
                     <div className='flex items-center gap-2'>
@@ -471,7 +481,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                 </RadioGroup>
               )}
             {
-              !isComposition && value && <Button variant="ghost" size="sm" className="mt-2 text-destructive" onClick={() => onValueChange(undefined)}><XCircle className="mr-1 h-4 w-4" />Clear</Button>
+              !isMultiSelect && value && <Button variant="ghost" size="sm" className="mt-2 text-destructive" onClick={() => onValueChange(undefined)}><XCircle className="mr-1 h-4 w-4" />Clear</Button>
             }
         </CollapsibleContent>
     </Collapsible>
