@@ -24,18 +24,29 @@ const GenerateVideoFromImageInputSchema = z.object({
 });
 export type GenerateVideoFromImageInput = z.infer<typeof GenerateVideoFromImageInputSchema>;
 
-// The output is now the raw URL from the generation service
 const GenerateVideoFromImageOutputSchema = z.object({
-  videoUrl: z.string().describe('The URL of the generated video file.'),
+  videoDataUri: z.string().describe('The generated video as a data URI (video/mp4;base64,...).'),
 });
 export type GenerateVideoFromImageOutput = z.infer<typeof GenerateVideoFromImageOutputSchema>;
 
+async function downloadVideo(video: MediaPart): Promise<Buffer> {
+    if (!video.media?.url) {
+        throw new Error('No video URL found in the media part.');
+    }
 
-export async function generateVideoFromImage(
-  input: GenerateVideoFromImageInput
-): Promise<GenerateVideoFromImageOutput> {
-  return generateVideoFromImageFlow(input);
+    const fetch = (await import('node-fetch')).default;
+    // Add API key before fetching the video.
+    const videoDownloadResponse = await fetch(
+        `${video.media.url}&key=${process.env.GEMINI_API_KEY}`
+    );
+
+    if (!videoDownloadResponse || !videoDownloadResponse.ok) {
+        throw new Error(`Failed to fetch video. Status: ${videoDownloadResponse.status} ${videoDownloadResponse.statusText}`);
+    }
+
+    return videoDownloadResponse.buffer();
 }
+
 
 const generateVideoFromImageFlow = ai.defineFlow(
   {
@@ -76,12 +87,21 @@ const generateVideoFromImageFlow = ai.defineFlow(
         throw new Error('failed to generate video: ' + operation.error.message);
     }
     
-    const videoPart = operation.output?.message?.content.find((p: any) => !!p.media);
+    const videoPart = operation.output?.message?.content.find((p: any) => !!p.media) as MediaPart | undefined;
     if (!videoPart || !videoPart.media?.url) {
         throw new Error('Failed to find the generated video in the operation result');
     }
 
-    // Return the raw URL instead of downloading and converting
-    return { videoUrl: videoPart.media.url };
+    const videoBuffer = await downloadVideo(videoPart);
+    const videoBase64 = videoBuffer.toString('base64');
+
+    return { videoDataUri: `data:video/mp4;base64,${videoBase64}` };
   }
 );
+
+
+export async function generateVideoFromImage(
+  input: GenerateVideoFromImageInput
+): Promise<GenerateVideoFromImageOutput> {
+  return generateVideoFromImageFlow(input);
+}
