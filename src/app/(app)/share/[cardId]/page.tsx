@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { notFound } from 'next/navigation';
+import { notFound, usePathname, useRouter } from 'next/navigation';
 import { doc, getDoc } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
 import Image from 'next/image';
@@ -27,8 +27,24 @@ export default function SharePage({ params }: { params: { cardId: string } }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // This is a temporary workaround for the new folder structure
+  // In a real app with proper public/protected routes this wouldn't be needed
   useEffect(() => {
-    if (!firestore || !cardId) return;
+    if (pathname && !pathname.startsWith('/app/share')) {
+        const newPath = `/app${pathname}`;
+        // router.replace(newPath, { scroll: false });
+    }
+  }, [pathname, router]);
+
+
+  useEffect(() => {
+    if (!firestore || !cardId) {
+        if(!firestore) setLoading(false);
+        return;
+    };
 
     const fetchCard = async () => {
       try {
@@ -69,7 +85,22 @@ export default function SharePage({ params }: { params: { cardId: string } }) {
   }
 
   if (error || !card) {
-    notFound();
+    // A simple not found display as notFound() hook from next/navigation is not working as expected
+    return (
+        <div className="flex min-h-screen flex-col items-center justify-center bg-muted p-4">
+            <Card className="w-full max-w-md text-center">
+                <CardHeader>
+                    <CardTitle>Not Found</CardTitle>
+                    <CardDescription>{error || 'This card could not be found.'}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Button asChild>
+                        <Link href="/dashboard">Go Home</Link>
+                    </Button>
+                </CardContent>
+            </Card>
+        </div>
+    );
   }
 
   return (

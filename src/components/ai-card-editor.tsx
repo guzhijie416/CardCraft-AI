@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -20,7 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, Wand2, Lightbulb, Download, Share2, Printer, MessageSquareQuote, Settings, ChevronDown, XCircle, AspectRatio } from 'lucide-react';
+import { Loader2, Sparkles, Wand2, Lightbulb, Download, Share2, Printer, MessageSquareQuote, Settings, ChevronDown, XCircle, AspectRatio, Clapperboard, Film, Wind, Sunrise } from 'lucide-react';
 import type { MasterPrompt } from '@/lib/data';
 import { masterPrompts as allMasterPrompts } from '@/lib/data';
 import type { SummarizeAndImproveUserPromptOutput } from '@/ai/flows/summarize-and-improve-user-prompt';
@@ -29,6 +28,7 @@ import { Label } from './ui/label';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import type { GenerateRefinedPromptOutput } from '@/ai/flows/generate-refined-prompt';
+import { generateVideoAction } from '@/app/actions';
 
 
 const formSchema = z.object({
@@ -41,6 +41,7 @@ type EditorState = 'idle' | 'analyzing' | 'needs_improvement' | 'generating' | '
 type MessageState = 'idle' | 'generating' | 'done' | 'error';
 type RefinedPromptState = 'idle' | 'generating' | 'done' | 'error';
 type AspectRatioType = '9:16' | '16:9' | '1:1';
+type AnimationState = 'idle' | 'generating' | 'done' | 'error';
 
 
 const refinementOptions = {
@@ -94,6 +95,9 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   const [texture, setTexture] = useState<string | undefined>();
   const [aspectRatio, setAspectRatio] = useState<AspectRatioType>('9:16');
 
+  const [animationState, setAnimationState] = useState<AnimationState>('idle');
+  const [animationPrompt, setAnimationPrompt] = useState('');
+  const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | null>(null);
 
   const { toast } = useToast();
 
@@ -221,9 +225,11 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     setEditorState('idle');
     setMessageState('idle');
     setRefinedPromptState('idle');
+    setAnimationState('idle');
     setAnalysis(null);
     setRefinedPrompt(null);
     setFinalCardUri(null);
+    setGeneratedVideoUrl(null);
     setSuggestedMessages([]);
     setErrorMessage(null);
     setPersonalMessage('');
@@ -276,7 +282,6 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
       });
     }
   };
-  
 
   const isLoading = editorState === 'analyzing' || editorState === 'generating';
   const isRefining = refinedPromptState === 'generating';
@@ -290,33 +295,65 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="w-full rounded-lg overflow-hidden border relative bg-muted" style={{ aspectRatio: aspectRatio.replace(':', '/') }}>
-            <Image src={finalCardUri} alt="Generated AI card" fill className="object-contain" />
+            {animationState === 'done' && generatedVideoUrl ? (
+                <video src={generatedVideoUrl} className="w-full h-full object-contain" autoPlay loop muted playsInline />
+            ) : (
+                <Image src={finalCardUri} alt="Generated AI card" fill className="object-contain" />
+            )}
 
-            {personalMessage && (
+            {personalMessage && animationState !== 'done' && (
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 flex items-end justify-center p-8">
                     <p className="text-white text-center text-xl font-body">{personalMessage}</p>
                 </div>
             )}
+            
+            {animationState === 'generating' && (
+                <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white">
+                    <Loader2 className="h-12 w-12 animate-spin" />
+                    <p className="mt-4">Animating your card...</p>
+                    <p className="text-sm text-white/80">(This can take up to a minute)</p>
+                </div>
+            )}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <a href={finalCardUri} download="cardcraft-creation.png">
-              <Button className="w-full"><Download className="mr-2 h-4 w-4" /> Download</Button>
+            <a href={animationState === 'done' && generatedVideoUrl ? generatedVideoUrl : finalCardUri} download={animationState === 'done' ? "cardcraft-animation.mp4" : "cardcraft-creation.png"}>
+              <Button className="w-full">
+                <Download className="mr-2 h-4 w-4" /> 
+                {animationState === 'done' ? 'Download Video' : 'Download Image'}
+                </Button>
             </a>
             <Button variant="secondary" onClick={handleShare}><Share2 className="mr-2 h-4 w-4" /> Share Card</Button>
             <Button variant="secondary"><Printer className="mr-2 h-4 w-4" /> Print</Button>
           </div>
         </CardContent>
         <CardFooter className="flex-col items-start gap-4 pt-4 border-t">
-            <div className="w-full space-y-2">
-                <Label htmlFor="personal-message">Add a Personal Message (optional)</Label>
-                <Textarea
-                  id="personal-message"
-                  placeholder="Write your heartfelt message here..."
-                  rows={3}
-                  value={personalMessage}
-                  onChange={(e) => setPersonalMessage(e.target.value)}
-                />
-            </div>
+          
+           {/* Animation Section */}
+          <Collapsible className="w-full">
+              <CollapsibleTrigger className="flex justify-between items-center w-full p-3 bg-muted/50 rounded-md">
+                  <div className="flex items-center gap-2">
+                    <Clapperboard className="h-5 w-5 text-primary"/>
+                    <span className="font-semibold">Animate It (Beta)</span>
+                  </div>
+                  <ChevronDown className="h-4 w-4" />
+              </CollapsibleTrigger>
+              <CollapsibleContent className="p-4 space-y-4">
+                  <p className="text-sm text-muted-foreground">Add a touch of magic to your creation. Select an animation style and our AI will generate a short video.</p>
+                  
+                  {/* Animation options */}
+              </CollapsibleContent>
+          </Collapsible>
+          
+          <div className="w-full space-y-2">
+              <Label htmlFor="personal-message">Add a Personal Message (optional)</Label>
+              <Textarea
+                id="personal-message"
+                placeholder="Write your heartfelt message here..."
+                rows={3}
+                value={personalMessage}
+                onChange={(e) => setPersonalMessage(e.target.value)}
+              />
+          </div>
 
           {messageState !== 'done' && (
              <Button onClick={handleGenerateMessages} disabled={messageState === 'generating'} className="w-full" variant="outline">

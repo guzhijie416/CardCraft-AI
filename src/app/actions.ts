@@ -1,4 +1,3 @@
-
 'use server';
 
 import { generateAiCardFromPrompt } from '@/ai/flows/generate-ai-card-from-prompt';
@@ -19,6 +18,10 @@ import type { GenerateRefinedPromptInput } from '@/ai/flows/generate-refined-pro
 import { generatePromptFromImage } from '@/ai/flows/generate-prompt-from-image';
 import type { GeneratePromptFromImageInput } from '@/ai/flows/generate-prompt-from-image';
 
+import { generateVideoFromImage } from '@/ai/flows/generate-video-from-image';
+import type { GenerateVideoFromImageInput } from '@/ai/flows/generate-video-from-image';
+
+
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 
@@ -28,10 +31,7 @@ const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
 
 const adminApp =
   getApps().find((app) => app.name === 'admin') ||
-  initializeApp(
-    serviceAccount ? { credential: cert(serviceAccount) } : undefined,
-    'admin'
-  );
+  (serviceAccount ? initializeApp({ credential: cert(serviceAccount) }, 'admin') : initializeApp(undefined, 'admin'));
 
 const adminDb = getFirestore(adminApp);
 
@@ -112,4 +112,14 @@ export async function saveAndShareCardAction(cardData: {
     console.error('Error saving card to Firestore:', error);
     throw new Error('Could not save card for sharing.');
   }
+}
+
+export async function generateVideoAction(input: GenerateVideoFromImageInput) {
+    try {
+        return await generateVideoFromImage(input);
+    } catch (error) {
+        console.error('Error in generateVideoAction:', error);
+        const message = error instanceof Error ? error.message : 'Failed to generate the video. Please try again.';
+        throw new Error(message);
+    }
 }
