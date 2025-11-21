@@ -226,16 +226,34 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     setAnimationState('animating');
     setErrorMessage(null);
     try {
+      // Step 1: Call the server action to get the video URL
       const result = await generateVideoAction({
         baseImageUri: finalCardUri,
         animationPrompt,
       });
-      setAnimatedVideoUri(result.videoDataUri);
-      setAnimationState('done');
-      toast({
-        title: 'Animation Complete!',
-        description: 'Your card has been brought to life.',
-      });
+      const { videoUrl } = result;
+
+      // Step 2: Fetch the video on the client and convert to data URI
+      const response = await fetch(videoUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch video: ${response.statusText}`);
+      }
+      const blob = await response.blob();
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = () => {
+        const base64data = reader.result;
+        setAnimatedVideoUri(base64data as string);
+        setAnimationState('done');
+        toast({
+          title: 'Animation Complete!',
+          description: 'Your card has been brought to life.',
+        });
+      };
+      reader.onerror = () => {
+        throw new Error('Failed to convert video to data URI.');
+      }
+
     } catch (error) {
       handleError(error, 'Could not animate your card.');
       setAnimationState('error');

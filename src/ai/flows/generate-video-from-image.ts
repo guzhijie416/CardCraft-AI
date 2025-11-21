@@ -24,32 +24,11 @@ const GenerateVideoFromImageInputSchema = z.object({
 });
 export type GenerateVideoFromImageInput = z.infer<typeof GenerateVideoFromImageInputSchema>;
 
+// The output is now the raw URL from the generation service
 const GenerateVideoFromImageOutputSchema = z.object({
-  videoDataUri: z.string().describe('The generated video as a data URI (e.g., video/mp4;base64,...).'),
+  videoUrl: z.string().describe('The URL of the generated video file.'),
 });
 export type GenerateVideoFromImageOutput = z.infer<typeof GenerateVideoFromImageOutputSchema>;
-
-
-async function downloadVideo(video: MediaPart): Promise<string> {
-    if (!process.env.GEMINI_API_KEY) {
-        throw new Error('GEMINI_API_KEY environment variable is not set.');
-    }
-    const fetch = (await import('node-fetch')).default;
-    // Add API key before fetching the video.
-    const videoDownloadResponse = await fetch(
-        `${video.media!.url}&key=${process.env.GEMINI_API_KEY}`
-    );
-    if (
-        !videoDownloadResponse ||
-        videoDownloadResponse.status !== 200 ||
-        !videoDownloadResponse.body
-    ) {
-        throw new Error('Failed to fetch video');
-    }
-    
-    const buffer = await videoDownloadResponse.buffer();
-    return `data:video/mp4;base64,${buffer.toString('base64')}`;
-}
 
 
 const generateVideoFromImageFlow = ai.defineFlow(
@@ -92,13 +71,12 @@ const generateVideoFromImageFlow = ai.defineFlow(
     }
     
     const videoPart = operation.output?.message?.content.find((p) => !!p.media);
-    if (!videoPart) {
+    if (!videoPart || !videoPart.media?.url) {
         throw new Error('Failed to find the generated video in the operation result');
     }
 
-    const videoDataUri = await downloadVideo(videoPart);
-
-    return { videoDataUri };
+    // Return the raw URL instead of downloading and converting
+    return { videoUrl: videoPart.media.url };
   }
 );
 
