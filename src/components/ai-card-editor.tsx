@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -130,6 +131,16 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   const [lighting, setLighting] = useState<string | undefined>();
   const [texture, setTexture] = useState<string | undefined>();
   const [aspectRatio, setAspectRatio] = useState<AspectRatioType>('9:16');
+
+  // State for collapsible sections
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    aspectRatio: true,
+    artisticMedium: false,
+    colorPalette: false,
+    composition: false,
+    lighting: false,
+    texture: false,
+  });
 
   const [animationState, setAnimationState] = useState<AnimationState>('idle');
   const [animationPrompt, setAnimationPrompt] = useState('');
@@ -273,7 +284,6 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   }
 
   const handleShare = async () => {
-    // This functionality is temporarily disabled.
     toast({
         title: "Coming Soon!",
         description: "The ability to share your card is coming soon."
@@ -395,12 +405,15 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
 
   const RefinementSection = ({ title, options, value, onValueChange, categoryKey }: { title: string, options: any[], value: string | undefined, onValueChange: (value: string | undefined) => void, categoryKey: string }) => {
     const isComposition = categoryKey === 'composition';
+    const isOpen = openSections[categoryKey];
+    const onOpenChange = (open: boolean) => setOpenSections(prev => ({ ...prev, [categoryKey]: open }));
+
 
     return (
-    <Collapsible>
+    <Collapsible open={isOpen} onOpenChange={onOpenChange}>
         <CollapsibleTrigger className="flex justify-between items-center w-full p-2 bg-muted/50 rounded-md">
             <span className="font-semibold">{title}</span>
-            <ChevronDown className="h-4 w-4" />
+            <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="p-2">
             <RadioGroup value={value} onValueChange={onValueChange}>
@@ -443,11 +456,15 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     )
   };
   
-  const AspectRatioSection = () => (
-    <Collapsible defaultOpen>
+  const AspectRatioSection = () => {
+    const isOpen = openSections.aspectRatio;
+    const onOpenChange = (open: boolean) => setOpenSections(prev => ({...prev, aspectRatio: open}));
+
+    return (
+    <Collapsible open={isOpen} onOpenChange={onOpenChange}>
         <CollapsibleTrigger className="flex justify-between items-center w-full p-2 bg-muted/50 rounded-md">
             <span className="font-semibold">Aspect Ratio</span>
-            <ChevronDown className="h-4 w-4" />
+            <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="p-2">
             <RadioGroup value={aspectRatio} onValueChange={(val) => setAspectRatio(val as AspectRatioType)}>
@@ -466,7 +483,8 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
             </RadioGroup>
         </CollapsibleContent>
     </Collapsible>
-  );
+    )
+  };
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
