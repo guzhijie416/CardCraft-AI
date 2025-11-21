@@ -71,6 +71,13 @@ type ColorPaletteState = {
   harmonies?: string;
 };
 
+type TextureState = {
+  paper?: string;
+  finishes?: string;
+  distressed?: string;
+  fabric?: string;
+};
+
 
 const refinementOptions = {
   artisticMedium: [
@@ -267,9 +274,49 @@ const refinementOptions = {
     },
   ],
   texture: [
-    { id: 'te-1', value: 'textured paper', label: 'Textured Paper' },
-    { id: 'te-2', value: 'embossed details', label: 'Embossed' },
-    { id: 'te-3', value: 'gold foil accents', label: 'Gold Foil' },
+    {
+      key: 'paper',
+      category: 'Paper & Canvas Surfaces',
+      description: 'This defines the base material of the card itself, giving it a fundamental feel.',
+      options: [
+        { id: 'te-1', label: 'Fine Art Paper', description: 'The classic, high-quality feel of a professional art print. Features a subtle, non-uniform grain perfect for watercolor and sketches.', value: 'on heavy cotton paper, watercolor paper texture, cold press paper, visible paper grain, matte finish' },
+        { id: 'te-2', label: 'Recycled Kraft Paper', description: 'A rustic, eco-friendly look with a visible fibrous texture. Perfect for a natural, handmade, and earthy aesthetic.', value: 'recycled kraft paper, visible fibers, fibrous texture, brown paper, natural, eco-friendly look' },
+        { id: 'te-3', label: 'Aged Parchment', description: 'The historical, weathered look of an ancient scroll or document. Ideal for fantasy, vintage, or historical themes.', value: 'aged parchment paper, ancient scroll, weathered texture, yellowed edges, historical document, vellum' },
+        { id: 'te-4', label: 'Artist\'s Canvas', description: 'The distinct woven texture of a painter\'s canvas. This is the perfect base for creating a believable oil or acrylic painting effect.', value: 'on stretched canvas, visible canvas weave, gesso texture, artist\'s canvas, fabric texture' },
+      ],
+    },
+    {
+      key: 'finishes',
+      category: 'Finishes & Accents',
+      description: 'These are the special, decorative layers that add a touch of luxury and dimension.',
+      options: [
+        { id: 'te-5', label: 'Stamped Gold Foil', description: 'A classic, luxurious effect that adds a metallic shine. This creates the look of real gold leaf pressed onto the paper.', value: 'gold foil accents, stamped gold leaf, metallic shine, reflective gold, gilded, luxurious' },
+        { id: 'te-6', label: 'Raised Embossing', description: 'A subtle, elegant 3D effect that raises parts of the design from the paper surface. Adds a tactile, high-end feel without using ink.', value: 'embossed design, raised 3D effect, tactile, blind emboss, sculptural paper' },
+        { id: 'te-7', label: 'Letterpress Impression', description: 'A sophisticated and classic printing effect where the design is pressed into the paper, creating a deep, tactile impression.', value: 'letterpress effect, deep impression in paper, inked debossing, artisan quality, tactile' },
+        { id: 'te-8', label: 'Holographic & Iridescent Foil', description: 'A modern, magical foil that shimmers with a rainbow of colors as the light changes. Perfect for fun, futuristic, or fantasy themes.', value: 'holographic foil, iridescent finish, rainbow sheen, opalescent, shimmering, pearlescent' },
+        { id: 'te-9', label: 'Sparkling Glitter', description: 'Adds a festive, sparkling, and fun texture. Use this for celebratory cards that need an extra pop of shimmer and excitement.', value: 'sparkling glitter accents, shimmer, glistening particles, festive sparkle, textured glitter' },
+      ],
+    },
+    {
+      key: 'distressed',
+      category: 'Artistic & Distressed Textures',
+      description: 'These textures are about adding a layer of artistic style or age to the entire image.',
+      options: [
+        { id: 'te-10', label: 'Cracked Paint (Craquelure)', description: 'The fine network of cracks that appear on an old oil painting. Instantly gives your image an antique, museum-quality, and weathered feel.', value: 'craquelure, cracked paint texture, aged oil painting, distressed finish, vintage patina, weathered' },
+        { id: 'te-11', label: 'Heavy Impasto', description: 'This mimics the thick, three-dimensional application of paint, showing every stroke from the palette knife or brush. Perfect for expressive oil paintings.', value: 'heavy impasto, thick paint, visible palette knife strokes, textured brushwork, 3D paint' },
+        { id: 'te-12', label: 'Grainy Retro Print', description: 'The characteristic grainy texture of vintage printing methods like Risograph or screenprinting. Adds a cool, retro, and handmade vibe.', value: 'grainy texture, risograph texture, halftone dots, screenprint look, retro print, vintage' },
+      ],
+    },
+    {
+      key: 'fabric',
+      category: 'Fabric & Textile Textures',
+      description: 'For creating a unique, soft, and unconventional card that feels like it\'s made of fabric.',
+      options: [
+        { id: 'te-13', label: 'Linen Weave', description: 'The clean, cross-hatched pattern of linen fabric. Adds a touch of elegance and sophistication to the background.', value: 'on linen fabric, woven texture, textile background, canvas weave, elegant fabric' },
+        { id: 'te-14', label: 'Rustic Burlap', description: 'The coarse, open weave of burlap or hessian fabric. Perfect for a rustic, farmhouse, or natural theme.', value: 'burlap texture, hessian weave, coarse jute fabric, rustic, natural fibers, tactile' },
+        { id: 'te-15', label: 'Soft Felt', description: 'The soft, matted fiber look of pressed felt. Evokes a cozy, handcrafted, and often child-friendly feeling.', value: 'pressed felt texture, soft, matted fibers, handcrafted look, cozy, textile art' },
+      ],
+    },
   ],
 };
 
@@ -292,7 +339,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   const [colorPalette, setColorPalette] = useState<ColorPaletteState>({});
   const [composition, setComposition] = useState<CompositionState>({});
   const [lighting, setLighting] = useState<LightingState>({});
-  const [texture, setTexture] = useState<string | undefined>();
+  const [texture, setTexture] = useState<TextureState>({});
   const [aspectRatio, setAspectRatio] = useState<AspectRatioType>('9:16');
 
   // State for collapsible sections
@@ -363,6 +410,8 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
         const fullCompositionPrompt = Object.values(composition).filter(Boolean).join(', ');
         const fullLightingPrompt = Object.values(lighting).filter(Boolean).join(', ');
         const fullColorPalettePrompt = Object.values(colorPalette).filter(Boolean).join(', ');
+        const fullTexturePrompt = Object.values(texture).filter(Boolean).join(', ');
+
 
         const result = await generateRefinedPromptAction({
             basePrompt: form.getValues('personalizedPrompt'),
@@ -370,7 +419,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
             colorPalette: fullColorPalettePrompt,
             composition: fullCompositionPrompt,
             lighting: fullLightingPrompt,
-            texture
+            texture: fullTexturePrompt
         });
         setRefinedPrompt(result);
         setRefinedPromptState('done');
@@ -459,7 +508,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     Object.values(artisticMedium).some(Boolean) || 
     Object.values(colorPalette).some(Boolean) || 
     Object.values(lighting).some(Boolean) || 
-    !!texture || 
+    Object.values(texture).some(Boolean) ||
     Object.values(composition).some(Boolean);
 
   const canGenerateRefinedPrompt = isLoading || isRefining || (!form.getValues('personalizedPrompt') && !isAnyRefinementSelected);
@@ -544,7 +593,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   }
 
   const RefinementSection = ({ title, options, value, onValueChange, categoryKey }: { title: string, options: any[], value: any, onValueChange: (value: any) => void, categoryKey: string }) => {
-    const isMultiSelect = categoryKey === 'composition' || categoryKey === 'lighting' || categoryKey === 'artisticMedium' || categoryKey === 'colorPalette';
+    const isMultiSelect = categoryKey === 'composition' || categoryKey === 'lighting' || categoryKey === 'artisticMedium' || categoryKey === 'colorPalette' || categoryKey === 'texture';
     const isOpen = openSections[categoryKey];
     const onOpenChange = (open: boolean) => setOpenSections(prev => ({ ...prev, [categoryKey]: open }));
 
@@ -706,7 +755,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                     <RefinementSection title="Color Palette" options={refinementOptions.colorPalette} value={colorPalette} onValueChange={setColorPalette} categoryKey="colorPalette" />
                     <RefinementSection title="Composition" options={refinementOptions.composition} value={composition} onValueChange={setComposition} categoryKey="composition" />
                     <RefinementSection title="Lighting" options={refinementOptions.lighting} value={lighting} onValueChange={setLighting} categoryKey="lighting" />
-                    <RefinementSection title="Texture" options={refinementOptions.texture} value={texture} onValueChange={setTexture} categoryKey="texture" />
+                    <RefinementSection title="Texture & Finish" options={refinementOptions.texture} value={texture} onValueChange={setTexture} categoryKey="texture" />
                 </CardContent>
                 <CardFooter>
                      <Button type="button" onClick={onGenerateRefinedPrompt} className="w-full" disabled={canGenerateRefinedPrompt}>
