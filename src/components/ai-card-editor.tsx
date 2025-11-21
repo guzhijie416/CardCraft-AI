@@ -27,6 +27,7 @@ import { Label } from './ui/label';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import type { GenerateRefinedPromptOutput } from '@/ai/flows/generate-refined-prompt';
+import { Badge } from './ui/badge';
 
 
 const formSchema = z.object({
@@ -55,9 +56,46 @@ const refinementOptions = {
     { id: 'cp-3', value: 'a warm and earthy palette', label: 'Warm & Earthy' },
   ],
   composition: [
-    { id: 'co-1', value: 'close-up portrait', label: 'Close-up Portrait' },
-    { id: 'co-2', value: 'cinematic wide shot', label: 'Cinematic Wide Shot' },
-    { id: 'co-3', value: 'symmetrical composition', label: 'Symmetrical' },
+    {
+      category: 'Framing & Shot Type',
+      description: 'Controls how close or far the "camera" is and its general perspective.',
+      options: [
+        { id: 'co-1', label: 'Extreme Close-Up', description: 'Focuses intensely on a single, beautiful detail of your subject, like a flower petal or an eye. Perfect for showing texture and intricate detail.', value: 'extreme close-up, macro shot, macro photography, detailed, intricate textures, super-resolution' },
+        { id: 'co-2', label: 'Centered Portrait', description: 'Places your main subject front and center. A classic, bold, and direct composition that commands attention. Ideal for single subjects.', value: 'centered composition, symmetrical portrait, subject in the middle, headshot, direct gaze, centered-shot' },
+        { id: 'co-3', label: 'Wide Landscape', description: 'Shows the big picture. Great for epic scenery, establishing a sense of place, and making your subject part of a larger environment.', value: 'wide shot, wide-angle lens, landscape view, establishing shot, panoramic, cinematic wide angle' },
+        { id: 'co-4', label: 'Top-Down View / Flat Lay', description: 'Looks straight down at a beautifully arranged scene on a surface. The absolute best choice for card designs, food, and organized objects.', value: 'flat lay composition, top-down view, bird\'s-eye view, neatly arranged, knolling photography' },
+        { id: 'co-5', label: 'Low Angle Shot', description: 'Looks up at your subject from below. This makes the subject feel powerful, heroic, and larger than life.', value: 'low angle shot, worm\'s-eye view, heroic angle, dramatic, powerful, looming' },
+      ],
+    },
+    {
+      category: 'Artistic Balance & Placement',
+      description: 'Deals with classic art and design principles for arranging elements.',
+      options: [
+        { id: 'co-6', label: 'Rule of Thirds', description: 'A timeless classic. Places your subject slightly off-center for a natural, balanced, and visually pleasing look.', value: 'composition following the rule of thirds, off-center subject, asymmetrical balance, visually pleasing' },
+        { id: 'co-7', label: 'Perfect Symmetry', description: 'Creates a formal, stable, and perfectly balanced image by mirroring the left and right sides. Great for architecture, patterns, and reflections.', value: 'perfectly symmetrical composition, mirrored, balanced, formal, centered, reflection' },
+        { id: 'co-8', label: 'Minimalist & Clean', description: 'Less is more. Features a single subject with lots of clean, empty space around it for a modern, elegant, and sophisticated feel.', value: 'minimalist composition, lots of negative space, clean, simple, uncluttered, spacious' },
+        { id: 'co-9', label: 'Frame Within a Frame', description: 'Uses elements in the scene (like a window, an archway, or tree branches) to naturally frame your main subject, adding depth and focus.', value: 'frame within a frame, looking through a window, natural framing, adds depth, layered composition' },
+      ],
+    },
+    {
+      category: 'Pattern & Density',
+      description: 'Perfect for card backgrounds and decorative elements.',
+      options: [
+        { id: 'co-10', label: 'Dense Pattern', description: 'Fills the entire space with a rich, repeating pattern of your subject. Lush, detailed, and visually engaging, like wallpaper or wrapping paper.', value: 'dense pattern, repeating pattern, fills the frame, wallpaper pattern, intricate, seamless pattern' },
+        { id: 'co-11', label: 'Scattered & Delicate', description: 'Sprinkles your subjects lightly and randomly across the canvas. This creates a playful, delicate, and airy feel, like falling confetti or petals.', value: 'delicately scattered, sparse arrangement, floating, random pattern, airy' },
+        { id: 'co-12', label: 'Decorative Border', description: 'Arranges elements like flowers, vines, or stars to create a beautiful border around the edges, leaving the center open for your message.', value: 'decorative border, floral frame, framing the composition, wreath design, garland, edge details' },
+      ],
+    },
+    {
+        category: 'Dynamic & Cinematic (Premium)',
+        description: 'Advanced options that create a sense of movement and story.',
+        isPremium: true,
+        options: [
+            { id: 'co-13', label: 'Leading Lines', description: 'Uses lines within the image (a road, a river, a fence) to create a path that guides the viewer\'s eye directly to your main subject.', value: 'leading lines, strong diagonal lines, guides the eye, vanishing point, dynamic composition, one-point perspective' },
+            { id: 'co-14', label: 'Dynamic Angle (Dutch Angle)', description: 'Tilts the "camera" for a dramatic, unsettling, or energetic feeling. Perfect for action, excitement, and high-impact scenes.', value: 'dutch angle, tilted frame, canted angle, dynamic, off-kilter, action shot' },
+            { id: 'co-15', label: 'Golden Spiral', description: 'An advanced composition based on a natural spiral (the golden ratio). Creates a perfectly balanced and organic flow that is naturally beautiful to the human eye.', value: 'golden ratio, Fibonacci spiral, perfect composition, organic flow, dynamic symmetry, divine proportion' },
+        ]
+    }
   ],
   lighting: [
     { id: 'li-1', value: 'soft diffused lighting', label: 'Soft & Diffused' },
@@ -355,7 +393,10 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     );
   }
 
-  const RefinementSection = ({ title, options, value, onValueChange, categoryKey }: { title: string, options: {id: string, value: string, label: string}[], value: string | undefined, onValueChange: (value: string) => void, categoryKey: keyof typeof refinementOptions }) => (
+  const RefinementSection = ({ title, options, value, onValueChange, categoryKey }: { title: string, options: any[], value: string | undefined, onValueChange: (value: string | undefined) => void, categoryKey: string }) => {
+    const isComposition = categoryKey === 'composition';
+
+    return (
     <Collapsible>
         <CollapsibleTrigger className="flex justify-between items-center w-full p-2 bg-muted/50 rounded-md">
             <span className="font-semibold">{title}</span>
@@ -363,17 +404,44 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
         </CollapsibleTrigger>
         <CollapsibleContent className="p-2">
             <RadioGroup value={value} onValueChange={onValueChange}>
-                {options.map(option => (
+              {isComposition ? (
+                options.map(category => (
+                  <div key={category.category} className="mt-4 first:mt-0">
+                    <div className='flex items-center gap-2'>
+                        <h4 className="font-semibold text-sm mb-1">{category.category}</h4>
+                        {category.isPremium && <Badge variant="outline" className="text-primary border-primary">Premium</Badge>}
+                    </div>
+                    
+                    <p className="text-xs text-muted-foreground mb-2">{category.description}</p>
+                    <div className="grid gap-2">
+                      {category.options.map((option: any) => (
+                        <div key={option.id} className="p-2 rounded-md border border-transparent has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/5">
+                            <div className="flex items-start space-x-2">
+                                <RadioGroupItem value={option.value} id={option.id} className="mt-1" />
+                                <div className="grid gap-1.5">
+                                <Label htmlFor={option.id}>{option.label}</Label>
+                                <p className="text-xs text-muted-foreground">{option.description}</p>
+                                </div>
+                            </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                options.map(option => (
                     <div key={option.id} className="flex items-center space-x-2">
                         <RadioGroupItem value={option.value} id={option.id} />
                         <Label htmlFor={option.id}>{option.label}</Label>
                     </div>
-                ))}
+                ))
+              )}
             </RadioGroup>
-            {value && <Button variant="ghost" size="sm" className="mt-2 text-destructive" onClick={() => onValueChange(undefined as any)}><XCircle className="mr-1 h-4 w-4" />Clear</Button>}
+            {value && <Button variant="ghost" size="sm" className="mt-2 text-destructive" onClick={() => onValueChange(undefined)}><XCircle className="mr-1 h-4 w-4" />Clear</Button>}
         </CollapsibleContent>
     </Collapsible>
-  );
+    )
+  };
   
   const AspectRatioSection = () => (
     <Collapsible defaultOpen>
