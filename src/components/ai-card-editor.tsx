@@ -11,7 +11,6 @@ import {
   generateCardAction,
   generateMessagesAction,
   generateRefinedPromptAction,
-  saveAndShareCardAction,
 } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -28,7 +27,6 @@ import { Label } from './ui/label';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import type { GenerateRefinedPromptOutput } from '@/ai/flows/generate-refined-prompt';
-import { generateVideoAction } from '@/app/actions';
 
 
 const formSchema = z.object({
@@ -237,50 +235,11 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   }
 
   const handleShare = async () => {
-    if (!finalCardUri) return;
-  
-    toast({ title: "Preparing your card for sharing..." });
-  
-    try {
-      // 1. Save card to Firestore and get the ID
-      const { cardId } = await saveAndShareCardAction({
-        prompt: form.getValues('personalizedPrompt'),
-        masterPrompt: modifiedMasterPrompt,
-        cardDataUrl: finalCardUri,
-      });
-  
-      const magicLink = `${window.location.origin}/share/${cardId}`;
-  
-      // This is a simplified check. A more robust solution would check `navigator.canShare`.
-      if (navigator.share) {
-        // Convert data URI to blob to share file
-        const response = await fetch(finalCardUri);
-        const blob = await response.blob();
-        const file = new File([blob], 'cardcraft-creation.png', { type: 'image/png' });
-  
-        await navigator.share({
-          title: 'CardCraft AI Creation',
-          text: `I made this card for you with CardCraft AI! Check it out: ${magicLink}`,
-          files: [file],
-        });
-        toast({ title: "Shared successfully!" });
-      } else {
-        // Fallback for desktop or unsupported browsers
-        await navigator.clipboard.writeText(magicLink);
-        toast({
-          title: "Magic Link Copied!",
-          description: "Sharing isn't supported on this browser. The link has been copied to your clipboard.",
-        });
-      }
-    } catch (error) {
-      console.error("Sharing failed:", error);
-      const message = error instanceof Error ? error.message : "Could not prepare the card for sharing.";
-      toast({
-        variant: "destructive",
-        title: "Sharing Failed",
-        description: message,
-      });
-    }
+    // This functionality is temporarily disabled.
+    toast({
+        title: "Coming Soon!",
+        description: "The ability to share your card is coming soon."
+    });
   };
 
   const isLoading = editorState === 'analyzing' || editorState === 'generating';
@@ -338,9 +297,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                   <ChevronDown className="h-4 w-4" />
               </CollapsibleTrigger>
               <CollapsibleContent className="p-4 space-y-4">
-                  <p className="text-sm text-muted-foreground">Add a touch of magic to your creation. Select an animation style and our AI will generate a short video.</p>
-                  
-                  {/* Animation options */}
+                  <p className="text-sm text-muted-foreground">This feature is temporarily disabled while we make improvements.</p>
               </CollapsibleContent>
           </Collapsible>
           

@@ -76,12 +76,6 @@
         "$ref": "#/entities/Card"
       },
       "description": "Stores the cards created by a specific user."
-    },
-    "/users/shared/cards/{cardId}": {
-      "schema": {
-        "$ref": "#/entities/Card"
-      },
-      "description": "Stores cards that have been shared publicly."
     }
   }
 }

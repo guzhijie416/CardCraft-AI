@@ -18,23 +18,6 @@ import type { GenerateRefinedPromptInput } from '@/ai/flows/generate-refined-pro
 import { generatePromptFromImage } from '@/ai/flows/generate-prompt-from-image';
 import type { GeneratePromptFromImageInput } from '@/ai/flows/generate-prompt-from-image';
 
-import { generateVideoFromImage } from '@/ai/flows/generate-video-from-image';
-import type { GenerateVideoFromImageInput } from '@/ai/flows/generate-video-from-image';
-
-
-import { initializeApp, getApps, cert } from 'firebase-admin/app';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-
-const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
-  ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
-  : undefined;
-
-const adminApp =
-  getApps().find((app) => app.name === 'admin') ||
-  (serviceAccount ? initializeApp({ credential: cert(serviceAccount) }, 'admin') : initializeApp(undefined, 'admin'));
-
-const adminDb = getFirestore(adminApp);
-
 export async function analyzePromptAction(input: SummarizeAndImproveUserPromptInput) {
   try {
     return await summarizeAndImproveUserPrompt(input);
@@ -90,36 +73,5 @@ export async function generatePromptFromImageAction(input: GeneratePromptFromIma
     } catch (error) {
         console.error('Error in generatePromptFromImageAction:', error);
         throw new Error('Failed to generate a prompt from the image.');
-    }
-}
-
-export async function saveAndShareCardAction(cardData: {
-  prompt: string;
-  masterPrompt: string;
-  cardDataUrl: string;
-}) {
-  try {
-    const docRef = await adminDb
-      .collection('users')
-      .doc('shared')
-      .collection('cards')
-      .add({
-        ...cardData,
-        createdAt: FieldValue.serverTimestamp(),
-      });
-    return { cardId: docRef.id };
-  } catch (error) {
-    console.error('Error saving card to Firestore:', error);
-    throw new Error('Could not save card for sharing.');
-  }
-}
-
-export async function generateVideoAction(input: GenerateVideoFromImageInput) {
-    try {
-        return await generateVideoFromImage(input);
-    } catch (error) {
-        console.error('Error in generateVideoAction:', error);
-        const message = error instanceof Error ? error.message : 'Failed to generate the video. Please try again.';
-        throw new Error(message);
     }
 }
