@@ -100,9 +100,8 @@ const refinementOptions = {
     },
     {
         key: 'cinematic',
-        category: 'Dynamic & Cinematic (Premium)',
+        category: 'Dynamic & Cinematic',
         description: 'Advanced options that create a sense of movement and story.',
-        isPremium: true,
         options: [
             { id: 'co-13', label: 'Leading Lines', description: 'Uses lines within the image (a road, a river, a fence) to create a path that guides the viewer\'s eye directly to your main subject.', value: 'leading lines, strong diagonal lines, guides the eye, vanishing point, dynamic composition, one-point perspective' },
             { id: 'co-14', label: 'Dynamic Angle (Dutch Angle)', description: 'Tilts the "camera" for a dramatic, unsettling, or energetic feeling. Perfect for action, excitement, and high-impact scenes.', value: 'dutch angle, tilted frame, canted angle, dynamic, off-kilter, action shot' },
@@ -307,6 +306,9 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   const isLoading = editorState === 'analyzing' || editorState === 'generating';
   const isRefining = refinedPromptState === 'generating';
 
+  const isAnyRefinementSelected = !!artisticMedium || !!colorPalette || !!lighting || !!texture || Object.values(composition).some(Boolean);
+  const canGenerateRefinedPrompt = isRefining || !form.getValues('personalizedPrompt') && !isAnyRefinementSelected;
+
   if (editorState === 'done' && finalCardUri) {
     return (
       <Card className="w-full max-w-2xl mx-auto">
@@ -435,7 +437,6 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                   <div key={category.category} className="mt-4 first:mt-0">
                     <div className='flex items-center gap-2'>
                         <h4 className="font-semibold text-sm mb-1">{category.category}</h4>
-                        {category.isPremium && <Badge variant="outline" className="text-primary border-primary">Premium</Badge>}
                     </div>
                     
                     <p className="text-xs text-muted-foreground mb-2">{category.description}</p>
@@ -584,7 +585,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                     <RefinementSection title="Texture" options={refinementOptions.texture} value={texture} onValueChange={setTexture} categoryKey="texture" />
                 </CardContent>
                 <CardFooter>
-                     <Button type="button" onClick={onGenerateRefinedPrompt} className="w-full" disabled={isRefining || !form.getValues('personalizedPrompt')}>
+                     <Button type="button" onClick={onGenerateRefinedPrompt} className="w-full" disabled={canGenerateRefinedPrompt}>
                         {isRefining ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                         Generate Refined Prompt
                     </Button>
