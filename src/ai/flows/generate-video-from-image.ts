@@ -31,6 +31,12 @@ const GenerateVideoFromImageOutputSchema = z.object({
 export type GenerateVideoFromImageOutput = z.infer<typeof GenerateVideoFromImageOutputSchema>;
 
 
+export async function generateVideoFromImage(
+  input: GenerateVideoFromImageInput
+): Promise<GenerateVideoFromImageOutput> {
+  return generateVideoFromImageFlow(input);
+}
+
 const generateVideoFromImageFlow = ai.defineFlow(
   {
     name: 'generateVideoFromImageFlow',
@@ -70,7 +76,7 @@ const generateVideoFromImageFlow = ai.defineFlow(
         throw new Error('failed to generate video: ' + operation.error.message);
     }
     
-    const videoPart = operation.output?.message?.content.find((p) => !!p.media);
+    const videoPart = operation.output?.message?.content.find((p: any) => !!p.media);
     if (!videoPart || !videoPart.media?.url) {
         throw new Error('Failed to find the generated video in the operation result');
     }
@@ -79,10 +85,3 @@ const generateVideoFromImageFlow = ai.defineFlow(
     return { videoUrl: videoPart.media.url };
   }
 );
-
-
-export async function generateVideoFromImage(
-  input: GenerateVideoFromImageInput
-): Promise<GenerateVideoFromImageOutput> {
-  return generateVideoFromImageFlow(input);
-}
