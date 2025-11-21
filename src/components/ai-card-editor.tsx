@@ -455,7 +455,13 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   const isLoading = editorState === 'analyzing' || editorState === 'generating';
   const isRefining = refinedPromptState === 'generating';
 
-  const isAnyRefinementSelected = Object.values(artisticMedium).some(Boolean) || Object.values(colorPalette).some(Boolean) || Object.values(lighting).some(Boolean) || !!texture || Object.values(composition).some(Boolean);
+  const isAnyRefinementSelected = 
+    Object.values(artisticMedium).some(Boolean) || 
+    Object.values(colorPalette).some(Boolean) || 
+    Object.values(lighting).some(Boolean) || 
+    !!texture || 
+    Object.values(composition).some(Boolean);
+
   const canGenerateRefinedPrompt = isLoading || isRefining || (!form.getValues('personalizedPrompt') && !isAnyRefinementSelected);
 
   if (editorState === 'done' && finalCardUri) {
@@ -580,7 +586,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                 ))
               ) : (
                 <RadioGroup value={value} onValueChange={onValueChange}>
-                {options.map(option => (
+                {options.map((option:any) => (
                     <div key={option.id} className="flex items-center space-x-2">
                         <RadioGroupItem value={option.value} id={option.id} />
                         <Label htmlFor={option.id}>{option.label}</Label>
@@ -621,7 +627,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                     <Label htmlFor="ar-square">Square</Label>
                 </div>
             </RadioGroup>
-        </Collapsib_leContent>
+        </CollapsibleContent>
     </Collapsible>
     )
   };
@@ -778,5 +784,3 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     </Card>
   );
 }
-
-    
