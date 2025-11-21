@@ -56,13 +56,69 @@ type LightingState = {
   fantastical?: string;
 };
 
+type ArtisticMediumState = {
+  painting?: string;
+  drawing?: string;
+  printmaking?: string;
+  craft?: string;
+  digital?: string;
+};
+
 
 const refinementOptions = {
   artisticMedium: [
-    { id: 'am-1', value: 'watercolor painting', label: 'Watercolor' },
-    { id: 'am-2', value: 'oil painting', label: 'Oil Painting' },
-    { id: 'am-3', value: 'charcoal sketch', label: 'Charcoal Sketch' },
-    { id: 'am-4', value: 'vintage postcard', label: 'Vintage Postcard' },
+    {
+        key: 'painting',
+        category: 'Painting Styles',
+        description: 'For classic and expressive painted looks.',
+        options: [
+            { id: 'am-1', label: 'Lush Oil Painting', description: 'Rich, textured, and vibrant. This style mimics thick oil paints on canvas, showing visible brushstrokes and deep colors.', value: 'lush oil painting, thick impasto, visible brushstrokes, textured canvas, style of van gogh' },
+            { id: 'am-2', label: 'Delicate Watercolor', description: 'Soft, translucent, and often dreamy. This style features soft, bleeding edges and a light, airy feel, as if painted on wet paper.', value: 'delicate watercolor painting, soft bleeding edges, wet-on-wet technique, translucent washes, on cotton paper' },
+            { id: 'am-3', label: 'Flat Gouache Illustration', description: "Opaque, matte, and vibrant. Popular in children's books and modern illustration, this style uses flat, bold layers of color without shine.", value: "flat gouache illustration, opaque paint, matte finish, bold shapes, children's book style" },
+            { id: 'am-4', label: 'Abstract Acrylic Pour', description: 'A modern, chaotic, and beautiful style that mimics pouring liquid acrylics. Creates mesmerizing swirls, cells, and marbled patterns.', value: 'abstract acrylic pour, fluid art, liquid marbling, vibrant swirls, cellular patterns, resin art' },
+            { id: 'am-5', label: 'Impressionist Painting', description: 'Captures the feeling of a moment. This style, inspired by artists like Monet, uses small, visible brushstrokes to create a beautiful sense of light and movement.', value: 'impressionist painting, style of Monet, dappled light, visible brushwork, captures a fleeting moment' },
+        ],
+    },
+    {
+        key: 'drawing',
+        category: 'Drawing & Sketching',
+        description: 'For hand-drawn, illustrative, and monochrome styles.',
+        options: [
+            { id: 'am-6', label: 'Dramatic Charcoal Sketch', description: 'A high-contrast, expressive style with deep blacks and soft, smudged grays. Perfect for dramatic portraits and moody scenes.', value: 'dramatic charcoal sketch, on textured paper, smudged, high contrast, expressive, gestural' },
+            { id: 'am-7', label: 'Detailed Pen & Ink', description: 'A classic, clean, and intricate style using fine lines. Can be used for technical drawings or beautiful, detailed storybook illustrations.', value: 'detailed pen and ink illustration, cross-hatching, stippling, fine lines, black and white, technical drawing' },
+            { id: 'am-8', label: 'Soft Colored Pencil', description: 'A gentle, textured style with a soft, waxy finish. The subtle layering of colors creates a warm and often nostalgic feeling.', value: 'soft colored pencil drawing, gentle blending, layered colors, visible texture, on toned paper' },
+        ],
+    },
+    {
+        key: 'printmaking',
+        category: 'Printmaking & Graphic Styles',
+        description: 'For unique, high-contrast, and stylized looks.',
+        options: [
+            { id: 'am-9', label: 'Japanese Woodcut (Ukiyo-e)', description: 'The beautiful and iconic style of Japanese art. Features bold outlines, flat planes of color, and elegant compositions.', value: 'Japanese woodcut print, ukiyo-e style, style of Hokusai, bold outlines, flat colors, elegant' },
+            { id: 'am-10', label: 'Modern Linocut Print', description: 'A bold, graphic style with a handmade feel, as if carved from a linoleum block. Creates a high-impact, slightly rustic look.', value: 'modern linocut print, graphic, bold, high contrast, carved texture, handmade aesthetic' },
+            { id: 'am-11', label: 'Risograph Print', description: 'A trendy, retro style that mimics a specific type of printer. Features a grainy texture, limited vibrant colors, and subtle misalignments.', value: 'Risograph print, grainy texture, limited color palette, halftone, slight misalignment, vibrant ink' },
+        ],
+    },
+    {
+        key: 'craft',
+        category: 'Craft & Mixed Media',
+        description: 'For truly unique, tactile, and surprising results that go beyond pen and paper.',
+        options: [
+            { id: 'am-12', label: 'Cut Paper Collage', description: "A playful and artistic style that looks like it's made from layers of cut-out colored paper, inspired by artists like Matisse.", value: "cut paper collage, style of Matisse, layered paper, bold shapes, papercraft, handmade" },
+            { id: 'am-13', label: 'Detailed Embroidery', description: 'Creates the beautiful, textured look of a design stitched with thread onto fabric. Evokes a cozy, handcrafted, and personal feeling.', value: 'detailed embroidery, stitched, thread texture, on fabric canvas, hoop art, textile art' },
+            { id: 'am-14', label: 'Intricate Paper Quilling', description: 'A stunningly detailed art form that uses rolled and shaped strips of paper to create a 3D image. Unique, elegant, and intricate.', value: 'intricate paper quilling art, rolled paper strips, 3D papercraft, filigree, delicate' },
+            { id: 'am-15', label: 'Vintage Postcard', description: 'The nostalgic look of an early 20th-century postcard, with faded colors, a slightly aged paper texture, and classic typography.', value: 'vintage postcard, circa 1920, faded colors, aged paper texture, retro, nostalgic' },
+        ],
+    },
+    {
+        key: 'digital',
+        category: 'Digital & Modern Art',
+        description: 'For clean, contemporary, and digitally native styles.',
+        options: [
+            { id: 'am-16', label: 'Clean Vector Illustration', description: 'A sharp, clean, and modern graphic style with smooth lines and flat colors. Often used in corporate branding and minimalist designs.', value: 'flat vector illustration, clean lines, minimalist graphic, corporate art style, simple, no gradients' },
+            { id: 'am-17', label: 'Cute 3D Render', description: 'The soft, friendly, and dimensional look of a 3D animated movie. Perfect for creating cute characters and whimsical scenes.', value: 'cute 3D render, Pixar style, Disney style, soft textures, cinematic lighting, rendered in Blender' },
+        ]
+    }
   ],
   colorPalette: [
     { id: 'cp-1', value: 'a soft pastel color palette', label: 'Soft Pastels' },
@@ -106,7 +162,7 @@ const refinementOptions = {
     {
         key: 'cinematic',
         category: 'Dynamic & Cinematic',
-        description: 'Advanced options that create a sense of movement and story.',
+        description: 'These advanced options create a sense of movement and story.',
         options: [
             { id: 'co-13', label: 'Leading Lines', description: 'Uses lines within the image (a road, a river, a fence) to create a path that guides the viewer\'s eye directly to your main subject.', value: 'leading lines, strong diagonal lines, guides the eye, vanishing point, dynamic composition, one-point perspective' },
             { id: 'co-14', label: 'Dynamic Angle (Dutch Angle)', description: 'Tilts the "camera" for a dramatic, unsettling, or energetic feeling. Perfect for action, excitement, and high-impact scenes.', value: 'dutch angle, tilted frame, canted angle, dynamic, off-kilter, action shot' },
@@ -182,7 +238,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // State for refinement selections
-  const [artisticMedium, setArtisticMedium] = useState<string | undefined>();
+  const [artisticMedium, setArtisticMedium] = useState<ArtisticMediumState>({});
   const [colorPalette, setColorPalette] = useState<string | undefined>();
   const [composition, setComposition] = useState<CompositionState>({});
   const [lighting, setLighting] = useState<LightingState>({});
@@ -253,12 +309,13 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     setErrorMessage(null);
 
     try {
+        const fullArtisticMediumPrompt = Object.values(artisticMedium).filter(Boolean).join(', ');
         const fullCompositionPrompt = Object.values(composition).filter(Boolean).join(', ');
         const fullLightingPrompt = Object.values(lighting).filter(Boolean).join(', ');
 
         const result = await generateRefinedPromptAction({
             basePrompt: form.getValues('personalizedPrompt'),
-            artisticMedium,
+            artisticMedium: fullArtisticMediumPrompt,
             colorPalette,
             composition: fullCompositionPrompt,
             lighting: fullLightingPrompt,
@@ -430,7 +487,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   }
 
   const RefinementSection = ({ title, options, value, onValueChange, categoryKey }: { title: string, options: any[], value: any, onValueChange: (value: any) => void, categoryKey: string }) => {
-    const isMultiSelect = categoryKey === 'composition' || categoryKey === 'lighting';
+    const isMultiSelect = categoryKey === 'composition' || categoryKey === 'lighting' || categoryKey === 'artisticMedium';
     const isOpen = openSections[categoryKey];
     const onOpenChange = (open: boolean) => setOpenSections(prev => ({ ...prev, [categoryKey]: open }));
 
@@ -670,5 +727,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     </Card>
   );
 }
+
+    
 
     
