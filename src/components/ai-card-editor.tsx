@@ -43,6 +43,14 @@ type RefinedPromptState = 'idle' | 'generating' | 'done' | 'error';
 type AspectRatioType = '9:16' | '16:9' | '1:1';
 type AnimationState = 'idle' | 'generating' | 'done' | 'error';
 
+// New type for composition state
+type CompositionState = {
+  framing?: string;
+  balance?: string;
+  pattern?: string;
+  cinematic?: string;
+};
+
 
 const refinementOptions = {
   artisticMedium: [
@@ -58,6 +66,7 @@ const refinementOptions = {
   ],
   composition: [
     {
+      key: 'framing',
       category: 'Framing & Shot Type',
       description: 'Controls how close or far the "camera" is and its general perspective.',
       options: [
@@ -69,6 +78,7 @@ const refinementOptions = {
       ],
     },
     {
+      key: 'balance',
       category: 'Artistic Balance & Placement',
       description: 'Deals with classic art and design principles for arranging elements.',
       options: [
@@ -79,6 +89,7 @@ const refinementOptions = {
       ],
     },
     {
+      key: 'pattern',
       category: 'Pattern & Density',
       description: 'Perfect for card backgrounds and decorative elements.',
       options: [
@@ -88,6 +99,7 @@ const refinementOptions = {
       ],
     },
     {
+        key: 'cinematic',
         category: 'Dynamic & Cinematic (Premium)',
         description: 'Advanced options that create a sense of movement and story.',
         isPremium: true,
@@ -127,7 +139,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   // State for refinement selections
   const [artisticMedium, setArtisticMedium] = useState<string | undefined>();
   const [colorPalette, setColorPalette] = useState<string | undefined>();
-  const [composition, setComposition] = useState<string | undefined>();
+  const [composition, setComposition] = useState<CompositionState>({});
   const [lighting, setLighting] = useState<string | undefined>();
   const [texture, setTexture] = useState<string | undefined>();
   const [aspectRatio, setAspectRatio] = useState<AspectRatioType>('9:16');
@@ -200,11 +212,13 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     setErrorMessage(null);
 
     try {
+        const fullCompositionPrompt = Object.values(composition).filter(Boolean).join(', ');
+
         const result = await generateRefinedPromptAction({
             basePrompt: form.getValues('personalizedPrompt'),
             artisticMedium,
             colorPalette,
-            composition,
+            composition: fullCompositionPrompt,
             lighting,
             texture
         });
@@ -403,7 +417,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     );
   }
 
-  const RefinementSection = ({ title, options, value, onValueChange, categoryKey }: { title: string, options: any[], value: string | undefined, onValueChange: (value: string | undefined) => void, categoryKey: string }) => {
+  const RefinementSection = ({ title, options, value, onValueChange, categoryKey }: { title: string, options: any[], value: any, onValueChange: (value: any) => void, categoryKey: string }) => {
     const isComposition = categoryKey === 'composition';
     const isOpen = openSections[categoryKey];
     const onOpenChange = (open: boolean) => setOpenSections(prev => ({ ...prev, [categoryKey]: open }));
@@ -416,7 +430,6 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
             <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="p-2">
-            <RadioGroup value={value} onValueChange={onValueChange}>
               {isComposition ? (
                 options.map(category => (
                   <div key={category.category} className="mt-4 first:mt-0">
@@ -426,7 +439,11 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                     </div>
                     
                     <p className="text-xs text-muted-foreground mb-2">{category.description}</p>
-                    <div className="grid gap-2">
+                    <RadioGroup 
+                      value={value[category.key]} 
+                      onValueChange={(selectedValue) => onValueChange({ ...value, [category.key]: selectedValue })}
+                      className="grid gap-2"
+                    >
                       {category.options.map((option: any) => (
                         <div key={option.id} className="p-2 rounded-md border border-transparent has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/5">
                             <div className="flex items-start space-x-2">
@@ -438,19 +455,23 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                             </div>
                         </div>
                       ))}
-                    </div>
+                    </RadioGroup>
+                     {value[category.key] && <Button variant="ghost" size="sm" className="mt-2 text-destructive" onClick={() => onValueChange({ ...value, [category.key]: undefined })}><XCircle className="mr-1 h-4 w-4" />Clear</Button>}
                   </div>
                 ))
               ) : (
-                options.map(option => (
+                <RadioGroup value={value} onValueChange={onValueChange}>
+                {options.map(option => (
                     <div key={option.id} className="flex items-center space-x-2">
                         <RadioGroupItem value={option.value} id={option.id} />
                         <Label htmlFor={option.id}>{option.label}</Label>
                     </div>
-                ))
+                ))}
+                </RadioGroup>
               )}
-            </RadioGroup>
-            {value && <Button variant="ghost" size="sm" className="mt-2 text-destructive" onClick={() => onValueChange(undefined)}><XCircle className="mr-1 h-4 w-4" />Clear</Button>}
+            {
+              !isComposition && value && <Button variant="ghost" size="sm" className="mt-2 text-destructive" onClick={() => onValueChange(undefined)}><XCircle className="mr-1 h-4 w-4" />Clear</Button>
+            }
         </CollapsibleContent>
     </Collapsible>
     )
@@ -467,7 +488,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
             <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="p-2">
-            <RadioGroup value={aspectRatio} onValueChange={(val) => setAspectRatio(val as AspectRatioType)}>
+            <RadioGroup value={aspectRatio} onValueChange={(val) => setAspectRatio(val as AspectRatioType)} className="grid gap-2">
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem value="9:16" id="ar-portrait" />
                     <Label htmlFor="ar-portrait">Portrait (Card)</Label>
@@ -500,7 +521,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
       </CardHeader>
       <CardContent className="space-y-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onAnalyze)} className="space-y-4">
+          <form className="space-y-4">
             <FormField
               control={form.control}
               name="personalizedPrompt"
@@ -580,11 +601,11 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                     <blockquote className="border-l-2 pl-4 italic text-sm">{refinedPrompt.refinedPrompt}</blockquote>
                   </div>
                   <div className="flex gap-2">
-                    <Button onClick={() => proceedToGeneration(refinedPrompt.refinedPrompt)}>
+                    <Button type="button" onClick={() => proceedToGeneration(refinedPrompt.refinedPrompt)}>
                       {isLoading ? ( <Loader2 className="mr-2 h-4 w-4 animate-spin" />) : (<Sparkles className="mr-2 h-4 w-4" />)}
                       Use Suggestion & Generate
                     </Button>
-                     <Button variant="outline" onClick={() => form.setValue('personalizedPrompt', refinedPrompt.refinedPrompt)}>
+                     <Button variant="outline" type="button" onClick={() => form.setValue('personalizedPrompt', refinedPrompt.refinedPrompt)}>
                         Copy to Editor
                     </Button>
                   </div>
@@ -603,11 +624,11 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                     <blockquote className="border-l-2 pl-4 italic text-sm">{analysis.improvedPrompt}</blockquote>
                   </div>
                   <div className="flex gap-2">
-                    <Button onClick={() => proceedToGeneration(analysis.improvedPrompt)}>
+                    <Button type="button" onClick={() => proceedToGeneration(analysis.improvedPrompt)}>
                       {isLoading ? ( <Loader2 className="mr-2 h-4 w-4 animate-spin" />) : (<Sparkles className="mr-2 h-4 w-4" />)}
                       Use Suggestion & Generate
                     </Button>
-                    <Button variant="outline" onClick={() => setEditorState('idle')}>
+                    <Button variant="outline" type="button" onClick={() => setEditorState('idle')}>
                       Let Me Edit
                     </Button>
                   </div>
@@ -627,7 +648,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                     )}
                 </Button>
 
-                <Button type="submit" className="w-full" disabled={isLoading || editorState === 'needs_improvement'}>
+                <Button type="button" onClick={() => form.handleSubmit(() => proceedToGeneration(form.getValues('personalizedPrompt')))()} className="w-full" disabled={isLoading || editorState === 'needs_improvement'}>
                     <Sparkles className="mr-2 h-4 w-4" />
                     Generate My Card (Original Prompt)
                 </Button>
