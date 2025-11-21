@@ -12,7 +12,6 @@ import {
   generateCardAction,
   generateMessagesAction,
   generateRefinedPromptAction,
-  generateVideoAction,
 } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -20,7 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, Wand2, Lightbulb, Download, Mail, Printer, MessageSquareQuote, Settings, ChevronDown, XCircle, AspectRatio, Film } from 'lucide-react';
+import { Loader2, Sparkles, Wand2, Lightbulb, Download, Mail, Printer, MessageSquareQuote, Settings, ChevronDown, XCircle, AspectRatio } from 'lucide-react';
 import type { MasterPrompt } from '@/lib/data';
 import { masterPrompts as allMasterPrompts } from '@/lib/data';
 import type { SummarizeAndImproveUserPromptOutput } from '@/ai/flows/summarize-and-improve-user-prompt';
@@ -40,7 +39,6 @@ const formSchema = z.object({
 type EditorState = 'idle' | 'analyzing' | 'needs_improvement' | 'generating' | 'done' | 'error';
 type MessageState = 'idle' | 'generating' | 'done' | 'error';
 type RefinedPromptState = 'idle' | 'generating' | 'done' | 'error';
-type AnimationState = 'idle' | 'animating' | 'done' | 'error';
 type AspectRatioType = '9:16' | '16:9' | '1:1';
 
 
@@ -73,30 +71,16 @@ const refinementOptions = {
   ],
 };
 
-const animationOptions = [
-    { id: 'anim-1', label: 'Falling Snow', prompt: 'Gentle falling snow' },
-    { id: 'anim-2', label: 'Twinkling Stars', prompt: 'Subtle twinkling stars in the sky' },
-    { id: 'anim-3', label: 'Confetti Burst', prompt: 'A gentle burst of colorful confetti' },
-    { id: 'anim-4', label: 'Falling Petals', prompt: 'Delicate flower petals falling slowly' },
-    { id: 'anim-5', label: 'Glowing Candle', prompt: 'A single candle flame gently flickering' },
-    { id: 'anim-6', label: 'Fireworks', prompt: 'Colorful fireworks bursting in the background' },
-    { id: 'anim-7', label: 'Flying Pigeon', prompt: 'A white pigeon flies across the scene' },
-    { id: 'anim-8', label: 'Waterfall', prompt: 'A gentle waterfall cascades down' },
-    { id: 'anim-9', label: 'Sunrise', prompt: 'A time-lapse of a sun rising' },
-    { id: 'anim-10', label: 'Moving Clouds', prompt: 'Fluffy clouds slowly drifting across the sky' },
-];
 
 export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: MasterPrompt, photoDataUri?: string }) {
   const [editorState, setEditorState] = useState<EditorState>('idle');
   const [messageState, setMessageState] = useState<MessageState>('idle');
   const [refinedPromptState, setRefinedPromptState] = useState<RefinedPromptState>('idle');
-  const [animationState, setAnimationState] = useState<AnimationState>('idle');
   
   const [analysis, setAnalysis] = useState<SummarizeAndImproveUserPromptOutput | null>(null);
   const [refinedPrompt, setRefinedPrompt] = useState<GenerateRefinedPromptOutput | null>(null);
   
   const [finalCardUri, setFinalCardUri] = useState<string | null>(null);
-  const [animatedVideoUri, setAnimatedVideoUri] = useState<string | null>(null);
   const [personalMessage, setPersonalMessage] = useState<string>('');
   const [suggestedMessages, setSuggestedMessages] = useState<string[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -221,29 +205,6 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     }
   }
 
-  async function handleAnimate(animationPrompt: string) {
-    if (!finalCardUri) return;
-    setAnimationState('animating');
-    setErrorMessage(null);
-    try {
-      const result = await generateVideoAction({
-        baseImageUri: finalCardUri,
-        animationPrompt,
-      });
-      
-      setAnimatedVideoUri(result.videoDataUri);
-      setAnimationState('done');
-      toast({
-        title: 'Animation Complete!',
-        description: 'Your card has been brought to life.',
-      });
-
-    } catch (error) {
-      handleError(error, 'Could not animate your card.');
-      setAnimationState('error');
-    }
-  }
-
   function handleError(error: unknown, defaultMessage: string) {
     const message = error instanceof Error ? error.message : defaultMessage;
     setErrorMessage(message);
@@ -259,11 +220,9 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     setEditorState('idle');
     setMessageState('idle');
     setRefinedPromptState('idle');
-    setAnimationState('idle');
     setAnalysis(null);
     setRefinedPrompt(null);
     setFinalCardUri(null);
-    setAnimatedVideoUri(null);
     setSuggestedMessages([]);
     setErrorMessage(null);
     setPersonalMessage('');
@@ -278,32 +237,20 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
       <Card className="w-full max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle className="font-headline">Your Card is Ready!</CardTitle>
-          <CardDescription>{animationState === 'done' ? 'Your animated card is complete.' : 'Download your creation or add a personal message and animation.'}</CardDescription>
+          <CardDescription>Download your creation or add a personal message.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="w-full rounded-lg overflow-hidden border relative bg-muted" style={{ aspectRatio: aspectRatio.replace(':', '/') }}>
-            {animationState === 'done' && animatedVideoUri ? (
-                <video src={animatedVideoUri} className="w-full h-full object-contain" autoPlay loop muted playsInline />
-            ) : (
-                <Image src={finalCardUri} alt="Generated AI card" fill className="object-contain" />
-            )}
+            <Image src={finalCardUri} alt="Generated AI card" fill className="object-contain" />
 
-            {personalMessage && animationState !== 'done' && (
+            {personalMessage && (
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 flex items-end justify-center p-8">
                     <p className="text-white text-center text-xl font-body">{personalMessage}</p>
                 </div>
             )}
-
-            {animationState === 'animating' && (
-                <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white">
-                    <Loader2 className="h-10 w-10 animate-spin mb-4" />
-                    <p className="font-semibold">Animating your card...</p>
-                    <p className="text-sm">This may take up to a minute.</p>
-                </div>
-            )}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <a href={animationState === 'done' ? animatedVideoUri! : finalCardUri} download={animationState === 'done' ? 'cardcraft-animation.mp4' : 'cardcraft-creation.png'}>
+            <a href={finalCardUri} download="cardcraft-creation.png">
               <Button className="w-full"><Download className="mr-2 h-4 w-4" /> Download</Button>
             </a>
             <Button variant="secondary"><Mail className="mr-2 h-4 w-4" /> Email</Button>
@@ -311,27 +258,6 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
           </div>
         </CardContent>
         <CardFooter className="flex-col items-start gap-4 pt-4 border-t">
-            {animationState !== 'done' && (
-              <Collapsible className="w-full">
-                <CollapsibleTrigger asChild>
-                  <Button variant="outline" className="w-full" disabled={animationState === 'animating'}>
-                    <Film className="mr-2 h-4 w-4" />
-                    Animate It
-                    <ChevronDown className="ml-auto h-4 w-4" />
-                  </Button>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="pt-4">
-                  <div className="grid grid-cols-2 gap-2">
-                    {animationOptions.map(opt => (
-                        <Button key={opt.id} variant="secondary" onClick={() => handleAnimate(opt.prompt)} disabled={animationState === 'animating'}>
-                            {opt.label}
-                        </Button>
-                    ))}
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
-            )}
-
             <div className="w-full space-y-2">
                 <Label htmlFor="personal-message">Add a Personal Message (optional)</Label>
                 <Textarea
@@ -340,7 +266,6 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                   rows={3}
                   value={personalMessage}
                   onChange={(e) => setPersonalMessage(e.target.value)}
-                  disabled={animationState === 'done'}
                 />
             </div>
 
