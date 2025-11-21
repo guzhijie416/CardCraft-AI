@@ -58,7 +58,7 @@
           "description": "The timestamp when the card was created."
         }
       },
-      "required": ["userId", "prompt", "cardDataUrl", "createdAt"]
+      "required": ["prompt", "cardDataUrl", "createdAt"]
     }
   },
   "auth": {
@@ -76,6 +76,12 @@
         "$ref": "#/entities/Card"
       },
       "description": "Stores the cards created by a specific user."
+    },
+    "/users/shared/cards/{cardId}": {
+      "schema": {
+        "$ref": "#/entities/Card"
+      },
+      "description": "Stores cards that have been shared publicly."
     }
   }
 }

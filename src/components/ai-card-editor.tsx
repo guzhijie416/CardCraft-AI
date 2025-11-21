@@ -12,6 +12,7 @@ import {
   generateCardAction,
   generateMessagesAction,
   generateRefinedPromptAction,
+  saveAndShareCardAction,
 } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -19,7 +20,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, Wand2, Lightbulb, Download, Mail, Printer, MessageSquareQuote, Settings, ChevronDown, XCircle, AspectRatio } from 'lucide-react';
+import { Loader2, Sparkles, Wand2, Lightbulb, Download, Share2, Printer, MessageSquareQuote, Settings, ChevronDown, XCircle, AspectRatio } from 'lucide-react';
 import type { MasterPrompt } from '@/lib/data';
 import { masterPrompts as allMasterPrompts } from '@/lib/data';
 import type { SummarizeAndImproveUserPromptOutput } from '@/ai/flows/summarize-and-improve-user-prompt';
@@ -229,6 +230,54 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
     form.reset();
   }
 
+  const handleShare = async () => {
+    if (!finalCardUri) return;
+  
+    toast({ title: "Preparing your card for sharing..." });
+  
+    try {
+      // 1. Save card to Firestore and get the ID
+      const { cardId } = await saveAndShareCardAction({
+        prompt: form.getValues('personalizedPrompt'),
+        masterPrompt: modifiedMasterPrompt,
+        cardDataUrl: finalCardUri,
+      });
+  
+      const magicLink = `${window.location.origin}/share/${cardId}`;
+  
+      // This is a simplified check. A more robust solution would check `navigator.canShare`.
+      if (navigator.share) {
+        // Convert data URI to blob to share file
+        const response = await fetch(finalCardUri);
+        const blob = await response.blob();
+        const file = new File([blob], 'cardcraft-creation.png', { type: 'image/png' });
+  
+        await navigator.share({
+          title: 'CardCraft AI Creation',
+          text: `I made this card for you with CardCraft AI! Check it out: ${magicLink}`,
+          files: [file],
+        });
+        toast({ title: "Shared successfully!" });
+      } else {
+        // Fallback for desktop or unsupported browsers
+        await navigator.clipboard.writeText(magicLink);
+        toast({
+          title: "Magic Link Copied!",
+          description: "Sharing isn't supported on this browser. The link has been copied to your clipboard.",
+        });
+      }
+    } catch (error) {
+      console.error("Sharing failed:", error);
+      const message = error instanceof Error ? error.message : "Could not prepare the card for sharing.";
+      toast({
+        variant: "destructive",
+        title: "Sharing Failed",
+        description: message,
+      });
+    }
+  };
+  
+
   const isLoading = editorState === 'analyzing' || editorState === 'generating';
   const isRefining = refinedPromptState === 'generating';
 
@@ -253,7 +302,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
             <a href={finalCardUri} download="cardcraft-creation.png">
               <Button className="w-full"><Download className="mr-2 h-4 w-4" /> Download</Button>
             </a>
-            <Button variant="secondary"><Mail className="mr-2 h-4 w-4" /> Email</Button>
+            <Button variant="secondary" onClick={handleShare}><Share2 className="mr-2 h-4 w-4" /> Share Card</Button>
             <Button variant="secondary"><Printer className="mr-2 h-4 w-4" /> Print</Button>
           </div>
         </CardContent>
