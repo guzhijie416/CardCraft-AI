@@ -1,7 +1,7 @@
 
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Sparkles, BookOpen, ImageIcon } from 'lucide-react';
+import { Sparkles, BookOpen, ImageIcon, Gem } from 'lucide-react';
 
 export default function CreatePage() {
   const creationOptions = [
@@ -20,6 +20,13 @@ export default function CreatePage() {
       linkText: 'Start with AI',
     },
     {
+      title: 'Signature Studio',
+      description: 'Start with a masterpiece. Remix curated, professional designs with your own twist.',
+      icon: Gem,
+      href: '/create/signature',
+      linkText: 'Remix a Signature Card',
+    },
+    {
       title: 'Photo Remix',
       description: 'Use your own photos to create a postcard or transfer the style to a new AI image.',
       icon: ImageIcon,
@@ -35,7 +42,7 @@ export default function CreatePage() {
         <p className="text-muted-foreground mt-2 text-lg">Choose your creative path.</p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
         {creationOptions.map((option) => (
           <Link href={option.href} key={option.title} className="block">
             <Card className="h-full text-center p-8 flex flex-col items-center justify-center transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:border-primary">

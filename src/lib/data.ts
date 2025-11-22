@@ -288,3 +288,67 @@ export const messageMasterPrompts: MessageMasterPrompt[] = [
   { id: 'wed-mmp-2', occasion: 'wedding', name: 'Casual & Fun', prompt: 'Generate 3 casual, fun, and modern messages for a wedding, perfect for friends. Keep the tone light and celebratory.' },
   { id: 'wed-mmp-3', occasion: 'wedding', name: 'Advice for the Couple', prompt: 'Generate 3 pieces of short, sweet, and meaningful advice for the newly married couple.' },
 ];
+
+
+// --- Signature Studio Data ---
+
+export type SignatureTemplate = {
+  id: string;
+  title: string;
+  collectionId: string;
+  designerNote: string;
+  suggestedIngredients: string[];
+  imageId: string;
+  isPremium: boolean;
+};
+
+export type SignatureCollection = {
+  id: string;
+  name: string;
+  description: string;
+  templates: SignatureTemplate[];
+};
+
+export const signatureCollections: SignatureCollection[] = [
+  {
+    id: 'cinematic-creatures',
+    name: 'The Cinematic Creatures Collection',
+    description: 'Epic, detailed, and full of character. These templates give any subject a movie-like quality.',
+    templates: [
+      {
+        id: 'sig-c1-t1',
+        title: 'The Astral Voyager',
+        collectionId: 'cinematic-creatures',
+        designerNote: "We crafted this template to capture the awe of classic sci-fi with a touch of whimsical charm. The dramatic lighting and hyper-detailed textures make any subject feel epic.",
+        suggestedIngredients: ['a birthday cake', 'a tiny crown', 'a magical glowing aura'],
+        imageId: 'history-3', // Re-using for now
+        isPremium: false,
+      },
+      {
+        id: 'sig-c1-t2',
+        title: 'The Forest Guardian',
+        collectionId: 'cinematic-creatures',
+        designerNote: "Inspired by ancient folklore, this template uses dappled sunlight and rich, earthy tones to create a sense of mystery and natural power.",
+        suggestedIngredients: ['a wise old owl', 'a majestic stag', 'a friendly smiling dog'],
+        imageId: 'master-prompt-wedding-3', // Re-using for now
+        isPremium: true,
+      },
+    ],
+  },
+  {
+    id: 'watercolor-dreams',
+    name: 'The Watercolor Dreams Collection',
+    description: 'Soft, dreamy, and artistic. Perfect for heartfelt messages and elegant designs.',
+    templates: [
+      {
+        id: 'sig-c2-t1',
+        title: 'Pastel Garden',
+        collectionId: 'watercolor-dreams',
+        designerNote: "This template uses a wet-on-wet watercolor technique to create soft, bleeding edges and a light, airy feel. It's perfect for birthdays, thank you notes, or just because.",
+        suggestedIngredients: ['a single perfect rose', 'a bouquet of wildflowers', 'two birds sitting on a branch'],
+        imageId: 'template-birthday-1', // Re-using for now
+        isPremium: false,
+      },
+    ],
+  },
+];
