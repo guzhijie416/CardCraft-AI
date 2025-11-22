@@ -39,7 +39,7 @@ const generateAiCardFromPromptFlow = ai.defineFlow(
   async (input) => {
     let prompt;
     let model = 'googleai/imagen-4.0-fast-generate-001';
-    let config: any = {};
+    let config: any = {}; // Initialize config as an empty object
 
     if (input.photoDataUri) {
         model = 'googleai/gemini-2.5-flash-image-preview';
