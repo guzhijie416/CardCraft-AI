@@ -1,6 +1,6 @@
 
 import type { LucideIcon } from 'lucide-react';
-import { Cake, Gift, GraduationCap, Heart, Users, Camera, Mountain, Building, Zap } from 'lucide-react';
+import { Cake, Gift, GraduationCap, Heart, Users, Camera, Mountain, Building, Zap, Clock } from 'lucide-react';
 import { PlaceHolderImages as allImages } from './placeholder-images';
 
 export const placeholderImages = allImages;
@@ -347,6 +347,55 @@ export const signatureCollections: SignatureCollection[] = [
         designerNote: "This template uses a wet-on-wet watercolor technique to create soft, bleeding edges and a light, airy feel. It's perfect for birthdays, thank you notes, or just because.",
         suggestedIngredients: ['a single perfect rose', 'a bouquet of wildflowers', 'two birds sitting on a branch'],
         imageId: 'template-birthday-1', // Re-using for now
+        isPremium: false,
+      },
+    ],
+  },
+];
+
+
+// --- Moments Studio Data ---
+
+export type MomentVariable = {
+  id: string;
+  label: string;
+  placeholder: string;
+};
+
+export type MomentTemplate = {
+  id: string;
+  title: string;
+  description: string;
+  promptTemplate: string;
+  variables: MomentVariable[];
+  imageId: string;
+  isPremium: boolean;
+};
+
+export type MomentCategory = {
+  id: string;
+  name: string;
+  description: string;
+  templates: MomentTemplate[];
+};
+
+export const momentCategories: MomentCategory[] = [
+  {
+    id: 'cozy-at-home',
+    name: 'Cozy at Home',
+    description: 'Capture the simple, comforting moments that make a house a home.',
+    templates: [
+      {
+        id: 'moment-coffee',
+        title: 'Morning Coffee Ritual',
+        description: 'The quiet start to a perfect day.',
+        promptTemplate: "A beautifully composed flat lay of a steaming ceramic mug of {{{variable1}}} on a rustic wooden table. Nearby is {{{variable2}}}. The scene is lit by delicate morning sunlight filtering through a window, and outside, you can see {{{variable3}}}. The feeling is cozy, serene, and photorealistic, with a shallow depth of field.",
+        variables: [
+          { id: 'variable1', label: 'What kind of coffee?', placeholder: 'a creamy latte with latte art' },
+          { id: 'variable2', label: "What's on the table?", placeholder: 'my journal and a silver pen' },
+          { id: 'variable3', label: "What's the view outside?", placeholder: 'a gentle rain falling' },
+        ],
+        imageId: 'master-prompt-birthday-3', // Placeholder
         isPremium: false,
       },
     ],
