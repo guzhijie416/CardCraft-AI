@@ -194,9 +194,35 @@ export const outputFormats: StyleOption[] = [
     { id: 'of-1', name: 'Standard Image', description: 'The clean, borderless image. Perfect for general-purpose sharing.', keywords: '' },
     { id: 'of-2', name: 'Classic Meme', description: 'Adds space at the top and/or bottom for the iconic bold meme text.', keywords: 'meme format, space for text at top' },
     { id: 'of-3', name: 'Postcard', description: 'Places the image within a classic postcard frame, complete with a stamp area and a "Greetings From..." feel.', keywords: 'vintage postcard frame, stamp, border' },
-    { id: 'of-4', name: 'Playing Card (扑克牌)', description: 'Formats the image as a playing card, with a decorative border and a corner symbol (e.g., King of Spades - K♠).', keywords: 'playing card design, King of Spades, decorative border, ornate, card face' },
-    { id: 'of-5', name: 'Tarot Card (塔罗牌)', description: 'An elegant and mystical format. Places the image within an ornate Tarot card frame, with a title at the bottom (e.g., "X - The Wheel of Fortune").', keywords: 'Tarot card design, The Fool, mystical, ornate border, intricate, Rider-Waite style' },
+    { id: 'of-4', name: 'Playing Card (扑克牌 / 紙牌)', description: 'Formats your creation like a classic playing card. Choose a rank and suit, and add an optional regal background for court cards.', keywords: 'playing card design' },
+    { id: 'of-5', name: 'Tarot Card (塔罗牌)', description: 'Frame your creation in the mystical and ornate style of a Tarot card. Choose a card from the Major Arcana to give your scene a symbolic meaning.', keywords: 'Tarot card design' },
     { id: 'of-6', name: 'Movie Poster', description: 'Adds a cinematic border, space for a title, and "coming soon" text, making the scene look like an ad for a blockbuster film.', keywords: 'movie poster format, cinematic border, title text, credit block' },
+];
+
+
+// --- Playing Card Data ---
+export const playingCardSuits = [
+    { id: 'spades', name: 'Spades', symbol: '♠' },
+    { id: 'hearts', name: 'Hearts', symbol: '♥' },
+    { id: 'diamonds', name: 'Diamonds', symbol: '♦' },
+    { id: 'clubs', name: 'Clubs', symbol: '♣' },
+];
+
+export const playingCardRanks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+export const courtCardRanks = ['J', 'Q', 'K'];
+
+// --- Tarot Card Data ---
+export const majorArcana: StyleOption[] = [
+    { id: 'tarot-0', name: '0 - The Fool', description: 'New beginnings, innocence, spontaneity', keywords: '0 - The Fool' },
+    { id: 'tarot-1', name: 'I - The Magician', description: 'Power, skill, manifestation', keywords: 'I - The Magician' },
+    { id: 'tarot-4', name: 'IV - The Emperor', description: 'Authority, structure, control', keywords: 'IV - The Emperor' },
+    { id: 'tarot-6', name: 'VI - The Lovers', description: 'Partnership, choice, harmony', keywords: 'VI - The Lovers' },
+    { id: 'tarot-9', name: 'IX - The Hermit', description: 'Introspection, solitude, guidance', keywords: 'IX - The Hermit' },
+    { id: 'tarot-10', name: 'X - Wheel of Fortune', description: 'Luck, cycles, destiny', keywords: 'X - Wheel of Fortune' },
+    { id: 'tarot-13', name: 'XIII - Death', description: 'Endings, transformation, change', keywords: 'XIII - Death' },
+    { id: 'tarot-15', name: 'XV - The Devil', description: 'Temptation, bondage, materialism', keywords: 'XV - The Devil' },
+    { id: 'tarot-16', name: 'XVI - The Tower', description: 'Sudden upheaval, chaos, revelation', keywords: 'XVI - The Tower' },
+    { id: 'tarot-21', name: 'XXI - The World', description: 'Completion, integration, accomplishment', keywords: 'XXI - The World' },
 ];
 
     

@@ -1,26 +1,28 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { generateMemePromptAction, generateCardAction } from '@/app/actions';
-import { memeFactoryData, MemeOption, characterStyles, sceneStyles, outputFormats, StyleOption } from '@/lib/meme-data';
+import { memeFactoryData, MemeOption, characterStyles, sceneStyles, outputFormats, StyleOption, playingCardRanks, playingCardSuits, majorArcana, courtCardRanks } from '@/lib/meme-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Wand2, Download, Repeat, Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+import { Switch } from '@/components/ui/switch';
 
 
 type PageStep = 'story' | 'stylize' | 'result';
-type GenerationState = 'idle' | 'generating_prompt' | 'generating_image' | 'error';
+type GenerationState = 'idle' | 'generating_prompt' | 'generating_image' | 'done' | 'error';
 
 const storySchema = z.object({
   protagonist: z.string({ required_error: 'Please choose a protagonist.' }),
@@ -33,6 +35,11 @@ const styleSchema = z.object({
     characterStyle: z.string({ required_error: 'Please choose a character style.' }),
     sceneStyle: z.string({ required_error: 'Please choose a scene style.' }),
     outputFormat: z.string({ required_error: 'Please choose an output format.' }),
+    tarotCard: z.string().optional(),
+    tarotTransparentBg: z.boolean().optional(),
+    playingCardSuit: z.string().optional(),
+    playingCardRank: z.string().optional(),
+    playingCardRegalBg: z.boolean().optional(),
 });
 
 type StoryFormValues = z.infer<typeof storySchema>;
@@ -48,7 +55,14 @@ export default function MemeFactoryPage() {
   const { toast } = useToast();
 
   const storyForm = useForm<StoryFormValues>({ resolver: zodResolver(storySchema) });
-  const styleForm = useForm<StyleFormValues>({ resolver: zodResolver(styleSchema) });
+  const styleForm = useForm<StyleFormValues>({ resolver: zodResolver(styleSchema), defaultValues: {
+    characterStyle: characterStyles[0].id,
+    sceneStyle: sceneStyles[0].id,
+    outputFormat: outputFormats[0].id,
+    playingCardRank: playingCardRanks[0],
+    playingCardSuit: playingCardSuits[0].id,
+    tarotCard: majorArcana[0].keywords,
+  } });
   
   const findSelectedOption = (data: MemeOption[], selectedId: string): MemeOption | undefined => {
       return data.find(opt => opt.id === selectedId);
@@ -60,6 +74,14 @@ export default function MemeFactoryPage() {
   
   const allMemeOptions = memeFactoryData.flatMap(c => c.subCategories.flatMap(sc => sc.options));
   const watchedStory = storyForm.watch();
+  const watchedOutputFormat = styleForm.watch('outputFormat');
+  const watchedPlayingCardRank = styleForm.watch('playingCardRank');
+
+  useEffect(() => {
+    if (courtCardRanks.includes(watchedPlayingCardRank || '')) {
+      styleForm.setValue('playingCardRegalBg', true);
+    }
+  }, [watchedPlayingCardRank, styleForm]);
 
   const onStorySubmit = (data: StoryFormValues) => {
     setPageStep('stylize');
@@ -75,15 +97,22 @@ export default function MemeFactoryPage() {
     const storyData = storyForm.getValues();
 
     try {
-      const promptResult = await generateMemePromptAction({
-        protagonist: findSelectedOption(allMemeOptions, storyData.protagonist)?.text || '',
-        situation: findSelectedOption(allMemeOptions, storyData.situation)?.text || '',
-        problem: findSelectedOption(allMemeOptions, storyData.problem)?.text || '',
-        solution: findSelectedOption(allMemeOptions, storyData.solution)?.text || '',
-        characterStyle: findSelectedStyle(characterStyles, styleData.characterStyle)?.keywords || '',
-        sceneStyle: findSelectedStyle(sceneStyles, styleData.sceneStyle)?.keywords || '',
-        outputFormat: findSelectedStyle(outputFormats, styleData.outputFormat)?.keywords || '',
-      });
+        const promptInput = {
+            protagonist: findSelectedOption(allMemeOptions, storyData.protagonist)?.text || '',
+            situation: findSelectedOption(allMemeOptions, storyData.situation)?.text || '',
+            problem: findSelectedOption(allMemeOptions, storyData.problem)?.text || '',
+            solution: findSelectedOption(allMemeOptions, storyData.solution)?.text || '',
+            characterStyle: findSelectedStyle(characterStyles, styleData.characterStyle)?.keywords || '',
+            sceneStyle: findSelectedStyle(sceneStyles, styleData.sceneStyle)?.keywords || '',
+            outputFormat: findSelectedStyle(outputFormats, styleData.outputFormat)?.keywords || '',
+            tarotCard: styleData.outputFormat === 'of-5' ? styleData.tarotCard : undefined,
+            tarotTransparentBg: styleData.outputFormat === 'of-5' ? styleData.tarotTransparentBg : undefined,
+            playingCardRank: styleData.outputFormat === 'of-4' ? styleData.playingCardRank : undefined,
+            playingCardSuit: styleData.outputFormat === 'of-4' ? findSelectedStyle(playingCardSuits, styleData.playingCardSuit || '')?.symbol : undefined,
+            playingCardRegalBg: styleData.outputFormat === 'of-4' ? styleData.playingCardRegalBg : undefined,
+        }
+
+      const promptResult = await generateMemePromptAction(promptInput);
 
       if (!promptResult || !promptResult.memePrompt) {
         throw new Error("The AI failed to generate a meme prompt. Please try again.");
@@ -123,7 +152,14 @@ export default function MemeFactoryPage() {
   
   const handleStartOver = () => {
     storyForm.reset();
-    styleForm.reset();
+    styleForm.reset({
+        characterStyle: characterStyles[0].id,
+        sceneStyle: sceneStyles[0].id,
+        outputFormat: outputFormats[0].id,
+        playingCardRank: playingCardRanks[0],
+        playingCardSuit: playingCardSuits[0].id,
+        tarotCard: majorArcana[0].keywords,
+    });
     setPageStep('story');
     setGeneratedImageUri(null);
     setGeneratedPrompt(null);
@@ -143,7 +179,7 @@ export default function MemeFactoryPage() {
       <div className="grid lg:grid-cols-2 gap-8 items-start">
         <div className="space-y-6">
             {pageStep === 'story' && (
-                 <Form {...storyForm}>
+                 <FormProvider {...storyForm}>
                     <form onSubmit={storyForm.handleSubmit(onStorySubmit)}>
                         <Card>
                             <CardHeader>
@@ -157,27 +193,29 @@ export default function MemeFactoryPage() {
                                 control={storyForm.control}
                                 name={category.id}
                                 render={({ field }) => (
-                                    <Card className="p-4">
-                                        <FormLabel className="text-lg font-bold font-headline">{category.label}</FormLabel>
-                                        <FormControl className="mt-4">
-                                            <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="space-y-4">
-                                            {category.subCategories.map((sub) => (
-                                                <div key={sub.name} className="space-y-2">
-                                                    <h4 className="font-semibold">{sub.name}</h4>
-                                                    {sub.options.map((option) => (
-                                                    <FormItem key={option.id} className="flex items-center space-x-3 space-y-0 p-2 rounded-md hover:bg-muted/50">
-                                                        <FormControl>
-                                                        <RadioGroupItem value={option.id} />
-                                                        </FormControl>
-                                                        <FormLabel className="font-normal w-full">{option.text}</FormLabel>
-                                                    </FormItem>
-                                                    ))}
-                                                </div>
-                                            ))}
-                                            </RadioGroup>
-                                        </FormControl>
-                                        <FormMessage className="mt-2" />
-                                    </Card>
+                                    <FormItem>
+                                        <Card className="p-4">
+                                            <FormLabel className="text-lg font-bold font-headline">{category.label}</FormLabel>
+                                            <FormControl className="mt-4">
+                                                <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="space-y-4">
+                                                {category.subCategories.map((sub) => (
+                                                    <div key={sub.name} className="space-y-2">
+                                                        <h4 className="font-semibold">{sub.name}</h4>
+                                                        {sub.options.map((option) => (
+                                                        <FormItem key={option.id} className="flex items-center space-x-3 space-y-0 p-2 rounded-md hover:bg-muted/50">
+                                                            <FormControl>
+                                                            <RadioGroupItem value={option.id} />
+                                                            </FormControl>
+                                                            <FormLabel className="font-normal w-full">{option.text}</FormLabel>
+                                                        </FormItem>
+                                                        ))}
+                                                    </div>
+                                                ))}
+                                                </RadioGroup>
+                                            </FormControl>
+                                            <FormMessage className="mt-2" />
+                                        </Card>
+                                    </FormItem>
                                 )}
                                 />
                             ))}
@@ -189,11 +227,11 @@ export default function MemeFactoryPage() {
                             </CardFooter>
                         </Card>
                     </form>
-                </Form>
+                </FormProvider>
             )}
 
             {pageStep === 'stylize' && (
-                 <Form {...styleForm}>
+                 <FormProvider {...styleForm}>
                     <form onSubmit={styleForm.handleSubmit(onStyleSubmit)}>
                         <Card>
                              <CardHeader>
@@ -204,27 +242,9 @@ export default function MemeFactoryPage() {
                                 <CardDescription>Now, choose the look, feel, and format of your meme.</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
-                                <FormField
-                                    control={styleForm.control}
-                                    name="characterStyle"
-                                    render={({field}) => (
-                                        <StyleSection field={field} title="🎨 Act 1: Define Your Character's Look" options={characterStyles} />
-                                    )}
-                                />
-                                <FormField
-                                    control={styleForm.control}
-                                    name="sceneStyle"
-                                    render={({field}) => (
-                                        <StyleSection field={field} title="🎬 Act 2: Set the Scene's Atmosphere" options={sceneStyles} />
-                                    )}
-                                />
-                                 <FormField
-                                    control={styleForm.control}
-                                    name="outputFormat"
-                                    render={({field}) => (
-                                        <StyleSection field={field} title="🖼️ Act 3: Choose Your Final Format" options={outputFormats} />
-                                    )}
-                                />
+                                <StyleSection fieldName="characterStyle" title="🎨 Act 1: Define Your Character's Look" options={characterStyles} />
+                                <StyleSection fieldName="sceneStyle" title="🎬 Act 2: Set the Scene's Atmosphere" options={sceneStyles} />
+                                <StyleSection fieldName="outputFormat" title="🖼️ Act 3: Choose Your Final Format" options={outputFormats} isFormatSection={true} watchedOutputFormat={watchedOutputFormat} watchedPlayingCardRank={watchedPlayingCardRank} />
                             </CardContent>
                              <CardFooter>
                                 <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
@@ -234,7 +254,7 @@ export default function MemeFactoryPage() {
                             </CardFooter>
                         </Card>
                     </form>
-                </Form>
+                </FormProvider>
             )}
 
             {pageStep === 'result' && (
@@ -312,31 +332,94 @@ export default function MemeFactoryPage() {
 }
 
 
-function StyleSection({ field, title, options }: { field: any, title: string, options: StyleOption[] }) {
+function StyleSection({ fieldName, title, options, isFormatSection = false, watchedOutputFormat, watchedPlayingCardRank }: { fieldName: any, title: string, options: StyleOption[], isFormatSection?: boolean, watchedOutputFormat?: string, watchedPlayingCardRank?: string }) {
+    const { control, setValue } = useFormContext();
+    
     return (
         <Card className="p-4">
             <FormLabel className="text-lg font-bold font-headline">{title}</FormLabel>
-            <FormControl className="mt-4">
-                <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="space-y-2">
-                    {options.map((option) => (
-                        <FormItem key={option.id} className={cn("flex items-start space-x-3 space-y-0 p-3 rounded-lg border transition-colors",
-                            field.value === option.id ? "border-primary bg-primary/5" : "hover:bg-muted/50"
-                        )}>
-                            <FormControl>
-                                <RadioGroupItem value={option.id} className="mt-1" />
-                            </FormControl>
-                            <div className="grid gap-1.5">
-                                <FormLabel className="font-semibold">{option.name}</FormLabel>
-                                <p className="text-sm text-muted-foreground">{option.description}</p>
+             <Controller
+                name={fieldName}
+                control={control}
+                render={({ field }) => (
+                    <RadioGroup onValueChange={field.onChange} value={field.value} className="mt-4 space-y-2">
+                        {options.map((option) => (
+                            <div key={option.id}>
+                                <FormItem className={cn("flex items-start space-x-3 space-y-0 p-3 rounded-lg border transition-colors",
+                                    field.value === option.id ? "border-primary bg-primary/5" : "hover:bg-muted/50"
+                                )}>
+                                    <FormControl>
+                                        <RadioGroupItem value={option.id} className="mt-1" />
+                                    </FormControl>
+                                    <div className="grid gap-1.5">
+                                        <FormLabel className="font-semibold">{option.name}</FormLabel>
+                                        <p className="text-sm text-muted-foreground">{option.description}</p>
+                                    </div>
+                                </FormItem>
+                                {isFormatSection && field.value === option.id && option.id === 'of-4' && ( // Playing Card
+                                    <Card className="mt-2 p-4 space-y-4">
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <FormField control={control} name="playingCardRank" render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Rank</FormLabel>
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <FormControl><SelectTrigger><SelectValue placeholder="Select Rank" /></SelectTrigger></FormControl>
+                                                        <SelectContent>{playingCardRanks.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
+                                                    </Select>
+                                                </FormItem>
+                                            )} />
+                                            <FormField control={control} name="playingCardSuit" render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Suit</FormLabel>
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <FormControl><SelectTrigger><SelectValue placeholder="Select Suit" /></SelectTrigger></FormControl>
+                                                        <SelectContent>{playingCardSuits.map(s => <SelectItem key={s.id} value={s.id}>{s.symbol} {s.name}</SelectItem>)}</SelectContent>
+                                                    </Select>
+                                                </FormItem>
+                                            )} />
+                                        </div>
+                                        <FormField control={control} name="playingCardRegalBg" render={({ field }) => (
+                                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                                                <div className="space-y-0.5">
+                                                    <FormLabel>Add Regal Background</FormLabel>
+                                                    <FormDescription>For J, Q, K cards</FormDescription>
+                                                </div>
+                                                <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} disabled={courtCardRanks.includes(watchedPlayingCardRank || '')} /></FormControl>
+                                            </FormItem>
+                                        )} />
+                                    </Card>
+                                )}
+                                {isFormatSection && field.value === option.id && option.id === 'of-5' && ( // Tarot Card
+                                     <Card className="mt-2 p-4 space-y-4">
+                                        <FormField control={control} name="tarotCard" render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Major Arcana</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl><SelectTrigger><SelectValue placeholder="Select Card" /></SelectTrigger></FormControl>
+                                                    <SelectContent>{majorArcana.map(c => <SelectItem key={c.id} value={c.keywords}>{c.name}</SelectItem>)}</SelectContent>
+                                                </Select>
+                                                <FormDescription>{majorArcana.find(c => c.keywords === field.value)?.description}</FormDescription>
+                                            </FormItem>
+                                        )} />
+                                        <FormField control={control} name="tarotTransparentBg" render={({ field }) => (
+                                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                                                <div className="space-y-0.5">
+                                                    <FormLabel>Transparent Background</FormLabel>
+                                                    <FormDescription>Generate as a PNG for overlays</FormDescription>
+                                                </div>
+                                                <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                            </FormItem>
+                                        )} />
+                                     </Card>
+                                )}
                             </div>
-                        </FormItem>
-                    ))}
-                </RadioGroup>
-            </FormControl>
+                        ))}
+                    </RadioGroup>
+                )}
+            />
             <FormMessage className="mt-2" />
         </Card>
     );
 }
-
 
     
