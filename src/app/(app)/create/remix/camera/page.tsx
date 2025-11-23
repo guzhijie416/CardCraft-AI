@@ -67,7 +67,6 @@ export default function PostcardCameraPage() {
       const video = videoRef.current;
       const canvas = canvasRef.current;
       
-      // Set canvas to the video's dimensions to capture the full frame
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       
@@ -76,7 +75,6 @@ export default function PostcardCameraPage() {
         context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
         const dataUri = canvas.toDataURL('image/jpeg');
         
-        // Store the data URI in session storage to pass it to the next page
         sessionStorage.setItem('postcardImage', dataUri);
         router.push('/create/remix/postcard-editor');
       }

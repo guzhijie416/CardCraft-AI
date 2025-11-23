@@ -14,9 +14,9 @@ import Link from 'next/link';
 type PostcardStyle = 'none' | 'classic' | 'polaroid';
 
 const postcardStyles = [
-  { id: 'none', name: 'No Style' },
-  { id: 'classic', name: 'Classic Border' },
-  { id: 'polaroid', name: 'Polaroid Frame' },
+  { id: 'none' as PostcardStyle, name: 'No Style' },
+  { id: 'classic' as PostcardStyle, name: 'Classic Border' },
+  { id: 'polaroid' as PostcardStyle, name: 'Polaroid Frame' },
 ];
 
 export default function PostcardEditorPage() {
@@ -32,7 +32,7 @@ export default function PostcardEditorPage() {
       setPhotoDataUri(storedImage);
     } else {
       // If no image is in session storage, maybe redirect back to camera page
-      // router.push('/create/remix/camera');
+      // router.push('/create/remix/postcard');
     }
   }, [router]);
 
@@ -61,9 +61,9 @@ export default function PostcardEditorPage() {
     <div className="container mx-auto py-8">
        <div className="mb-4">
         <Button variant="ghost" asChild>
-            <Link href="/create/remix/camera">
+            <Link href="/create/remix/postcard">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Camera
+                Back to Options
             </Link>
         </Button>
        </div>
@@ -95,7 +95,7 @@ export default function PostcardEditorPage() {
                                         "cursor-pointer hover:border-primary",
                                         selectedStyle === style.id && "border-primary ring-2 ring-primary"
                                     )}
-                                    onClick={() => setSelectedStyle(style.id as PostcardStyle)}
+                                    onClick={() => setSelectedStyle(style.id)}
                                 >
                                     <CardContent className="flex aspect-square items-center justify-center p-3 text-center">
                                     <span className="text-sm font-medium">{style.name}</span>
