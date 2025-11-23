@@ -74,7 +74,7 @@ const generateAiCardFromPromptFlow = ai.defineFlow(
     }
 
     const generationRequest: any = { model, prompt };
-    if (config) {
+    if (Object.keys(config).length > 0) {
       generationRequest.config = config;
     }
 
