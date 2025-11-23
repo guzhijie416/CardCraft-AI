@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Wand2, Download, Repeat, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -62,6 +61,10 @@ export default function MemeFactoryPage() {
         solution: findSelectedOption('solution', data.solution)?.text || '',
       });
 
+      if (!promptResult || !promptResult.memePrompt) {
+        throw new Error("The AI failed to generate a meme prompt. Please try again.");
+      }
+      
       setGeneratedPrompt(promptResult.memePrompt);
       setGenerationState('generating_image');
       
@@ -71,6 +74,10 @@ export default function MemeFactoryPage() {
           personalizedPrompt: promptResult.memePrompt,
           aspectRatio: '1:1',
       });
+
+      if (!imageResult || !imageResult.cardDataUri) {
+          throw new Error("The AI failed to generate an image. Please try again.");
+      }
 
       setGeneratedImageUri(imageResult.cardDataUri);
       setGenerationState('done');
@@ -116,14 +123,12 @@ export default function MemeFactoryPage() {
                       name={category.id}
                       render={({ field }) => (
                         <Card className="p-4">
-                            <FormLabel className="text-base font-semibold">{category.label}</FormLabel>
-                            <FormControl>
-                              <Accordion type="single" collapsible className="w-full mt-2">
-                                <RadioGroup onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormLabel className="text-lg font-bold font-headline">{category.label}</FormLabel>
+                            <FormControl className="mt-4">
+                                <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="space-y-4">
                                   {category.subCategories.map((sub) => (
-                                    <AccordionItem value={sub.name} key={sub.name}>
-                                      <AccordionTrigger>{sub.name}</AccordionTrigger>
-                                      <AccordionContent className="space-y-2">
+                                    <div key={sub.name} className="space-y-2">
+                                        <h4 className="font-semibold">{sub.name}</h4>
                                         {sub.options.map((option) => (
                                           <FormItem key={option.id} className="flex items-center space-x-3 space-y-0 p-2 rounded-md hover:bg-muted/50">
                                             <FormControl>
@@ -132,11 +137,9 @@ export default function MemeFactoryPage() {
                                             <FormLabel className="font-normal w-full">{option.text}</FormLabel>
                                           </FormItem>
                                         ))}
-                                      </AccordionContent>
-                                    </AccordionItem>
+                                    </div>
                                   ))}
                                 </RadioGroup>
-                              </Accordion>
                             </FormControl>
                             <FormMessage className="mt-2" />
                         </Card>
@@ -231,4 +234,3 @@ export default function MemeFactoryPage() {
     </div>
   );
 }
-
