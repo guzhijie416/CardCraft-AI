@@ -37,11 +37,12 @@ const generateAiCardFromPromptFlow = ai.defineFlow(
     outputSchema: GenerateAiCardFromPromptOutputSchema,
   },
   async (input) => {
-    let model = 'googleai/imagen-4.0-fast-generate-001';
+    let model: string;
     let config: any = {};
     let prompt: any;
 
     if (input.photoDataUri) {
+        // This is an image-to-image or style-transfer request
         model = 'googleai/gemini-2.5-flash-image-preview';
         config = { responseModalities: ['IMAGE'] };
         
@@ -66,6 +67,8 @@ const generateAiCardFromPromptFlow = ai.defineFlow(
         ];
 
     } else {
+        // This is a standard text-to-image request
+        model = 'googleai/imagen-4.0-fast-generate-001';
         prompt = `${input.masterPrompt}, ${input.personalizedPrompt}`;
     }
     
@@ -79,6 +82,11 @@ const generateAiCardFromPromptFlow = ai.defineFlow(
       config: config,
     });
 
-    return { cardDataUri: media.url! };
+    if (!media || !media.url) {
+      throw new Error("The AI model did not return an image. Please try again.");
+    }
+
+    return { cardDataUri: media.url };
   }
 );
+
