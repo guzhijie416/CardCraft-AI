@@ -24,6 +24,7 @@ export default function PostcardCameraPage() {
   useEffect(() => {
     if (!isClient) return;
 
+    let stream: MediaStream | null = null;
     const getCameraPermission = async () => {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         toast({
@@ -35,7 +36,7 @@ export default function PostcardCameraPage() {
         return;
       }
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
         setHasCameraPermission(true);
 
         if (videoRef.current) {
@@ -55,10 +56,7 @@ export default function PostcardCameraPage() {
     getCameraPermission();
 
     return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject as MediaStream;
-        stream.getTracks().forEach(track => track.stop());
-      }
+        stream?.getTracks().forEach(track => track.stop());
     };
   }, [isClient, toast]);
 

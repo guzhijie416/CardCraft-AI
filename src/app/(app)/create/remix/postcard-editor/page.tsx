@@ -32,15 +32,23 @@ export default function PostcardEditorPage() {
       setPhotoDataUri(storedImage);
     } else {
       // If no image is in session storage, maybe redirect back to camera page
-      // router.push('/create/remix/postcard');
+      // For now, we'll just show the loader indefinitely if no image is found
+      // A more robust solution might redirect: router.push('/create/remix/postcard');
     }
-  }, [router]);
+  }, []);
 
   if (!isClient || !photoDataUri) {
     return (
       <div className="container mx-auto py-8 text-center">
         <Loader2 className="mx-auto h-12 w-12 animate-spin mb-4" />
         <p>Loading your photo...</p>
+        <div className="mt-4">
+            <Button variant="outline" asChild>
+                <Link href="/create/remix/postcard">
+                    Go Back
+                </Link>
+            </Button>
+        </div>
       </div>
     );
   }
