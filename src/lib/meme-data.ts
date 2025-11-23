@@ -163,3 +163,40 @@ export const memeFactoryData: MemeCategory[] = [
     ],
   },
 ];
+
+
+export type StyleOption = {
+  id: string;
+  name: string;
+  description: string;
+  keywords: string;
+};
+
+export const characterStyles: StyleOption[] = [
+    { id: 'cs-1', name: 'Photorealistic', description: 'As real as a photograph. Perfect for absurd, uncanny valley humor.', keywords: 'photorealistic, hyper-detailed, cinematic photo' },
+    { id: 'cs-2', name: '3D Animated Character', description: 'The polished, friendly look of a modern animated movie.', keywords: '3D animated character, Pixar style, rendered in Blender, smooth textures' },
+    { id: 'cs-3', name: 'Classic Cartoon', description: 'A fun, 2D cartoon with bold outlines and flat colors.', keywords: 'classic cartoon style, 2D animation, bold outlines, Looney Tunes style' },
+    { id: 'cs-4', name: 'Simple Line Art', description: 'A clean, black and white outline, like a page from a coloring book. Minimalist and graphic.', keywords: 'simple line art, coloring book page, black and white, clean outlines, minimalist icon' },
+    { id: 'cs-5', name: 'Vintage Rubber Hose', description: 'The classic, bendy-limbed animation style of the 1930s (think early Mickey Mouse or Cuphead).', keywords: 'vintage 1930s rubber hose cartoon style, pie-eyed, black and white animation' },
+    { id: 'cs-6', name: 'Claymation Figure', description: 'The charming, handmade look of a character sculpted from clay.', keywords: 'claymation style, stop-motion animation, plasticine figure, sculpted from clay' },
+];
+
+export const sceneStyles: StyleOption[] = [
+    { id: 'ss-1', name: 'Full Color Photo', description: 'The default, realistic look. The world looks as real as the character.', keywords: '' },
+    { id: 'ss-2', name: 'Dramatic Black & White', description: 'A high-contrast, black and white world, like a classic film noir.', keywords: 'black and white photograph, film noir, high contrast, monochrome' },
+    { id: 'ss-3', name: 'Vibrant Watercolor', description: 'The entire scene is rendered as a beautiful, expressive watercolor.', keywords: 'vibrant watercolor painting, soft bleeding edges, painted on textured paper' },
+    { id: 'ss-4', name: 'Cozy Colored Pencil', description: 'The whole world has the soft, warm, and textured look of a colored pencil drawing.', keywords: 'colored pencil sketch, soft blending, layered colors, hand-drawn aesthetic' },
+    { id: 'ss-5', name: 'Gritty Graphic Novel', description: 'A high-contrast, inked look with dramatic shadows, like a page from a comic book.', keywords: 'graphic novel illustration, comic book style, inked, heavy shadows, Ben Day dots' },
+    { id: 'ss-6', name: 'Faded Vintage Photo', description: 'The nostalgic, sepia-toned or faded color look of an old photograph from the 1960s or 70s.', keywords: 'faded vintage photograph, sepia tone, retro, grainy film, circa 1970' },
+];
+
+export const outputFormats: StyleOption[] = [
+    { id: 'of-1', name: 'Standard Image', description: 'The clean, borderless image. Perfect for general-purpose sharing.', keywords: '' },
+    { id: 'of-2', name: 'Classic Meme', description: 'Adds space at the top and/or bottom for the iconic bold meme text.', keywords: 'meme format, space for text at top' },
+    { id: 'of-3', name: 'Postcard', description: 'Places the image within a classic postcard frame, complete with a stamp area and a "Greetings From..." feel.', keywords: 'vintage postcard frame, stamp, border' },
+    { id: 'of-4', name: 'Playing Card (扑克牌)', description: 'Formats the image as a playing card, with a decorative border and a corner symbol (e.g., King of Spades - K♠).', keywords: 'playing card design, King of Spades, decorative border, ornate, card face' },
+    { id: 'of-5', name: 'Tarot Card (塔罗牌)', description: 'An elegant and mystical format. Places the image within an ornate Tarot card frame, with a title at the bottom (e.g., "X - The Wheel of Fortune").', keywords: 'Tarot card design, The Fool, mystical, ornate border, intricate, Rider-Waite style' },
+    { id: 'of-6', name: 'Movie Poster', description: 'Adds a cinematic border, space for a title, and "coming soon" text, making the scene look like an ad for a blockbuster film.', keywords: 'movie poster format, cinematic border, title text, credit block' },
+];
+
+    
