@@ -84,7 +84,7 @@ export default function DeveloperStudioPage() {
   const [positivePrompt, setPositivePrompt] = useState('');
   const [negativePrompt, setNegativePrompt] = useState('');
 
-  const toast = useToast();
+  const { toast } = useToast();
 
   const handleGeneration = async (generationFn: () => Promise<{cardDataUri: string}>) => {
     setGenerationState('generating');
@@ -200,7 +200,7 @@ const aiStudioFormSchema = z.object({
   }),
 });
 
-function AiStudioTab({ onGenerate, setPromptOutput }: { onGenerate: Function, setPromptOutput: any }) {
+function AiStudioTab({ onGenerate, setPromptOutput }: { onGenerate: (fn: () => Promise<any>) => void, setPromptOutput: any }) {
     const form = useForm<z.infer<typeof aiStudioFormSchema>>({
         resolver: zodResolver(aiStudioFormSchema),
         defaultValues: { personalizedPrompt: '' },
@@ -295,7 +295,7 @@ function AiStudioTab({ onGenerate, setPromptOutput }: { onGenerate: Function, se
 
 // --- Tab 2: Remix Studio ---
 
-function RemixStudioTab({ onGenerate, setPromptOutput }: { onGenerate: Function, setPromptOutput: any }) {
+function RemixStudioTab({ onGenerate, setPromptOutput }: { onGenerate: (fn: () => Promise<any>) => void, setPromptOutput: any }) {
     return (
         <div className="space-y-6">
             <RemixStyle onGenerate={onGenerate} setPromptOutput={setPromptOutput} />
@@ -311,7 +311,7 @@ const remixStyleSchema = z.object({
   layoutLock: z.boolean(),
 });
 
-function RemixStyle({ onGenerate, setPromptOutput }: { onGenerate: Function, setPromptOutput: any }) {
+function RemixStyle({ onGenerate, setPromptOutput }: { onGenerate: (fn: () => Promise<any>) => void, setPromptOutput: any }) {
   const form = useForm<z.infer<typeof remixStyleSchema>>({ resolver: zodResolver(remixStyleSchema), defaultValues: { prompt: '', styleImage: undefined, layoutLock: false } });
   const [stylePreview, setStylePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -395,7 +395,7 @@ const modifyImageSchema = z.object({
   strength: z.number().min(0.1).max(1.0),
 });
 
-function ModifyImage({ onGenerate, setPromptOutput }: { onGenerate: Function, setPromptOutput: any }) {
+function ModifyImage({ onGenerate, setPromptOutput }: { onGenerate: (fn: () => Promise<any>) => void, setPromptOutput: any }) {
   const form = useForm<z.infer<typeof modifyImageSchema>>({ resolver: zodResolver(modifyImageSchema), defaultValues: { prompt: '', baseImage: undefined, strength: 0.5 } });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [strengthLabel, setStrengthLabel] = useState('Balanced');
@@ -543,8 +543,26 @@ const RefinementSection = ({ title, options, value, onValueChange, categoryKey }
     const isMultiSelect = ['composition', 'lighting', 'artisticMedium', 'colorPalette', 'texture'].includes(categoryKey);
     const [isOpen, setIsOpen] = useState(categoryKey === 'aspectRatio');
 
-    const handleValueChange = (val: any) => {
-        onValueChange(val);
+    const handleValueChange = (selectedValue: string) => {
+        if (isMultiSelect) {
+            // Find which category the selected value belongs to
+            let changedCategoryKey: string | null = null;
+            for (const category of options) {
+                if (category.options.some((opt: any) => opt.value === selectedValue)) {
+                    changedCategoryKey = category.key;
+                    break;
+                }
+            }
+            if (changedCategoryKey) {
+                onValueChange({ ...value, [changedCategoryKey]: selectedValue });
+            }
+        } else {
+            onValueChange(selectedValue);
+        }
+    };
+    
+    const handleClear = (categoryKeyToClear: string) => {
+        onValueChange({ ...value, [categoryKeyToClear]: undefined });
     };
 
     return (
@@ -559,7 +577,7 @@ const RefinementSection = ({ title, options, value, onValueChange, categoryKey }
                     <div key={category.category} className="mt-4 first:mt-0">
                         <h4 className="font-semibold text-sm mb-1">{category.category}</h4>
                         <p className="text-xs text-muted-foreground mb-2">{category.description}</p>
-                        <RadioGroup value={value[category.key]} onValueChange={(selectedValue) => handleValueChange({ ...value, [category.key]: selectedValue })} className="grid gap-2">
+                        <RadioGroup value={value[category.key]} onValueChange={handleValueChange} className="grid gap-2">
                         {category.options.map((option: any) => (
                             <div key={option.id} className="p-2 rounded-md border border-transparent has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/5">
                                 <div className="flex items-start space-x-2">
@@ -572,11 +590,11 @@ const RefinementSection = ({ title, options, value, onValueChange, categoryKey }
                             </div>
                         ))}
                         </RadioGroup>
-                        {value[category.key] && <Button variant="ghost" size="sm" className="mt-2 text-destructive" onClick={() => handleValueChange({ ...value, [category.key]: undefined })}><XCircle className="mr-1 h-4 w-4" />Clear</Button>}
+                        {value[category.key] && <Button variant="ghost" size="sm" className="mt-2 text-destructive" onClick={() => handleClear(category.key)}><XCircle className="mr-1 h-4 w-4" />Clear</Button>}
                     </div>
                     ))
                 ) : (
-                    <RadioGroup value={value} onValueChange={handleValueChange}>
+                    <RadioGroup value={value} onValueChange={onValueChange}>
                         {options.map((option:any) => (
                             <div key={option.id} className="flex items-center space-x-2">
                                 <RadioGroupItem value={option.value} id={option.id} />
@@ -598,5 +616,3 @@ const fileToBase64 = (file: File): Promise<string> => {
         reader.onerror = (error) => reject(error);
     });
 };
-
-    
