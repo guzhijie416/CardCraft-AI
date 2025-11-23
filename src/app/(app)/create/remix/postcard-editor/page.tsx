@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -31,9 +31,7 @@ export default function PostcardEditorPage() {
     if (storedImage) {
       setPhotoDataUri(storedImage);
     } else {
-      // If no image is in session storage, maybe redirect back to camera page
-      // For now, we'll just show the loader indefinitely if no image is found
-      // A more robust solution might redirect: router.push('/create/remix/postcard');
+      // router.push('/create/remix/postcard');
     }
   }, []);
 
