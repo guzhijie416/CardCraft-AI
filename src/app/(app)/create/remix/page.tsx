@@ -3,16 +3,16 @@
 
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Camera, Image as ImageIcon, TextSearch, Brush } from 'lucide-react';
+import { Camera, Image as ImageIcon, TextSearch, Brush, Mail } from 'lucide-react';
 
 export default function CreateRemixPage() {
   const creationOptions = [
     {
-      title: 'Postcard from Camera',
-      description: 'Take a photo and use it as the background for a fun, AI-enhanced postcard.',
-      icon: Camera,
-      href: '/create/remix/camera',
-      linkText: 'Use Camera',
+      title: 'Create a Postcard',
+      description: 'Use your own photo to create a fun, AI-enhanced postcard to share with friends and family.',
+      icon: Mail,
+      href: '/create/remix/postcard',
+      linkText: 'Create Postcard',
     },
     {
       title: 'Remix with Style',
