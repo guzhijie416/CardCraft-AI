@@ -217,7 +217,6 @@ function AiStudioTab({ onGenerate, setPromptOutput }: { onGenerate: Function, se
         artisticMedium: false, colorPalette: false, composition: false, lighting: false, texture: false
     });
     
-    // This is a simplified version for the dev studio
     const onSubmit = (data: z.infer<typeof aiStudioFormSchema>) => {
         const fullArtisticMediumPrompt = Object.values(artisticMedium).filter(Boolean).join(', ');
         const fullCompositionPrompt = Object.values(composition).filter(Boolean).join(', ');
@@ -234,7 +233,7 @@ function AiStudioTab({ onGenerate, setPromptOutput }: { onGenerate: Function, se
             fullTexturePrompt,
         ].filter(Boolean).join(', ');
 
-        setPromptOutput.setPositivePrompt(finalPrompt); // Update inspector
+        setPromptOutput.setPositivePrompt(finalPrompt);
 
         const generationFn = () => generateCardAction({
             masterPrompt: 'Developer Studio Generation',
@@ -332,7 +331,7 @@ function RemixStyle({ onGenerate, setPromptOutput }: { onGenerate: Function, set
     const imageFile = data.styleImage[0] as File;
     const photoDataUri = await fileToBase64(imageFile);
 
-    setPromptOutput.setPositivePrompt(data.prompt); // Update inspector
+    setPromptOutput.setPositivePrompt(data.prompt);
     setPromptOutput.setNegativePrompt('');
 
     const generationFn = () => generateCardAction({
