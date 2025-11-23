@@ -19,6 +19,10 @@ import type { GenerateRefinedPromptInput } from '@/ai/flows/generate-refined-pro
 import { generatePromptFromImage } from '@/ai/flows/generate-prompt-from-image';
 import type { GeneratePromptFromImageInput } from '@/ai/flows/generate-prompt-from-image';
 
+import { generateMemePrompt } from '@/ai/flows/generate-meme-prompt';
+import type { GenerateMemePromptInput } from '@/ai/flows/generate-meme-prompt';
+
+
 export async function analyzePromptAction(input: SummarizeAndImproveUserPromptInput) {
   try {
     return await summarizeAndImproveUserPrompt(input);
@@ -94,5 +98,15 @@ export async function generatePostcardImageAction(input: {location: string, styl
         console.error('Error in generatePostcardImageAction:', error);
         const message = error instanceof Error ? error.message : 'Failed to generate the postcard image.';
         throw new Error(message);
+    }
+}
+
+
+export async function generateMemePromptAction(input: GenerateMemePromptInput) {
+    try {
+        return await generateMemePrompt(input);
+    } catch (error) {
+        console.error('Error in generateMemePromptAction:', error);
+        throw new Error('Failed to generate the meme prompt.');
     }
 }
