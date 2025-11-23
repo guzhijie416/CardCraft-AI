@@ -1,3 +1,4 @@
+
 'use server';
 
 import { generateAiCardFromPrompt } from '@/ai/flows/generate-ai-card-from-prompt';
@@ -73,5 +74,25 @@ export async function generatePromptFromImageAction(input: GeneratePromptFromIma
     } catch (error) {
         console.error('Error in generatePromptFromImageAction:', error);
         throw new Error('Failed to generate a prompt from the image.');
+    }
+}
+
+export async function generatePostcardImageAction(input: {location: string, style: 'photorealistic' | 'watercolor'}) {
+    try {
+        const stylePrompt = input.style === 'watercolor'
+            ? 'a beautiful watercolor painting of'
+            : 'a stunning, high-resolution, photorealistic photograph of';
+
+        const personalizedPrompt = `${stylePrompt} ${input.location}, travel postcard`;
+        
+        return await generateAiCardFromPrompt({
+            masterPrompt: 'A travel postcard.',
+            personalizedPrompt: personalizedPrompt,
+            aspectRatio: '16:9' // Landscape for postcards
+        });
+    } catch (error) {
+        console.error('Error in generatePostcardImageAction:', error);
+        const message = error instanceof Error ? error.message : 'Failed to generate the postcard image.';
+        throw new Error(message);
     }
 }

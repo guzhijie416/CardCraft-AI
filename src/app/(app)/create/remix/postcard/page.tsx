@@ -1,7 +1,7 @@
 
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Camera, UploadCloud } from 'lucide-react';
+import { Camera, UploadCloud, Sparkles } from 'lucide-react';
 
 export default function PostcardStartPage() {
   const options = [
@@ -17,6 +17,12 @@ export default function PostcardStartPage() {
       icon: UploadCloud,
       href: '/create/remix/postcard/upload',
     },
+    {
+      title: 'Generate with AI',
+      description: 'Describe a location or scene and let our AI create the perfect postcard image for you.',
+      icon: Sparkles,
+      href: '/create/remix/postcard/generate',
+    },
   ];
 
   return (
@@ -26,7 +32,7 @@ export default function PostcardStartPage() {
         <p className="text-muted-foreground mt-2 text-lg">How would you like to start?</p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
         {options.map((option) => (
           <Link href={option.href} key={option.title} className="block">
             <Card className="h-full text-center p-8 flex flex-col items-center justify-center transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:border-primary">
