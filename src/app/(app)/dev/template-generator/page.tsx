@@ -236,13 +236,11 @@ function AiStudioTab({ onGenerate, setPromptOutput }: { onGenerate: Function, se
         setPromptOutput.setPositivePrompt(finalPrompt);
         setPromptOutput.setNegativePrompt(''); // Reset negative prompt for this action
 
-        const generationFn = () => generateCardAction({
+        onGenerate(() => generateCardAction({
             masterPrompt: 'Developer Studio Generation',
             personalizedPrompt: finalPrompt,
             aspectRatio: aspectRatio,
-        });
-
-        onGenerate(generationFn);
+        }));
     };
 
     const isLoading = form.formState.isSubmitting;
@@ -336,13 +334,12 @@ function RemixStyle({ onGenerate, setPromptOutput }: { onGenerate: Function, set
     setPromptOutput.setPositivePrompt(data.prompt);
     setPromptOutput.setNegativePrompt('');
 
-    const generationFn = () => generateCardAction({
+    onGenerate(() => generateCardAction({
         masterPrompt: data.layoutLock ? "Generate using reference layout." : "Apply style from reference image.",
         personalizedPrompt: data.prompt,
         photoDataUri: photoDataUri,
         layoutLock: data.layoutLock,
-    });
-    onGenerate(generationFn);
+    }));
   };
   
   return (
@@ -422,13 +419,12 @@ function ModifyImage({ onGenerate, setPromptOutput }: { onGenerate: Function, se
     setPromptOutput.setPositivePrompt(data.prompt);
     setPromptOutput.setNegativePrompt('');
 
-    const generationFn = () => generateCardAction({
+    onGenerate(() => generateCardAction({
         masterPrompt: "Modify the provided image.",
         personalizedPrompt: data.prompt,
         photoDataUri: photoDataUri,
         modificationStrength: data.strength,
-    });
-    onGenerate(generationFn);
+    }));
   };
   
   const handleStrengthChange = (value: number[]) => {
