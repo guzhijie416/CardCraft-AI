@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Camera } from 'lucide-react';
+import { Camera, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
@@ -66,9 +66,11 @@ export default function PostcardCameraPage() {
     if (videoRef.current && canvasRef.current) {
       const video = videoRef.current;
       const canvas = canvasRef.current;
+      
       // Set canvas to the video's dimensions to capture the full frame
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
+      
       const context = canvas.getContext('2d');
       if (context) {
         context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
@@ -84,7 +86,8 @@ export default function PostcardCameraPage() {
   if (!isClient || hasCameraPermission === null) {
     return (
       <div className="container mx-auto py-8 text-center">
-        <p>Requesting camera permission...</p>
+        <Loader2 className="mx-auto h-8 w-8 animate-spin" />
+        <p className="mt-2 text-muted-foreground">Requesting camera permission...</p>
       </div>
     );
   }
@@ -97,18 +100,19 @@ export default function PostcardCameraPage() {
           <CardDescription>Take a photo to turn into a custom postcard.</CardDescription>
         </CardHeader>
         <CardContent>
-          {hasCameraPermission === false && (
-            <Alert variant="destructive">
-              <AlertTitle>Camera Access Required</AlertTitle>
-              <AlertDescription>
-                Please allow camera access in your browser to use this feature.
-              </AlertDescription>
-            </Alert>
-          )}
-          
           <div className="relative aspect-video w-full rounded-md overflow-hidden border bg-muted">
             <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
             <canvas ref={canvasRef} className="hidden" />
+            {hasCameraPermission === false && (
+                <div className="absolute inset-0 flex items-center justify-center p-4">
+                    <Alert variant="destructive">
+                    <AlertTitle>Camera Access Required</AlertTitle>
+                    <AlertDescription>
+                        Please allow camera access in your browser to use this feature.
+                    </AlertDescription>
+                    </Alert>
+                </div>
+            )}
           </div>
 
           <div className="mt-4 flex justify-center">
