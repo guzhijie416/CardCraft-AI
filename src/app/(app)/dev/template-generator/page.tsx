@@ -234,6 +234,7 @@ function AiStudioTab({ onGenerate, setPromptOutput }: { onGenerate: Function, se
         ].filter(Boolean).join(', ');
 
         setPromptOutput.setPositivePrompt(finalPrompt);
+        setPromptOutput.setNegativePrompt(''); // Reset negative prompt for this action
 
         const generationFn = () => generateCardAction({
             masterPrompt: 'Developer Studio Generation',
@@ -316,6 +317,7 @@ function RemixStyle({ onGenerate, setPromptOutput }: { onGenerate: Function, set
   const form = useForm<z.infer<typeof remixStyleSchema>>({ resolver: zodResolver(remixStyleSchema), defaultValues: { prompt: '', styleImage: undefined, layoutLock: false } });
   const [stylePreview, setStylePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const isLoading = form.formState.isSubmitting;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -352,12 +354,11 @@ function RemixStyle({ onGenerate, setPromptOutput }: { onGenerate: Function, set
         <CardContent>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    {/* Form fields for style image upload and prompt */}
                     <div className="grid md:grid-cols-2 gap-4">
                          <FormField control={form.control} name="styleImage" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Style Reference Image</FormLabel>
-                                <FormControl><Input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} className="hidden" /></FormControl>
+                                <FormControl><Input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} className="hidden" disabled={isLoading} /></FormControl>
                                 <Card className="border-2 border-dashed hover:border-primary cursor-pointer aspect-video flex items-center justify-center text-muted-foreground" onClick={() => fileInputRef.current?.click()}>
                                     {stylePreview ? <Image src={stylePreview} alt="Style preview" width={400} height={250} className="object-contain h-full w-full rounded-md" /> : <div className="text-center"><UploadCloud className="mx-auto h-12 w-12" /><p>Click to upload</p></div>}
                                 </Card>
@@ -368,19 +369,22 @@ function RemixStyle({ onGenerate, setPromptOutput }: { onGenerate: Function, set
                              <FormField control={form.control} name="prompt" render={({ field }) => (
                                 <FormItem>
                                 <FormLabel>New Image Content</FormLabel>
-                                <FormControl><Textarea placeholder="e.g., 'A portrait of a robot cat'" rows={4} {...field} /></FormControl>
+                                <FormControl><Textarea placeholder="e.g., 'A portrait of a robot cat'" rows={4} {...field} disabled={isLoading} /></FormControl>
                                 <FormMessage />
                                 </FormItem>
                             )} />
                             <FormField control={form.control} name="layoutLock" render={({ field }) => (
                                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-muted/30">
                                     <div className="space-y-0.5"><FormLabel>Lock Original Composition</FormLabel><CardDescription>Keeps the layout, replaces the style.</CardDescription></div>
-                                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} disabled={isLoading} /></FormControl>
                                 </FormItem>
                             )} />
                         </div>
                     </div>
-                    <Button type="submit" className="w-full">Generate Remix</Button>
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                       {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
+                        Generate Remix
+                    </Button>
                 </form>
             </Form>
         </CardContent>
@@ -399,6 +403,7 @@ function ModifyImage({ onGenerate, setPromptOutput }: { onGenerate: Function, se
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [strengthLabel, setStrengthLabel] = useState('Balanced');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const isLoading = form.formState.isSubmitting;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -447,7 +452,7 @@ function ModifyImage({ onGenerate, setPromptOutput }: { onGenerate: Function, se
                         <FormField control={form.control} name="baseImage" render={() => (
                             <FormItem>
                                 <FormLabel>Base Image</FormLabel>
-                                <FormControl><Input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} className="hidden" /></FormControl>
+                                <FormControl><Input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} className="hidden" disabled={isLoading} /></FormControl>
                                 <Card className="border-2 border-dashed hover:border-primary cursor-pointer aspect-video flex items-center justify-center text-muted-foreground" onClick={() => fileInputRef.current?.click()}>
                                     {imagePreview ? <Image src={imagePreview} alt="Base image preview" width={400} height={250} className="object-contain h-full w-full rounded-md" /> : <div className="text-center"><UploadCloud className="mx-auto h-12 w-12" /><p>Click to upload</p></div>}
                                 </Card>
@@ -458,19 +463,22 @@ function ModifyImage({ onGenerate, setPromptOutput }: { onGenerate: Function, se
                             <FormField control={form.control} name="prompt" render={({ field }) => (
                                 <FormItem>
                                 <FormLabel>Describe Your Changes</FormLabel>
-                                <FormControl><Textarea placeholder="e.g., 'Change the dog to a cat'" rows={3} {...field} /></FormControl>
+                                <FormControl><Textarea placeholder="e.g., 'Change the dog to a cat'" rows={3} {...field} disabled={isLoading} /></FormControl>
                                 <FormMessage />
                                 </FormItem>
                             )} />
                             <FormField control={form.control} name="strength" render={() => (
                                 <FormItem>
                                     <FormLabel>Modification Strength: <span className="font-bold text-primary">{strengthLabel}</span></FormLabel>
-                                    <FormControl><Slider defaultValue={[0.5]} min={0.1} max={1.0} step={0.05} onValueChange={handleStrengthChange} /></FormControl>
+                                    <FormControl><Slider defaultValue={[0.5]} min={0.1} max={1.0} step={0.05} onValueChange={handleStrengthChange} disabled={isLoading} /></FormControl>
                                 </FormItem>
                             )} />
                         </div>
                     </div>
-                    <Button type="submit" className="w-full">Generate Modification</Button>
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                       {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
+                        Generate Modification
+                    </Button>
                 </form>
             </Form>
         </CardContent>
