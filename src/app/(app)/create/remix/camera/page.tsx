@@ -65,6 +65,7 @@ export default function PostcardCameraPage() {
       const video = videoRef.current;
       const canvas = canvasRef.current;
       
+      // Set canvas dimensions to match video to ensure correct capture
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       

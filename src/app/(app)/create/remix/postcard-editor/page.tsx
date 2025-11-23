@@ -31,9 +31,11 @@ export default function PostcardEditorPage() {
     if (storedImage) {
       setPhotoDataUri(storedImage);
     } else {
-      // router.push('/create/remix/postcard');
+      // If no image is found, redirect back to the start of the postcard flow.
+      // This can happen if the user navigates here directly.
+      router.push('/create/remix/postcard');
     }
-  }, []);
+  }, [router]);
 
   if (!isClient || !photoDataUri) {
     return (
@@ -43,7 +45,7 @@ export default function PostcardEditorPage() {
         <div className="mt-4">
             <Button variant="outline" asChild>
                 <Link href="/create/remix/postcard">
-                    Go Back
+                    Start Over
                 </Link>
             </Button>
         </div>
