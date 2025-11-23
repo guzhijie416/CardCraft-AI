@@ -29,6 +29,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collap
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import type { GenerateRefinedPromptOutput } from '@/ai/flows/generate-refined-prompt';
 import { Badge } from './ui/badge';
+import { cn } from '@/lib/utils';
 
 
 const formSchema = z.object({
@@ -41,6 +42,8 @@ type EditorState = 'idle' | 'analyzing' | 'needs_improvement' | 'generating' | '
 type MessageState = 'idle' | 'generating' | 'done' | 'error';
 type RefinedPromptState = 'idle' | 'generating' | 'done' | 'error';
 type AspectRatioType = '9:16' | '16:9' | '1:1';
+type FontType = 'body' | 'just-another-hand' | 'caveat';
+
 
 type CompositionState = {
   framing?: string;
@@ -341,6 +344,8 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
   const [lighting, setLighting] = useState<LightingState>({});
   const [texture, setTexture] = useState<TextureState>({});
   const [aspectRatio, setAspectRatio] = useState<AspectRatioType>('9:16');
+  const [selectedFont, setSelectedFont] = useState<FontType>('body');
+
 
   // State for collapsible sections
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
@@ -513,6 +518,12 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
 
   const canGenerateRefinedPrompt = isLoading || isRefining || (!form.getValues('personalizedPrompt') && !isAnyRefinementSelected);
 
+  const fontClasses = {
+    'body': 'font-body',
+    'just-another-hand': 'font-just-another-hand text-4xl',
+    'caveat': 'font-caveat text-3xl',
+  }
+
   if (editorState === 'done' && finalCardUri) {
     return (
       <Card className="w-full max-w-2xl mx-auto">
@@ -525,7 +536,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
             <Image src={finalCardUri} alt="Generated AI card" fill className="object-contain" />
             {personalMessage && (
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 flex items-end justify-center p-8">
-                    <p className="text-white text-center text-xl font-body">{personalMessage}</p>
+                    <p className={cn("text-white text-center text-xl", fontClasses[selectedFont])}>{personalMessage}</p>
                 </div>
             )}
           </div>
@@ -547,6 +558,24 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                 value={personalMessage}
                 onChange={(e) => setPersonalMessage(e.target.value)}
               />
+          </div>
+
+          <div className="w-full space-y-2">
+            <Label>Choose a Font</Label>
+            <RadioGroup value={selectedFont} onValueChange={(v) => setSelectedFont(v as FontType)} className="flex gap-4">
+                <div>
+                    <RadioGroupItem value="body" id="font-body" className="peer sr-only"/>
+                    <Label htmlFor="font-body" className="block p-2 border-2 border-muted bg-popover hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary rounded-md cursor-pointer font-body text-lg">Serif</Label>
+                </div>
+                <div>
+                    <RadioGroupItem value="just-another-hand" id="font-jah" className="peer sr-only"/>
+                    <Label htmlFor="font-jah" className="block p-2 border-2 border-muted bg-popover hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary rounded-md cursor-pointer font-just-another-hand text-2xl">Handwriting</Label>
+                </div>
+                <div>
+                    <RadioGroupItem value="caveat" id="font-caveat" className="peer sr-only"/>
+                    <Label htmlFor="font-caveat" className="block p-2 border-2 border-muted bg-popover hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary rounded-md cursor-pointer font-caveat text-xl">Cursive</Label>
+                </div>
+            </RadioGroup>
           </div>
 
           {messageState !== 'done' && (

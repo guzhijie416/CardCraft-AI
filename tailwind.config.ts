@@ -12,6 +12,8 @@ export default {
       fontFamily: {
         body: ['Alegreya', 'serif'],
         headline: ['Pacifico', 'cursive'],
+        'just-another-hand': ['"Just Another Hand"', 'cursive'],
+        caveat: ['Caveat', 'cursive'],
         code: ['monospace'],
       },
       colors: {
