@@ -19,7 +19,7 @@ const SummarizeAndImproveUserPromptInputSchema = z.object({
     .string()
     .describe('The master prompt providing the overall theme for the AI card.'),
 });
-export type SummarizeAndImproveUserPromptInput = z.infer<
+type SummarizeAndImproveUserPromptInput = z.infer<
   typeof SummarizeAndImproveUserPromptInputSchema
 >;
 
@@ -34,7 +34,7 @@ const SummarizeAndImproveUserPromptOutputSchema = z.object({
     .describe('A refined version of the user prompt for better AI generation results.'),
   isGoodPrompt: z.boolean().describe('Whether the original user prompt is high quality.'),
 });
-export type SummarizeAndImproveUserPromptOutput = z.infer<
+type SummarizeAndImproveUserPromptOutput = z.infer<
   typeof SummarizeAndImproveUserPromptOutputSchema
 >;
 

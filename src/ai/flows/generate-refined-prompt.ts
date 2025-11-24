@@ -19,12 +19,12 @@ const GenerateRefinedPromptInputSchema = z.object({
   lighting: z.string().optional().describe('e.g., "soft diffused lighting", "dramatic, high-contrast lighting", "golden hour glow".'),
   texture: z.string().optional().describe('e.g., "textured paper", "embossed details", "gold foil accents".'),
 });
-export type GenerateRefinedPromptInput = z.infer<typeof GenerateRefinedPromptInputSchema>;
+type GenerateRefinedPromptInput = z.infer<typeof GenerateRefinedPromptInputSchema>;
 
 const GenerateRefinedPromptOutputSchema = z.object({
   refinedPrompt: z.string().describe('The detailed, high-quality prompt suitable for an image generation model.'),
 });
-export type GenerateRefinedPromptOutput = z.infer<typeof GenerateRefinedPromptOutputSchema>;
+type GenerateRefinedPromptOutput = z.infer<typeof GenerateRefinedPromptOutputSchema>;
 
 export async function generateRefinedPrompt(
   input: GenerateRefinedPromptInput

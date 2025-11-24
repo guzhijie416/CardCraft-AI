@@ -16,7 +16,7 @@ const FilterAIContentInputSchema = z.object({
     .string()
     .describe('The AI-generated content to be checked for safety.'),
 });
-export type FilterAIContentInput = z.infer<typeof FilterAIContentInputSchema>;
+type FilterAIContentInput = z.infer<typeof FilterAIContentInputSchema>;
 
 const FilterAIContentOutputSchema = z.object({
   isSafe: z
@@ -29,7 +29,7 @@ const FilterAIContentOutputSchema = z.object({
     .optional()
     .describe('The reason why the content was considered unsafe.'),
 });
-export type FilterAIContentOutput = z.infer<typeof FilterAIContentOutputSchema>;
+type FilterAIContentOutput = z.infer<typeof FilterAIContentOutputSchema>;
 
 export async function filterAIContent(input: FilterAIContentInput): Promise<FilterAIContentOutput> {
   return filterAIContentFlow(input);

@@ -19,12 +19,12 @@ const GenerateAiCardFromPromptInputSchema = z.object({
   aspectRatio: z.enum(['1:1', '16:9', '9:16']).optional().describe('The desired aspect ratio for the generated image.'),
   layoutLock: z.boolean().optional().describe('If true, lock the composition of the provided image and apply the prompt as a new theme.')
 });
-export type GenerateAiCardFromPromptInput = z.infer<typeof GenerateAiCardFromPromptInputSchema>;
+type GenerateAiCardFromPromptInput = z.infer<typeof GenerateAiCardFromPromptInputSchema>;
 
 const GenerateAiCardFromPromptOutputSchema = z.object({
   cardDataUri: z.string().describe('The generated card as a data URI (e.g., image/png;base64,...).'),
 });
-export type GenerateAiCardFromPromptOutput = z.infer<typeof GenerateAiCardFromPromptOutputSchema>;
+type GenerateAiCardFromPromptOutput = z.infer<typeof GenerateAiCardFromPromptOutputSchema>;
 
 export async function generateAiCardFromPrompt(input: GenerateAiCardFromPromptInput): Promise<GenerateAiCardFromPromptOutput> {
   return generateAiCardFromPromptFlow(input);
@@ -89,4 +89,3 @@ const generateAiCardFromPromptFlow = ai.defineFlow(
     return { cardDataUri: media.url };
   }
 );
-

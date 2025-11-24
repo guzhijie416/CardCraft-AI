@@ -15,12 +15,12 @@ const GenerateCardMessageInputSchema = z.object({
   prompt: z.string().describe('The prompt to guide the message generation. This can be a master prompt or a custom user prompt.'),
   occasion: z.string().describe('The occasion for the card (e.g., "birthday", "wedding") to provide context.'),
 });
-export type GenerateCardMessageInput = z.infer<typeof GenerateCardMessageInputSchema>;
+type GenerateCardMessageInput = z.infer<typeof GenerateCardMessageInputSchema>;
 
 const GenerateCardMessageOutputSchema = z.object({
   messages: z.array(z.string()).describe('An array of 3-5 generated message suggestions.'),
 });
-export type GenerateCardMessageOutput = z.infer<typeof GenerateCardMessageOutputSchema>;
+type GenerateCardMessageOutput = z.infer<typeof GenerateCardMessageOutputSchema>;
 
 export async function generateCardMessage(
   input: GenerateCardMessageInput

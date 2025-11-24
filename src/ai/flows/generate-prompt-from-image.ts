@@ -19,12 +19,12 @@ const GeneratePromptFromImageInputSchema = z.object({
       "A photo to be analyzed, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
 });
-export type GeneratePromptFromImageInput = z.infer<typeof GeneratePromptFromImageInputSchema>;
+type GeneratePromptFromImageInput = z.infer<typeof GeneratePromptFromImageInputSchema>;
 
 const GeneratePromptFromImageOutputSchema = z.object({
   generatedPrompt: z.string().describe('The rich, descriptive text prompt generated from the image.'),
 });
-export type GeneratePromptFromImageOutput = z.infer<typeof GeneratePromptFromImageOutputSchema>;
+type GeneratePromptFromImageOutput = z.infer<typeof GeneratePromptFromImageOutputSchema>;
 
 export async function generatePromptFromImage(
   input: GeneratePromptFromImageInput
