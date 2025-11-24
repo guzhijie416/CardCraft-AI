@@ -92,6 +92,10 @@ export default function AnimateStudioPage() {
             prompt: data.animationPrompt,
         });
 
+        if (!result || !result.videoUrl) {
+            throw new Error("The AI failed to generate a video. Please try again.");
+        }
+
         setAnimatedVideoUri(result.videoUrl);
         setGenerationState('done');
         toast({ title: 'Animation Complete!', description: 'Your scene is now alive.' });
@@ -232,7 +236,7 @@ export default function AnimateStudioPage() {
                         )}
                     </Card>
                     
-                    {generationState === 'done' && (
+                    {generationState === 'done' && animatedVideoUri && (
                         <div className="grid grid-cols-2 gap-2">
                              <a href={animatedVideoUri!} download="cardcraft-animation.mp4">
                                 <Button className="w-full">
