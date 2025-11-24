@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: 'CardCraft AI',
@@ -28,6 +29,7 @@ export default function RootLayout({
           {children}
           <Toaster />
         </FirebaseClientProvider>
+        <Script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js" />
       </body>
     </html>
   );

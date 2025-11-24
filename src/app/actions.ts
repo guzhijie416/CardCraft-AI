@@ -99,25 +99,3 @@ export async function generateMemePromptAction(input: GenerateMemePromptInput) {
         throw new Error('Failed to generate the meme prompt.');
     }
 }
-
-export async function generateAnimatedSceneAction(input: { animationPrompt: string; staticImageUrl: string; }) {
-  try {
-    const videoResult = await generateVideoFromImage({
-      imageUrl: input.staticImageUrl,
-      prompt: input.animationPrompt,
-    });
-    
-    if (!videoResult || !videoResult.videoUrl) {
-      throw new Error('Failed to generate the animation from the scene.');
-    }
-
-    return {
-      animatedVideoUrl: videoResult.videoUrl,
-    };
-
-  } catch (error) {
-    console.error('Error in generateAnimatedSceneAction:', error);
-    const message = error instanceof Error ? error.message : 'An unknown error occurred during the animation process.';
-    throw new Error(message);
-  }
-}

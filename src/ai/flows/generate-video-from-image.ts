@@ -62,23 +62,30 @@ const generateVideoFromImageFlow = ai.defineFlow(
     if (!video || !video.media?.url) {
         throw new Error('Failed to find the generated video in the operation output');
     }
-
+    
     // The URL from VEO is temporary. We fetch the raw video data and convert it to a
     // permanent Base64 Data URI to send to the client. This must be done on the server.
     const fetch = (await import('node-fetch')).default;
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error('GEMINI_API_KEY environment variable is not set.');
+    }
+    
     const videoDownloadResponse = await fetch(
-      `${video.media.url}&key=${process.env.GEMINI_API_KEY}`
+      `${video.media.url}&key=${apiKey}`
     );
+
      if (
       !videoDownloadResponse ||
       videoDownloadResponse.status !== 200 ||
       !videoDownloadResponse.body
     ) {
-      throw new Error('Failed to download video from temporary URL provided by the model.');
+      throw new Error(`Failed to download video from temporary URL. Status: ${videoDownloadResponse.status}`);
     }
-    const buffer = await videoDownloadResponse.buffer();
+
+    const buffer = await videoDownloadResponse.arrayBuffer();
     const contentType = video.media?.contentType || videoDownloadResponse.headers.get('content-type') || 'video/mp4';
-    const videoDataUri = `data:${contentType};base64,${buffer.toString('base64')}`;
+    const videoDataUri = `data:${contentType};base64,${Buffer.from(buffer).toString('base64')}`;
 
     return { videoUrl: videoDataUri };
   }
