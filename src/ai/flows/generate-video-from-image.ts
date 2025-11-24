@@ -18,27 +18,6 @@ export async function generateVideoFromImage(
   return generateVideoFromImageFlow(input);
 }
 
-
-async function toBase64(video: MediaPart): Promise<string> {
-    const fetch = (await import('node-fetch')).default;
-    // Add API key before fetching the video.
-    const videoDownloadResponse = await fetch(
-      `${video.media!.url}&key=${process.env.GEMINI_API_KEY}`
-    );
-    if (
-      !videoDownloadResponse ||
-      videoDownloadResponse.status !== 200 ||
-      !videoDownloadResponse.body
-    ) {
-      throw new Error('Failed to fetch video');
-    }
-
-    const buffer = await videoDownloadResponse.buffer();
-    const contentType = video.media?.contentType || videoDownloadResponse.headers.get('content-type') || 'video/mp4';
-    return `data:${contentType};base64,${buffer.toString('base64')}`;
-}
-
-
 const generateVideoFromImageFlow = ai.defineFlow(
   {
     name: 'generateVideoFromImageFlow',
@@ -60,7 +39,7 @@ const generateVideoFromImageFlow = ai.defineFlow(
       ],
       config: {
         durationSeconds: 5,
-        aspectRatio: '16:9', // Default for scenes
+        aspectRatio: '16:9', // You can make this dynamic if needed
         personGeneration: 'allow_adult',
       },
     });
@@ -70,7 +49,6 @@ const generateVideoFromImageFlow = ai.defineFlow(
     }
 
     // This can take up to a minute, maybe more.
-    // In a real app, you might want to increase the server action timeout.
     while (!operation.done) {
         console.log('Checking video generation status...');
         await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds
@@ -83,11 +61,25 @@ const generateVideoFromImageFlow = ai.defineFlow(
     }
     
     const video = operation.output?.message?.content.find((p: any) => !!p.media);
-    if (!video) {
+    if (!video || !video.media?.url) {
         throw new Error('Failed to find the generated video in the operation output');
     }
 
-    const videoDataUri = await toBase64(video as MediaPart);
+    // The URL from VEO is temporary, we need to fetch and convert to Base64 to make it permanent for the client.
+    const fetch = (await import('node-fetch')).default;
+    const videoDownloadResponse = await fetch(
+      `${video.media.url}&key=${process.env.GEMINI_API_KEY}`
+    );
+     if (
+      !videoDownloadResponse ||
+      videoDownloadResponse.status !== 200 ||
+      !videoDownloadResponse.body
+    ) {
+      throw new Error('Failed to fetch video from temporary URL');
+    }
+    const buffer = await videoDownloadResponse.buffer();
+    const contentType = video.media?.contentType || videoDownloadResponse.headers.get('content-type') || 'video/mp4';
+    const videoDataUri = `data:${contentType};base64,${buffer.toString('base64')}`;
 
     return { videoUrl: videoDataUri };
   }

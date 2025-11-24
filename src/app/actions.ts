@@ -9,13 +9,7 @@ import { generateRefinedPrompt } from '@/ai/flows/generate-refined-prompt';
 import { summarizeAndImproveUserPrompt } from '@/ai/flows/summarize-and-improve-user-prompt';
 import { filterAIContent } from '@/ai/flows/filter-ai-content-for-inappropriate-content';
 import { generateVideoFromImage } from '@/ai/flows/generate-video-from-image';
-import type { GenerateCardMessageInput } from '@/ai/flows/types';
-import type { GenerateMemePromptInput } from '@/ai/flows/types';
-import type { GeneratePromptFromImageInput } from '@/ai/flows/types';
-import type { GenerateRefinedPromptInput } from '@/ai/flows/types';
-import type { SummarizeAndImproveUserPromptInput } from '@/ai/flows/types';
-import type { FilterAIContentInput } from '@/ai/flows/types';
-import type { GenerateVideoFromImageInput } from '@/ai/flows/types';
+import type { GenerateCardMessageInput, GenerateMemePromptInput, GeneratePromptFromImageInput, GenerateRefinedPromptInput, SummarizeAndImproveUserPromptInput, FilterAIContentInput, GenerateVideoFromImageInput } from '@/ai/flows/types';
 
 
 export async function analyzePromptAction(input: SummarizeAndImproveUserPromptInput) {
@@ -106,21 +100,8 @@ export async function generateMemePromptAction(input: GenerateMemePromptInput) {
     }
 }
 
-export async function generateVideoFromImageAction(input: GenerateVideoFromImageInput) {
+export async function generateAnimatedSceneAction(input: { animationPrompt: string; staticImageUrl: string; }) {
   try {
-    // In a real app, you would add premium checks here.
-    return await generateVideoFromImage(input);
-  } catch (error) {
-    console.error('Error in generateVideoFromImageAction:', error);
-    const message = error instanceof Error ? error.message : 'Failed to generate the video.';
-    throw new Error(message);
-  }
-}
-
-
-export async function generateAnimatedSceneAction(input: { scenePrompt: string; animationPrompt: string; staticImageUrl: string; }) {
-  try {
-    // Step 2: Use the generated image to create the animation
     const videoResult = await generateVideoFromImage({
       imageUrl: input.staticImageUrl,
       prompt: input.animationPrompt,
@@ -130,9 +111,7 @@ export async function generateAnimatedSceneAction(input: { scenePrompt: string; 
       throw new Error('Failed to generate the animation from the scene.');
     }
 
-    // Step 3: Return both URLs
     return {
-      staticImageUrl: input.staticImageUrl,
       animatedVideoUrl: videoResult.videoUrl,
     };
 
