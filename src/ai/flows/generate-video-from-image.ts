@@ -15,7 +15,7 @@ import { Readable } from 'stream';
 import { MediaPart } from 'genkit';
 
 
-export const GenerateVideoFromImageInputSchema = z.object({
+const GenerateVideoFromImageInputSchema = z.object({
   imageUrl: z
     .string()
     .describe(
@@ -25,7 +25,7 @@ export const GenerateVideoFromImageInputSchema = z.object({
 });
 export type GenerateVideoFromImageInput = z.infer<typeof GenerateVideoFromImageInputSchema>;
 
-export const GenerateVideoFromImageOutputSchema = z.object({
+const GenerateVideoFromImageOutputSchema = z.object({
   videoUrl: z.string().describe('The data URI of the generated video.'),
 });
 export type GenerateVideoFromImageOutput = z.infer<typeof GenerateVideoFromImageOutputSchema>;
