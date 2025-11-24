@@ -8,7 +8,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import type { GenerateVideoFromImageInput, GenerateVideoFromImageOutput } from './types';
+import { GenerateVideoFromImageInputSchema, GenerateVideoFromImageOutputSchema, type GenerateVideoFromImageInput, type GenerateVideoFromImageOutput } from './types';
 
 export async function generateVideoFromImage(
   input: GenerateVideoFromImageInput
@@ -19,13 +19,8 @@ export async function generateVideoFromImage(
 const generateVideoFromImageFlow = ai.defineFlow(
   {
     name: 'generateVideoFromImageFlow',
-    inputSchema: {
-        imageUrl: '',
-        prompt: ''
-    },
-    outputSchema: {
-        videoUrl: ''
-    },
+    inputSchema: GenerateVideoFromImageInputSchema,
+    outputSchema: GenerateVideoFromImageOutputSchema,
   },
   async (input) => {
     let { operation } = await ai.generate({
