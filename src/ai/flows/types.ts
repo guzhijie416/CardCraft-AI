@@ -21,7 +21,7 @@ export type GenerateAiCardFromPromptInput = z.infer<typeof GenerateAiCardFromPro
 export const GenerateAiCardFromPromptOutputSchema = z.object({
   cardDataUri: z.string().describe('The generated card as a data URI (e.g., image/png;base64,...).'),
 });
-export type GenerateAiCardFromPromptOutput = z.infer<typeof GenerateAiCardFromPromptOutputSchema>;
+export type GenerateAiCardFromPromptOutput = zinfer<typeof GenerateAiCardFromPromptOutputSchema>;
 
 
 // --- filter-ai-content-for-inappropriate-content.ts ---

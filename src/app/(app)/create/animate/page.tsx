@@ -1,25 +1,22 @@
 
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { generateAnimatedSceneAction } from '@/app/actions';
+import { generateAnimatedSceneAction, generateCardAction } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, Wand2, Download, Repeat, Film, Wind, PartyPopper, Flame, Sparkle } from 'lucide-react';
-import { Label } from '@/components/ui/label';
+import { Loader2, Wand2, Download, Repeat, Wind, PartyPopper, Flame, Sparkle } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { cn } from '@/lib/utils';
-import { generateCardAction } from '@/app/actions';
 
-type Step = 'select_effect' | 'generate_scene' | 'animate' | 'done';
-type GenerationState = 'idle' | 'generating_image' | 'generating_video' | 'error';
+type Step = 'select_effect' | 'generate_scene' | 'done';
+type GenerationState = 'idle' | 'generating_image' | 'generating_video' | 'error' | 'done';
 
 const animationEffects = [
     { category: 'Atmosphere', icon: Wind, effects: [ { id: 'snow', name: 'Snow', prompt: 'make it snow gently' }, { id: 'rain', name: 'Rain', prompt: 'make it rain lightly' } ] },
@@ -172,17 +169,23 @@ export default function AnimateStudioPage() {
                                 </FormItem>
                             )}
                         />
-                         {generationState === 'error' && (
+                         {generationState === 'error' && errorMessage && (
                             <Alert variant="destructive" className="mt-4">
                                 <AlertTitle>Error</AlertTitle>
                                 <AlertDescription>{errorMessage}</AlertDescription>
                             </Alert>
                         )}
+                         {staticImageUri && generationState !== 'generating_video' && (
+                           <div className="mt-4">
+                               <p className="text-sm font-medium">Generated Scene:</p>
+                               <Image src={staticImageUri} width={400} height={225} alt="Generated static scene" className="rounded-md border mt-2" />
+                           </div>
+                         )}
                     </CardContent>
                     <CardFooter>
                         <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
                             {isLoading ? (
-                                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating Scene & Animating...</>
+                                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {generationState === 'generating_image' ? 'Generating Scene...' : 'Animating Scene...'}</>
                             ) : (
                                 <><Wand2 className="mr-2 h-4 w-4" /> Generate & Animate</>
                             )}
@@ -201,9 +204,11 @@ export default function AnimateStudioPage() {
                 <CardContent className="flex flex-col items-center gap-4">
                      <Card className="relative w-full aspect-video">
                          {animatedVideoUri ? (
-                            <video src={animatedVideoUri} controls autoPlay loop className="w-full h-full object-contain rounded-md" />
+                            <video src={animatedVideoUri} controls autoPlay loop className="w-full h-full object-contain rounded-md bg-black" />
                          ) : (
-                             <p>Video loading...</p>
+                             <div className="w-full h-full flex items-center justify-center bg-muted">
+                                <p>Video loading...</p>
+                             </div>
                          )}
                     </Card>
                      {generationState === 'error' && (
@@ -233,14 +238,19 @@ export default function AnimateStudioPage() {
   return (
     <div className="container mx-auto py-8">
       <Card className="w-full max-w-4xl mx-auto">
-        {isLoading && generationState !== 'error' && (
+        {isLoading ? (
              <CardContent className="p-8 flex flex-col items-center justify-center text-center gap-4 min-h-[400px]">
                 <Loader2 className="h-16 w-16 animate-spin text-primary"/>
                 <p className="text-muted-foreground text-lg">{generationState === 'generating_image' ? 'Generating your masterpiece...' : 'Animating the scene...'}</p>
                 <p className="text-sm text-muted-foreground">(This may take up to a minute!)</p>
+                {staticImageUri && (
+                    <div className="mt-4">
+                        <p className="text-xs font-medium">Generated Scene:</p>
+                        <Image src={staticImageUri} width={200} height={112} alt="Generated static scene" className="rounded-md border mt-1 opacity-50" />
+                    </div>
+                )}
             </CardContent>
-        )}
-        {!isLoading && renderContent()}
+        ) : renderContent()}
       </Card>
     </div>
   );

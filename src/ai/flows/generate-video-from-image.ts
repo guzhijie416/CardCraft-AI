@@ -5,29 +5,11 @@
  * @fileOverview Generates a short video from a static image and a text prompt using a generative AI model.
  *
  * - generateVideoFromImage - A function that orchestrates the video generation.
- * - GenerateVideoFromImageInput - The input type for the function.
- * - GenerateVideoFromImageOutput - The return type for the function.
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
 import type { MediaPart } from 'genkit';
-
-
-const GenerateVideoFromImageInputSchema = z.object({
-  imageUrl: z
-    .string()
-    .describe(
-      "The static image to animate, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
-    ),
-  prompt: z.string().describe('A text prompt describing the desired animation (e.g., "make the stars twinkle", "add falling confetti").'),
-});
-type GenerateVideoFromImageInput = z.infer<typeof GenerateVideoFromImageInputSchema>;
-
-const GenerateVideoFromImageOutputSchema = z.object({
-  videoUrl: z.string().describe('The data URI of the generated video.'),
-});
-type GenerateVideoFromImageOutput = z.infer<typeof GenerateVideoFromImageOutputSchema>;
+import { GenerateVideoFromImageInputSchema, GenerateVideoFromImageOutputSchema, type GenerateVideoFromImageInput, type GenerateVideoFromImageOutput } from './types';
 
 
 export async function generateVideoFromImage(

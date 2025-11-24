@@ -9,13 +9,13 @@ import { generateRefinedPrompt } from '@/ai/flows/generate-refined-prompt';
 import { summarizeAndImproveUserPrompt } from '@/ai/flows/summarize-and-improve-user-prompt';
 import { filterAIContent } from '@/ai/flows/filter-ai-content-for-inappropriate-content';
 import { generateVideoFromImage } from '@/ai/flows/generate-video-from-image';
-import type { GenerateCardMessageInput } from '@/ai/flows/generate-card-message';
-import type { GenerateMemePromptInput } from '@/ai/flows/generate-meme-prompt';
-import type { GeneratePromptFromImageInput } from '@/ai/flows/generate-prompt-from-image';
-import type { GenerateRefinedPromptInput } from '@/ai/flows/generate-refined-prompt';
-import type { SummarizeAndImproveUserPromptInput } from '@/ai/flows/summarize-and-improve-user-prompt';
-import type { FilterAIContentInput } from '@/ai/flows/filter-ai-content-for-inappropriate-content';
-import type { GenerateVideoFromImageInput } from '@/ai/flows/generate-video-from-image';
+import type { GenerateCardMessageInput } from '@/ai/flows/types';
+import type { GenerateMemePromptInput } from '@/ai/flows/types';
+import type { GeneratePromptFromImageInput } from '@/ai/flows/types';
+import type { GenerateRefinedPromptInput } from '@/ai/flows/types';
+import type { SummarizeAndImproveUserPromptInput } from '@/ai/flows/types';
+import type { FilterAIContentInput } from '@/ai/flows/types';
+import type { GenerateVideoFromImageInput } from '@/ai/flows/types';
 
 
 export async function analyzePromptAction(input: SummarizeAndImproveUserPromptInput) {
@@ -118,22 +118,11 @@ export async function generateVideoFromImageAction(input: GenerateVideoFromImage
 }
 
 
-export async function generateAnimatedSceneAction(input: { scenePrompt: string; animationPrompt: string }) {
+export async function generateAnimatedSceneAction(input: { scenePrompt: string; animationPrompt: string; staticImageUrl: string; }) {
   try {
-    // Step 1: Generate the static image
-    const imageResult = await generateAiCardFromPrompt({
-      masterPrompt: 'A beautiful, detailed scene.',
-      personalizedPrompt: input.scenePrompt,
-      aspectRatio: '16:9',
-    });
-
-    if (!imageResult || !imageResult.cardDataUri) {
-      throw new Error('Failed to generate the initial static scene.');
-    }
-    
     // Step 2: Use the generated image to create the animation
     const videoResult = await generateVideoFromImage({
-      imageUrl: imageResult.cardDataUri,
+      imageUrl: input.staticImageUrl,
       prompt: input.animationPrompt,
     });
     
@@ -143,7 +132,7 @@ export async function generateAnimatedSceneAction(input: { scenePrompt: string; 
 
     // Step 3: Return both URLs
     return {
-      staticImageUrl: imageResult.cardDataUri,
+      staticImageUrl: input.staticImageUrl,
       animatedVideoUrl: videoResult.videoUrl,
     };
 
@@ -153,5 +142,3 @@ export async function generateAnimatedSceneAction(input: { scenePrompt: string; 
     throw new Error(message);
   }
 }
-
-    
