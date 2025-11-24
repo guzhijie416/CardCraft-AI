@@ -1,4 +1,3 @@
-
 'use server';
 
 import { generateAiCardFromPrompt } from '@/ai/flows/generate-ai-card-from-prompt';
@@ -21,6 +20,8 @@ import type { GeneratePromptFromImageInput } from '@/ai/flows/generate-prompt-fr
 
 import { generateMemePrompt } from '@/ai/flows/generate-meme-prompt';
 import type { GenerateMemePromptInput } from '@/ai/flows/generate-meme-prompt';
+import { generateVideoFromImage } from '@/ai/flows/generate-video-from-image';
+import type { GenerateVideoFromImageInput } from '@/ai/flows/generate-video-from-image';
 
 
 export async function analyzePromptAction(input: SummarizeAndImproveUserPromptInput) {
@@ -111,4 +112,13 @@ export async function generateMemePromptAction(input: GenerateMemePromptInput) {
     }
 }
 
-    
+export async function generateVideoFromImageAction(input: GenerateVideoFromImageInput) {
+  try {
+    // In a real app, you would add premium checks here.
+    return await generateVideoFromImage(input);
+  } catch (error) {
+    console.error('Error in generateVideoFromImageAction:', error);
+    const message = error instanceof Error ? error.message : 'Failed to generate the video.';
+    throw new Error(message);
+  }
+}

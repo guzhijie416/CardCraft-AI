@@ -1,4 +1,3 @@
-
 export type MemeCategory = {
   id: 'protagonist' | 'situation' | 'problem' | 'solution';
   label: string;
@@ -224,5 +223,3 @@ export const majorArcana: StyleOption[] = [
     { id: 'tarot-16', name: 'XVI - The Tower', description: 'Sudden upheaval, chaos, revelation', keywords: 'XVI - The Tower' },
     { id: 'tarot-21', name: 'XXI - The World', description: 'Completion, integration, accomplishment', keywords: 'XXI - The World' },
 ];
-
-    
