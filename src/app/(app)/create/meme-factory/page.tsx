@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -76,7 +77,7 @@ export default function MemeFactoryPage() {
   // Automatically toggle the regal background for court cards
   const isCourtCard = courtCardRanks.includes(selectedPlayingCardRank || '');
   
-  React.useEffect(() => {
+  useEffect(() => {
     if (isCourtCard && !styleForm.getValues('playingCardRegalBg')) {
         styleForm.setValue('playingCardRegalBg', true);
     }
