@@ -1,4 +1,3 @@
-
 'use server';
 
 /**
@@ -27,7 +26,7 @@ const GenerateMemePromptInputSchema = z.object({
   playingCardRank: z.string().optional().describe('The selected rank (e.g., "Q", "10").'),
   playingCardRegalBg: z.boolean().optional().describe('If the playing card should have a regal, symmetrical background.'),
 });
-type GenerateMemePromptInput = z.infer<typeof GenerateMemePromptInputSchema>;
+export type GenerateMemePromptInput = z.infer<typeof GenerateMemePromptInputSchema>;
 
 const GenerateMemePromptOutputSchema = z.object({
   memePrompt: z.string().describe('The detailed, high-quality prompt suitable for an image generation model.'),
@@ -74,7 +73,7 @@ Here are the components for today's meme:
 {{/if}}
 
 Now, combine these into one fantastic prompt in the 'memePrompt' field.
-- The prompt MUST start with the Output Format keywords (e.g., "A Tarot Card design...", "A playing card design...").
+- The prompt MUST start with the Output Format keywords if any are provided (e.g., "A Tarot Card design...", "A playing card design...").
 - If it's a Tarot card, the title (e.g., "XVI - The Tower") should be part of the description.
 - If it's a Playing Card, the rank and suit (e.g., "Queen of Hearts") should be part of the description, and the suit symbol (e.g., ♥) should be mentioned as a visual element.
 - If \`playingCardRegalBg\` is true, you MUST include 'subtle symmetrical filigree pattern background, classic court card design, two-headed design'.
@@ -100,3 +99,4 @@ const generateMemePromptFlow = ai.defineFlow(
     return output!;
   }
 );
+    

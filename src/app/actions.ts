@@ -1,4 +1,3 @@
-
 'use server';
 
 import { generateAiCardFromPrompt } from '@/ai/flows/generate-ai-card-from-prompt';
@@ -20,8 +19,9 @@ import { generatePromptFromImage } from '@/ai/flows/generate-prompt-from-image';
 import type { GeneratePromptFromImageInput } from '@/ai/flows/generate-prompt-from-image';
 
 import { generateMemePrompt } from '@/ai/flows/generate-meme-prompt';
+import type { GenerateMemePromptInput } from '@/ai/flows/generate-meme-prompt';
+
 import { generateVideoFromImage } from '@/ai/flows/generate-video-from-image';
-import type { GenerateVideoFromImageInput } from '@/ai/flows/generate-video-from-image';
 
 
 export async function analyzePromptAction(input: SummarizeAndImproveUserPromptInput) {
@@ -103,7 +103,7 @@ export async function generatePostcardImageAction(input: {location: string, styl
 }
 
 
-export async function generateMemePromptAction(input: any) {
+export async function generateMemePromptAction(input: GenerateMemePromptInput) {
     try {
         return await generateMemePrompt(input);
     } catch (error) {
@@ -112,7 +112,7 @@ export async function generateMemePromptAction(input: any) {
     }
 }
 
-export async function generateVideoFromImageAction(input: GenerateVideoFromImageInput) {
+export async function generateVideoFromImageAction(input: any) {
   try {
     // In a real app, you would add premium checks here.
     return await generateVideoFromImage(input);
@@ -122,3 +122,4 @@ export async function generateVideoFromImageAction(input: GenerateVideoFromImage
     throw new Error(message);
   }
 }
+    

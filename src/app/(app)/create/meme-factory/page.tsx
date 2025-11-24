@@ -6,7 +6,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { generateMemePromptAction, generateCardAction } from '@/app/actions';
-import { memeFactoryData, MemeOption, characterStyles, sceneStyles, outputFormats, majorArcana, playingCardRanks, playingCardSuits, courtCardRanks } from '@/lib/meme-data';
+import { memeFactoryData, characterStyles, sceneStyles, outputFormats, majorArcana, playingCardRanks, playingCardSuits, courtCardRanks } from '@/lib/meme-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -75,9 +75,12 @@ export default function MemeFactoryPage() {
 
   // Automatically toggle the regal background for court cards
   const isCourtCard = courtCardRanks.includes(selectedPlayingCardRank || '');
-  if (isCourtCard && !styleForm.getValues('playingCardRegalBg')) {
-      styleForm.setValue('playingCardRegalBg', true);
-  }
+  
+  React.useEffect(() => {
+    if (isCourtCard && !styleForm.getValues('playingCardRegalBg')) {
+        styleForm.setValue('playingCardRegalBg', true);
+    }
+  }, [isCourtCard, styleForm]);
 
 
   const handleStorySubmit = (data: StoryFormValues) => {
@@ -154,7 +157,13 @@ export default function MemeFactoryPage() {
   
   const handleStartOver = () => {
     storyForm.reset();
-    styleForm.reset();
+    styleForm.reset({
+        characterStyle: '3D animated character',
+        sceneStyle: '',
+        outputFormat: '',
+        tarotTransparentBg: false,
+        playingCardRegalBg: false,
+    });
     setGeneratedCardUri(null);
     setGeneratedPrompt(null);
     setErrorMessage(null);
@@ -191,6 +200,7 @@ export default function MemeFactoryPage() {
                     </Card>
                     {generatedPrompt && (
                         <div className="mt-4">
+                             <Label className="text-xs text-muted-foreground">Generated Prompt</Label>
                             <p className="text-xs font-mono bg-muted p-2 rounded-md">{generatedPrompt}</p>
                         </div>
                     )}
@@ -344,7 +354,7 @@ export default function MemeFactoryPage() {
                             
                             {/* ADVANCED FORMAT OPTIONS */}
                             <div className="space-y-4">
-                                {selectedOutputFormat === 'Tarot card design' && (
+                                {selectedOutputFormat.includes('Tarot card') && (
                                      <Card className="p-4 bg-muted/50">
                                          <FormField
                                             control={styleForm.control}
@@ -360,7 +370,12 @@ export default function MemeFactoryPage() {
                                                         </FormControl>
                                                         <SelectContent>
                                                             {majorArcana.map(card => (
-                                                                <SelectItem key={card.id} value={card.keywords}>{card.name}: <span className='text-muted-foreground ml-2'>{card.description}</span></SelectItem>
+                                                                <SelectItem key={card.id} value={card.keywords}>
+                                                                    <div className='flex flex-col'>
+                                                                        <span>{card.name}</span>
+                                                                        <span className='text-xs text-muted-foreground'>{card.description}</span>
+                                                                    </div>
+                                                                </SelectItem>
                                                             ))}
                                                         </SelectContent>
                                                     </Select>
@@ -371,7 +386,7 @@ export default function MemeFactoryPage() {
                                             control={styleForm.control}
                                             name="tarotTransparentBg"
                                             render={({ field }) => (
-                                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm mt-4">
+                                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm mt-4 bg-background">
                                                     <div className="space-y-0.5">
                                                         <FormLabel>Transparent Background</FormLabel>
                                                     </div>
@@ -384,7 +399,7 @@ export default function MemeFactoryPage() {
                                      </Card>
                                 )}
 
-                                {selectedOutputFormat === 'playing card design' && (
+                                {selectedOutputFormat.includes('playing card') && (
                                     <Card className="p-4 bg-muted/50 space-y-4">
                                         <div className="grid grid-cols-2 gap-4">
                                             <FormField
@@ -420,7 +435,7 @@ export default function MemeFactoryPage() {
                                             control={styleForm.control}
                                             name="playingCardRegalBg"
                                             render={({ field }) => (
-                                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-background">
                                                     <div className="space-y-0.5">
                                                         <FormLabel>Add Regal Background</FormLabel>
                                                     </div>
@@ -435,8 +450,9 @@ export default function MemeFactoryPage() {
                             </div>
                         </CardContent>
                         <CardFooter className="flex flex-col gap-4">
-                            <Button type="submit" className="w-full" size="lg">
-                                <Wand2 className="mr-2 h-4 w-4" /> Generate Meme
+                            <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+                                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
+                                 Generate Meme
                             </Button>
                             <Button variant="ghost" onClick={() => setFormStep('story')}>&larr; Back to Story</Button>
                         </CardFooter>
@@ -447,3 +463,4 @@ export default function MemeFactoryPage() {
     </div>
   );
 }
+    

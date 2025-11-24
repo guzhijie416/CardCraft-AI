@@ -109,7 +109,7 @@ export const memeFactoryData: MemeCategory[] = [
         ],
       },
       {
-        name: 'Social Dilemmas',
+        name: 'Couple & Social Dilemmas',
         options: [
           { id: 'pr6', text: "They can't agree on what to have for dinner." },
           { id: 'pr7', text: 'They have been left on "read."' },
@@ -193,8 +193,8 @@ export const outputFormats: StyleOption[] = [
     { id: 'of-1', name: 'Standard Image', description: 'The clean, borderless image. Perfect for general-purpose sharing.', keywords: '' },
     { id: 'of-2', name: 'Classic Meme', description: 'Adds space at the top and/or bottom for the iconic bold meme text.', keywords: 'meme format, space for text at top' },
     { id: 'of-3', name: 'Postcard', description: 'Places the image within a classic postcard frame, complete with a stamp area and a "Greetings From..." feel.', keywords: 'vintage postcard frame, stamp, border' },
-    { id: 'of-4', name: 'Playing Card (扑克牌 / 紙牌)', description: 'Formats your creation like a classic playing card. Choose a rank and suit, and add an optional regal background for court cards.', keywords: 'playing card design' },
-    { id: 'of-5', name: 'Tarot Card (塔罗牌)', description: 'Frame your creation in the mystical and ornate style of a Tarot card. Choose a card from the Major Arcana to give your scene a symbolic meaning.', keywords: 'Tarot card design' },
+    { id: 'of-4', name: 'Playing Card', description: 'Formats your creation like a classic playing card. Choose a rank and suit, and add an optional regal background for court cards.', keywords: 'playing card design' },
+    { id: 'of-5', name: 'Tarot Card', description: 'Frame your creation in the mystical and ornate style of a Tarot card. Choose a card from the Major Arcana to give your scene a symbolic meaning.', keywords: 'Tarot card design' },
     { id: 'of-6', name: 'Movie Poster', description: 'Adds a cinematic border, space for a title, and "coming soon" text, making the scene look like an ad for a blockbuster film.', keywords: 'movie poster format, cinematic border, title text, credit block' },
 ];
 
@@ -223,3 +223,4 @@ export const majorArcana: StyleOption[] = [
     { id: 'tarot-16', name: 'XVI - The Tower', description: 'Sudden upheaval, chaos, revelation', keywords: 'XVI - The Tower' },
     { id: 'tarot-21', name: 'XXI - The World', description: 'Completion, integration, accomplishment', keywords: 'XXI - The World' },
 ];
+    

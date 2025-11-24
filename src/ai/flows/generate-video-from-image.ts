@@ -23,12 +23,12 @@ const GenerateVideoFromImageInputSchema = z.object({
     ),
   prompt: z.string().describe('A text prompt describing the desired animation (e.g., "make the stars twinkle", "add falling confetti").'),
 });
-export type GenerateVideoFromImageInput = z.infer<typeof GenerateVideoFromImageInputSchema>;
+type GenerateVideoFromImageInput = z.infer<typeof GenerateVideoFromImageInputSchema>;
 
 const GenerateVideoFromImageOutputSchema = z.object({
   videoUrl: z.string().describe('The data URI of the generated video.'),
 });
-export type GenerateVideoFromImageOutput = z.infer<typeof GenerateVideoFromImageOutputSchema>;
+type GenerateVideoFromImageOutput = z.infer<typeof GenerateVideoFromImageOutputSchema>;
 
 
 export async function generateVideoFromImage(
@@ -107,3 +107,4 @@ const generateVideoFromImageFlow = ai.defineFlow(
     return { videoUrl: videoDataUri };
   }
 );
+    
