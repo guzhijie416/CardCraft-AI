@@ -1,7 +1,7 @@
 
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Sparkles, BookOpen, ImageIcon, Gem, Clock, Smile } from 'lucide-react';
+import { Sparkles, BookOpen, ImageIcon, Gem, Clock, Smile, Film } from 'lucide-react';
 
 export default function CreatePage() {
   const creationOptions = [
@@ -25,6 +25,13 @@ export default function CreatePage() {
       icon: Smile,
       href: '/create/meme-factory',
       linkText: 'Build a Meme',
+    },
+    {
+      title: 'Animate Studio',
+      description: 'Bring your static images to life. Describe an animation and let AI create a video.',
+      icon: Film,
+      href: '/create/animate',
+      linkText: 'Animate an Image',
     },
     {
       title: 'Signature Studio',
