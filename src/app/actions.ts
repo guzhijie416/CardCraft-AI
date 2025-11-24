@@ -1,3 +1,4 @@
+
 'use server';
 
 import { generateAiCardFromPrompt } from '@/ai/flows/generate-ai-card-from-prompt';
@@ -19,7 +20,6 @@ import { generatePromptFromImage } from '@/ai/flows/generate-prompt-from-image';
 import type { GeneratePromptFromImageInput } from '@/ai/flows/generate-prompt-from-image';
 
 import { generateMemePrompt } from '@/ai/flows/generate-meme-prompt';
-import type { GenerateMemePromptInput } from '@/ai/flows/generate-meme-prompt';
 import { generateVideoFromImage } from '@/ai/flows/generate-video-from-image';
 import type { GenerateVideoFromImageInput } from '@/ai/flows/generate-video-from-image';
 
@@ -103,7 +103,7 @@ export async function generatePostcardImageAction(input: {location: string, styl
 }
 
 
-export async function generateMemePromptAction(input: GenerateMemePromptInput) {
+export async function generateMemePromptAction(input: any) {
     try {
         return await generateMemePrompt(input);
     } catch (error) {

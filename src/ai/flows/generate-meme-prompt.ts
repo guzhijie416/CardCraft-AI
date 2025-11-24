@@ -12,7 +12,7 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
-export const GenerateMemePromptInputSchema = z.object({
+const GenerateMemePromptInputSchema = z.object({
   protagonist: z.string().describe('The main character of the meme.'),
   situation: z.string().describe('The situation or role the protagonist is in.'),
   problem: z.string().describe('The problem or conflict they are facing.'),
@@ -27,12 +27,12 @@ export const GenerateMemePromptInputSchema = z.object({
   playingCardRank: z.string().optional().describe('The selected rank (e.g., "Q", "10").'),
   playingCardRegalBg: z.boolean().optional().describe('If the playing card should have a regal, symmetrical background.'),
 });
-export type GenerateMemePromptInput = z.infer<typeof GenerateMemePromptInputSchema>;
+type GenerateMemePromptInput = z.infer<typeof GenerateMemePromptInputSchema>;
 
-export const GenerateMemePromptOutputSchema = z.object({
+const GenerateMemePromptOutputSchema = z.object({
   memePrompt: z.string().describe('The detailed, high-quality prompt suitable for an image generation model.'),
 });
-export type GenerateMemePromptOutput = z.infer<typeof GenerateMemePromptOutputSchema>;
+type GenerateMemePromptOutput = z.infer<typeof GenerateMemePromptOutputSchema>;
 
 export async function generateMemePrompt(
   input: GenerateMemePromptInput
