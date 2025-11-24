@@ -8,9 +8,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import type { MediaPart } from 'genkit';
-import { GenerateVideoFromImageInputSchema, GenerateVideoFromImageOutputSchema, type GenerateVideoFromImageInput, type GenerateVideoFromImageOutput } from './types';
-
+import type { GenerateVideoFromImageInput, GenerateVideoFromImageOutput } from './types';
 
 export async function generateVideoFromImage(
   input: GenerateVideoFromImageInput
@@ -21,8 +19,13 @@ export async function generateVideoFromImage(
 const generateVideoFromImageFlow = ai.defineFlow(
   {
     name: 'generateVideoFromImageFlow',
-    inputSchema: GenerateVideoFromImageInputSchema,
-    outputSchema: GenerateVideoFromImageOutputSchema,
+    inputSchema: {
+        imageUrl: '',
+        prompt: ''
+    },
+    outputSchema: {
+        videoUrl: ''
+    },
   },
   async (input) => {
     let { operation } = await ai.generate({
@@ -39,7 +42,7 @@ const generateVideoFromImageFlow = ai.defineFlow(
       ],
       config: {
         durationSeconds: 5,
-        aspectRatio: '16:9', // You can make this dynamic if needed
+        aspectRatio: '16:9',
         personGeneration: 'allow_adult',
       },
     });
@@ -48,7 +51,7 @@ const generateVideoFromImageFlow = ai.defineFlow(
         throw new Error('Expected the model to return an operation');
     }
 
-    // This can take up to a minute, maybe more.
+    // Poll for the result of the long-running operation.
     while (!operation.done) {
         console.log('Checking video generation status...');
         await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds
@@ -65,7 +68,8 @@ const generateVideoFromImageFlow = ai.defineFlow(
         throw new Error('Failed to find the generated video in the operation output');
     }
 
-    // The URL from VEO is temporary, we need to fetch and convert to Base64 to make it permanent for the client.
+    // The URL from VEO is temporary. We fetch the raw video data and convert it to a
+    // permanent Base64 Data URI to send to the client. This must be done on the server.
     const fetch = (await import('node-fetch')).default;
     const videoDownloadResponse = await fetch(
       `${video.media.url}&key=${process.env.GEMINI_API_KEY}`
@@ -75,7 +79,7 @@ const generateVideoFromImageFlow = ai.defineFlow(
       videoDownloadResponse.status !== 200 ||
       !videoDownloadResponse.body
     ) {
-      throw new Error('Failed to fetch video from temporary URL');
+      throw new Error('Failed to download video from temporary URL provided by the model.');
     }
     const buffer = await videoDownloadResponse.buffer();
     const contentType = video.media?.contentType || videoDownloadResponse.headers.get('content-type') || 'video/mp4';
