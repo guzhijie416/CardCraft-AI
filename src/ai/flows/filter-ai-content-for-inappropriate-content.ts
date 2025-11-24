@@ -1,35 +1,15 @@
+
 'use server';
 
 /**
  * @fileOverview A flow to filter AI-generated content for inappropriate or harmful content.
  *
  * - filterAIContent - A function that filters the given AI-generated content.
- * - FilterAIContentInput - The input type for the filterAIContent function.
- * - FilterAIContentOutput - The return type for the filterAIContent function.
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { FilterAIContentInputSchema, FilterAIContentOutputSchema, type FilterAIContentInput, type FilterAIContentOutput } from './types';
 
-const FilterAIContentInputSchema = z.object({
-  content: z
-    .string()
-    .describe('The AI-generated content to be checked for safety.'),
-});
-type FilterAIContentInput = z.infer<typeof FilterAIContentInputSchema>;
-
-const FilterAIContentOutputSchema = z.object({
-  isSafe: z
-    .boolean()
-    .describe(
-      'Whether the content is safe and does not violate any safety guidelines.'
-    ),
-  reason: z
-    .string()
-    .optional()
-    .describe('The reason why the content was considered unsafe.'),
-});
-type FilterAIContentOutput = z.infer<typeof FilterAIContentOutputSchema>;
 
 export async function filterAIContent(input: FilterAIContentInput): Promise<FilterAIContentOutput> {
   return filterAIContentFlow(input);

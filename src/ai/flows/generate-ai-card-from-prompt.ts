@@ -4,27 +4,11 @@
  * @fileOverview Generates a unique card design using AI based on a master prompt and a personalized prompt.
  *
  * - generateAiCardFromPrompt - A function that generates an AI card based on prompts.
- * - GenerateAiCardFromPromptInput - The input type for the generateAiCardFromPrompt function.
- * - GenerateAiCardFromPromptOutput - The return type for the generateAiCardFromPrompt function.
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { GenerateAiCardFromPromptInputSchema, GenerateAiCardFromPromptOutputSchema, type GenerateAiCardFromPromptInput, type GenerateAiCardFromPromptOutput } from './types';
 
-const GenerateAiCardFromPromptInputSchema = z.object({
-  masterPrompt: z.string().describe('A pre-selected master prompt for the overall theme of the card.'),
-  personalizedPrompt: z.string().describe('A personalized prompt for specific details of the card design.'),
-  photoDataUri: z.string().optional().describe("An optional photo of a user, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'. This can be a style reference image or a base image for modification."),
-  modificationStrength: z.number().optional().describe('A value from 0 to 1 indicating the desired strength of image modification. 0.1-0.4 for minor changes, 0.6-0.9 for major transformations.'),
-  aspectRatio: z.enum(['1:1', '16:9', '9:16']).optional().describe('The desired aspect ratio for the generated image.'),
-  layoutLock: z.boolean().optional().describe('If true, lock the composition of the provided image and apply the prompt as a new theme.')
-});
-type GenerateAiCardFromPromptInput = z.infer<typeof GenerateAiCardFromPromptInputSchema>;
-
-const GenerateAiCardFromPromptOutputSchema = z.object({
-  cardDataUri: z.string().describe('The generated card as a data URI (e.g., image/png;base64,...).'),
-});
-type GenerateAiCardFromPromptOutput = z.infer<typeof GenerateAiCardFromPromptOutputSchema>;
 
 export async function generateAiCardFromPrompt(input: GenerateAiCardFromPromptInput): Promise<GenerateAiCardFromPromptOutput> {
   return generateAiCardFromPromptFlow(input);

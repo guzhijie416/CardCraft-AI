@@ -22,14 +22,13 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Sparkles, Wand2, Lightbulb, Download, Share2, Printer, MessageSquareQuote, Settings, ChevronDown, XCircle, AspectRatio } from 'lucide-react';
 import type { MasterPrompt } from '@/lib/data';
 import { masterPrompts as allMasterPrompts } from '@/lib/data';
-import type { SummarizeAndImproveUserPromptOutput } from '@/ai/flows/summarize-and-improve-user-prompt';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { Label } from './ui/label';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
-import type { GenerateRefinedPromptOutput } from '@/ai/flows/generate-refined-prompt';
 import { Badge } from './ui/badge';
 import { cn } from '@/lib/utils';
+import type { SummarizeAndImproveUserPromptOutput, GenerateRefinedPromptOutput } from '@/ai/flows/types';
 
 
 const formSchema = z.object({
@@ -782,7 +781,7 @@ export function AiCardEditor({ masterPrompt, photoDataUri }: { masterPrompt: Mas
                     <AspectRatioSection />
                     <RefinementSection title="Artistic Medium" options={refinementOptions.artisticMedium} value={artisticMedium} onValueChange={setArtisticMedium} categoryKey="artisticMedium" />
                     <RefinementSection title="Color Palette" options={refinementOptions.colorPalette} value={colorPalette} onValueChange={setColorPalette} categoryKey="colorPalette" />
-                    <RefinementSection title="Composition" options={refinementOptions.composition} value={composition} onValueChange={setComposition} categoryKey="composition" />
+                    <RefinementSection title="Composition" options={refinementOptions.composition} value={setComposition} categoryKey="composition" />
                     <RefinementSection title="Lighting" options={refinementOptions.lighting} value={lighting} onValueChange={setLighting} categoryKey="lighting" />
                     <RefinementSection title="Texture & Finish" options={refinementOptions.texture} value={texture} onValueChange={setTexture} categoryKey="texture" />
                 </CardContent>

@@ -9,3 +9,4 @@ import '@/ai/flows/generate-card-message.ts';
 import '@/ai/flows/generate-refined-prompt.ts';
 import '@/ai/flows/generate-prompt-from-image.ts';
 import '@/ai/flows/generate-meme-prompt.ts';
+import '@/ai/flows/types.ts';

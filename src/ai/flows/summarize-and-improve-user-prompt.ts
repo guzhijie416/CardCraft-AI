@@ -1,42 +1,15 @@
+
 'use server';
 
 /**
  * @fileOverview Summarizes and improves a user's personalized prompt for AI card generation.
  *
  * - summarizeAndImproveUserPrompt - A function that handles the prompt summarization and improvement process.
- * - SummarizeAndImproveUserPromptInput - The input type for the summarizeAndImproveUserPrompt function.
- * - SummarizeAndImproveUserPromptOutput - The return type for the summarizeAndImproveUserPrompt function.
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { SummarizeAndImproveUserPromptInputSchema, SummarizeAndImproveUserPromptOutputSchema, type SummarizeAndImproveUserPromptInput, type SummarizeAndImproveUserPromptOutput } from './types';
 
-const SummarizeAndImproveUserPromptInputSchema = z.object({
-  userPrompt: z
-    .string()
-    .describe('The user-provided prompt for generating the AI card.'),
-  masterPrompt: z
-    .string()
-    .describe('The master prompt providing the overall theme for the AI card.'),
-});
-type SummarizeAndImproveUserPromptInput = z.infer<
-  typeof SummarizeAndImproveUserPromptInputSchema
->;
-
-const SummarizeAndImproveUserPromptOutputSchema = z.object({
-  summary: z
-    .string()
-    .describe(
-      'A summary of the user prompt, including strengths and areas for improvement.'
-    ),
-  improvedPrompt: z
-    .string()
-    .describe('A refined version of the user prompt for better AI generation results.'),
-  isGoodPrompt: z.boolean().describe('Whether the original user prompt is high quality.'),
-});
-type SummarizeAndImproveUserPromptOutput = z.infer<
-  typeof SummarizeAndImproveUserPromptOutputSchema
->;
 
 export async function summarizeAndImproveUserPrompt(
   input: SummarizeAndImproveUserPromptInput

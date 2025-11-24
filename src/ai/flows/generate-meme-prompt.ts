@@ -1,37 +1,15 @@
+
 'use server';
 
 /**
  * @fileOverview A flow to generate a high-quality image prompt from a combination of meme components and style choices.
  *
  * - generateMemePrompt - A function that handles the prompt generation.
- * - GenerateMemePromptInput - The input type for the function.
- * - GenerateMemePromptOutput - The return type for the function.
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { GenerateMemePromptInputSchema, GenerateMemePromptOutputSchema, type GenerateMemePromptInput, type GenerateMemePromptOutput } from './types';
 
-const GenerateMemePromptInputSchema = z.object({
-  protagonist: z.string().describe('The main character of the meme.'),
-  situation: z.string().describe('The situation or role the protagonist is in.'),
-  problem: z.string().describe('The problem or conflict they are facing.'),
-  solution: z.string().describe('The unconventional solution they choose.'),
-  characterStyle: z.string().describe("Keywords defining the character's visual style."),
-  sceneStyle: z.string().describe("Keywords defining the scene's overall style and atmosphere."),
-  outputFormat: z.string().describe("Keywords defining the final output format (e.g., 'meme format', 'tarot card')."),
-  // Advanced format options
-  tarotCard: z.string().optional().describe('The selected Major Arcana card (e.g., "XVI - The Tower").'),
-  tarotTransparentBg: z.boolean().optional().describe('If the Tarot card should have a transparent background.'),
-  playingCardSuit: z.string().optional().describe('The selected suit symbol (e.g., "♥").'),
-  playingCardRank: z.string().optional().describe('The selected rank (e.g., "Q", "10").'),
-  playingCardRegalBg: z.boolean().optional().describe('If the playing card should have a regal, symmetrical background.'),
-});
-export type GenerateMemePromptInput = z.infer<typeof GenerateMemePromptInputSchema>;
-
-const GenerateMemePromptOutputSchema = z.object({
-  memePrompt: z.string().describe('The detailed, high-quality prompt suitable for an image generation model.'),
-});
-type GenerateMemePromptOutput = z.infer<typeof GenerateMemePromptOutputSchema>;
 
 export async function generateMemePrompt(
   input: GenerateMemePromptInput

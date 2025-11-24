@@ -1,30 +1,15 @@
+
 'use server';
 
 /**
  * @fileOverview Generates a refined, high-quality prompt for image generation based on user input and selected style options.
  *
  * - generateRefinedPrompt - A function that orchestrates the prompt refinement.
- * - GenerateRefinedPromptInput - The input type for the function.
- * - GenerateRefinedPromptOutput - The return type for the function.
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { GenerateRefinedPromptInputSchema, GenerateRefinedPromptOutputSchema, type GenerateRefinedPromptInput, type GenerateRefinedPromptOutput } from './types';
 
-const GenerateRefinedPromptInputSchema = z.object({
-  basePrompt: z.string().describe('The user\'s initial, basic description of what they want to create.'),
-  artisticMedium: z.string().optional().describe('e.g., "watercolor painting", "oil painting", "charcoal sketch", "vintage postcard".'),
-  colorPalette: z.string().optional().describe('e.g., "a soft pastel color palette", "vibrant and bold colors", "warm and earthy palette".'),
-  composition: z.string().optional().describe('e.g., "close-up portrait", "cinematic wide shot", "symmetrical composition".'),
-  lighting: z.string().optional().describe('e.g., "soft diffused lighting", "dramatic, high-contrast lighting", "golden hour glow".'),
-  texture: z.string().optional().describe('e.g., "textured paper", "embossed details", "gold foil accents".'),
-});
-type GenerateRefinedPromptInput = z.infer<typeof GenerateRefinedPromptInputSchema>;
-
-const GenerateRefinedPromptOutputSchema = z.object({
-  refinedPrompt: z.string().describe('The detailed, high-quality prompt suitable for an image generation model.'),
-});
-type GenerateRefinedPromptOutput = z.infer<typeof GenerateRefinedPromptOutputSchema>;
 
 export async function generateRefinedPrompt(
   input: GenerateRefinedPromptInput

@@ -5,26 +5,11 @@
  * @fileOverview Generates a descriptive text prompt from an image using a vision-language model.
  *
  * - generatePromptFromImage - A function that analyzes an image and creates a text prompt.
- * - GeneratePromptFromImageInput - The input type for the function.
- * - GeneratePromptFromImageOutput - The return type for the function.
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { GeneratePromptFromImageInputSchema, GeneratePromptFromImageOutputSchema, type GeneratePromptFromImageInput, type GeneratePromptFromImageOutput } from './types';
 
-const GeneratePromptFromImageInputSchema = z.object({
-  photoDataUri: z
-    .string()
-    .describe(
-      "A photo to be analyzed, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
-    ),
-});
-type GeneratePromptFromImageInput = z.infer<typeof GeneratePromptFromImageInputSchema>;
-
-const GeneratePromptFromImageOutputSchema = z.object({
-  generatedPrompt: z.string().describe('The rich, descriptive text prompt generated from the image.'),
-});
-type GeneratePromptFromImageOutput = z.infer<typeof GeneratePromptFromImageOutputSchema>;
 
 export async function generatePromptFromImage(
   input: GeneratePromptFromImageInput

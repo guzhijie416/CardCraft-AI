@@ -16,6 +16,7 @@ import { Loader2, Sparkles, Wand2, Download, Repeat, Film, Wind, PartyPopper, Fl
 import { Label } from '@/components/ui/label';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
+import { generateCardAction } from '@/app/actions';
 
 type Step = 'select_effect' | 'generate_scene' | 'animate' | 'done';
 type GenerationState = 'idle' | 'generating_image' | 'generating_video' | 'error';
@@ -62,17 +63,33 @@ export default function AnimateStudioPage() {
     setStaticImageUri(null);
 
     try {
-      const result = await generateAnimatedSceneAction({
-        scenePrompt: data.prompt,
-        animationPrompt: selectedEffect.prompt,
+      // --- Step 1: Generate Static Image ---
+      const imageResult = await generateCardAction({
+        masterPrompt: "A beautiful, detailed scene.",
+        personalizedPrompt: data.prompt,
+        aspectRatio: '16:9',
       });
       
-      if (!result || !result.staticImageUrl || !result.animatedVideoUrl) {
-        throw new Error("The AI failed to generate the scene. Please try again.");
+      if (!imageResult || !imageResult.cardDataUri) {
+          throw new Error("The AI failed to generate the static scene. Please try again.");
       }
 
-      setStaticImageUri(result.staticImageUrl);
-      setAnimatedVideoUri(result.animatedVideoUrl)
+      setStaticImageUri(imageResult.cardDataUri);
+      setGenerationState('generating_video');
+      toast({ title: "Scene created!", description: "Now, let's bring it to life..." });
+      
+      // --- Step 2: Generate Animation ---
+      const result = await generateAnimatedSceneAction({
+        scenePrompt: data.prompt, // Pass scene prompt for context if needed, though not strictly used in action
+        animationPrompt: selectedEffect.prompt,
+        staticImageUrl: imageResult.cardDataUri, // Pass the generated image URI
+      });
+      
+      if (!result || !result.animatedVideoUrl) {
+        throw new Error("The AI failed to generate the animation. Please try again.");
+      }
+
+      setAnimatedVideoUri(result.animatedVideoUrl);
       setGenerationState('done');
       setStep('done');
 
@@ -219,8 +236,8 @@ export default function AnimateStudioPage() {
         {isLoading && generationState !== 'error' && (
              <CardContent className="p-8 flex flex-col items-center justify-center text-center gap-4 min-h-[400px]">
                 <Loader2 className="h-16 w-16 animate-spin text-primary"/>
-                <p className="text-muted-foreground text-lg">Generating your masterpiece... this may take up to a minute.</p>
-                <p className="text-sm text-muted-foreground">(First the image, then the video!)</p>
+                <p className="text-muted-foreground text-lg">{generationState === 'generating_image' ? 'Generating your masterpiece...' : 'Animating the scene...'}</p>
+                <p className="text-sm text-muted-foreground">(This may take up to a minute!)</p>
             </CardContent>
         )}
         {!isLoading && renderContent()}
@@ -228,5 +245,3 @@ export default function AnimateStudioPage() {
     </div>
   );
 }
-
-    

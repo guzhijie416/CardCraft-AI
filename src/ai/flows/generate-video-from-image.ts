@@ -11,8 +11,6 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import * as fs from 'fs';
-import { Readable } from 'stream';
 import type { MediaPart } from 'genkit';
 
 

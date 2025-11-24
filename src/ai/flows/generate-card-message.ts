@@ -1,26 +1,15 @@
+
 'use server';
 
 /**
  * @fileOverview Generates suggested messages for a digital card based on a prompt.
  *
  * - generateCardMessage - A function that generates message suggestions.
- * - GenerateCardMessageInput - The input type for the function.
- * - GenerateCardMessageOutput - The return type for the function.
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { GenerateCardMessageInputSchema, GenerateCardMessageOutputSchema, type GenerateCardMessageInput, type GenerateCardMessageOutput } from './types';
 
-const GenerateCardMessageInputSchema = z.object({
-  prompt: z.string().describe('The prompt to guide the message generation. This can be a master prompt or a custom user prompt.'),
-  occasion: z.string().describe('The occasion for the card (e.g., "birthday", "wedding") to provide context.'),
-});
-type GenerateCardMessageInput = z.infer<typeof GenerateCardMessageInputSchema>;
-
-const GenerateCardMessageOutputSchema = z.object({
-  messages: z.array(z.string()).describe('An array of 3-5 generated message suggestions.'),
-});
-type GenerateCardMessageOutput = z.infer<typeof GenerateCardMessageOutputSchema>;
 
 export async function generateCardMessage(
   input: GenerateCardMessageInput
