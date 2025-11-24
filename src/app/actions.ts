@@ -2,13 +2,20 @@
 'use server';
 
 import { generateAiCardFromPrompt, type GenerateAiCardFromPromptInput } from '@/ai/flows/generate-ai-card-from-prompt';
-import { generateCardMessage, type GenerateCardMessageInput } from '@/ai/flows/generate-card-message';
-import { generateMemePrompt, type GenerateMemePromptInput } from '@/ai/flows/generate-meme-prompt';
-import { generatePromptFromImage, type GeneratePromptFromImageInput } from '@/ai/flows/generate-prompt-from-image';
-import { generateRefinedPrompt, type GenerateRefinedPromptInput } from '@/ai/flows/generate-refined-prompt';
-import { summarizeAndImproveUserPrompt, type SummarizeAndImproveUserPromptInput } from '@/ai/flows/summarize-and-improve-user-prompt';
-import { filterAIContent, type FilterAIContentInput } from '@/ai/flows/filter-ai-content-for-inappropriate-content';
-import { generateVideoFromImage, type GenerateVideoFromImageInput } from '@/ai/flows/generate-video-from-image';
+import { generateCardMessage } from '@/ai/flows/generate-card-message';
+import { generateMemePrompt } from '@/ai/flows/generate-meme-prompt';
+import { generatePromptFromImage } from '@/ai/flows/generate-prompt-from-image';
+import { generateRefinedPrompt } from '@/ai/flows/generate-refined-prompt';
+import { summarizeAndImproveUserPrompt } from '@/ai/flows/summarize-and-improve-user-prompt';
+import { filterAIContent } from '@/ai/flows/filter-ai-content-for-inappropriate-content';
+import { generateVideoFromImage } from '@/ai/flows/generate-video-from-image';
+import type { GenerateCardMessageInput } from '@/ai/flows/generate-card-message';
+import type { GenerateMemePromptInput } from '@/ai/flows/generate-meme-prompt';
+import type { GeneratePromptFromImageInput } from '@/ai/flows/generate-prompt-from-image';
+import type { GenerateRefinedPromptInput } from '@/ai/flows/generate-refined-prompt';
+import type { SummarizeAndImproveUserPromptInput } from '@/ai/flows/summarize-and-improve-user-prompt';
+import type { FilterAIContentInput } from '@/ai/flows/filter-ai-content-for-inappropriate-content';
+import type { GenerateVideoFromImageInput } from '@/ai/flows/generate-video-from-image';
 
 
 export async function analyzePromptAction(input: SummarizeAndImproveUserPromptInput) {
@@ -109,3 +116,42 @@ export async function generateVideoFromImageAction(input: GenerateVideoFromImage
     throw new Error(message);
   }
 }
+
+
+export async function generateAnimatedSceneAction(input: { scenePrompt: string; animationPrompt: string }) {
+  try {
+    // Step 1: Generate the static image
+    const imageResult = await generateAiCardFromPrompt({
+      masterPrompt: 'A beautiful, detailed scene.',
+      personalizedPrompt: input.scenePrompt,
+      aspectRatio: '16:9',
+    });
+
+    if (!imageResult || !imageResult.cardDataUri) {
+      throw new Error('Failed to generate the initial static scene.');
+    }
+    
+    // Step 2: Use the generated image to create the animation
+    const videoResult = await generateVideoFromImage({
+      imageUrl: imageResult.cardDataUri,
+      prompt: input.animationPrompt,
+    });
+    
+    if (!videoResult || !videoResult.videoUrl) {
+      throw new Error('Failed to generate the animation from the scene.');
+    }
+
+    // Step 3: Return both URLs
+    return {
+      staticImageUrl: imageResult.cardDataUri,
+      animatedVideoUrl: videoResult.videoUrl,
+    };
+
+  } catch (error) {
+    console.error('Error in generateAnimatedSceneAction:', error);
+    const message = error instanceof Error ? error.message : 'An unknown error occurred during the animation process.';
+    throw new Error(message);
+  }
+}
+
+    
