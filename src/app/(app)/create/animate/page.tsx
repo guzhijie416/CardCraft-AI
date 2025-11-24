@@ -3,231 +3,252 @@
 
 import { useState, useRef } from 'react';
 import Image from 'next/image';
-import { useForm } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { generateVideoFromImageAction } from '@/app/actions';
+import { generateCardAction, generateVideoFromImageAction } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Film, UploadCloud, Download, Repeat } from 'lucide-react';
+import { Loader2, Film, Sparkles, Wand2, Download, Repeat } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
+type Step = 'generate' | 'animate';
+type GenerationState = 'idle' | 'generating_image' | 'generating_video' | 'done' | 'error';
 
-const animateFormSchema = z.object({
-  prompt: z.string().min(5, 'Please describe the animation in at least 5 characters.'),
-  baseImage: z.any().refine(fileList => fileList.length === 1, 'Please upload one image file.'),
+const sceneFormSchema = z.object({
+  prompt: z.string().min(10, 'Please describe the scene in at least 10 characters.'),
 });
 
-type AnimateFormValues = z.infer<typeof animateFormSchema>;
-type GenerationState = 'idle' | 'generating' | 'done' | 'error';
+const animateFormSchema = z.object({
+  animationPrompt: z.string().min(5, 'Please describe the animation.'),
+});
 
-export default function AnimatePage() {
+export default function AnimateStudioPage() {
+  const [step, setStep] = useState<Step>('generate');
   const [generationState, setGenerationState] = useState<GenerationState>('idle');
-  const [generatedVideoUri, setGeneratedVideoUri] = useState<string | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [staticImageUri, setStaticImageUri] = useState<string | null>(null);
+  const [animatedVideoUri, setAnimatedVideoUri] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const form = useForm<AnimateFormValues>({
-    resolver: zodResolver(animateFormSchema),
-    defaultValues: {
-      prompt: '',
-      baseImage: undefined,
-    },
+  const sceneForm = useForm<z.infer<typeof sceneFormSchema>>({
+    resolver: zodResolver(sceneFormSchema),
+    defaultValues: { prompt: '' },
   });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      form.setValue('baseImage', e.target.files);
-      const reader = new FileReader();
-      reader.onload = (loadEvent) => {
-        setImagePreview(loadEvent.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
-  };
+  const animateForm = useForm<z.infer<typeof animateFormSchema>>({
+    resolver: zodResolver(animateFormSchema),
+    defaultValues: { animationPrompt: '' },
+  });
 
-  const onSubmit = async (data: AnimateFormValues) => {
-    setGenerationState('generating');
+  const handleSceneSubmit = async (data: z.infer<typeof sceneFormSchema>) => {
+    setGenerationState('generating_image');
     setErrorMessage(null);
-    setGeneratedVideoUri(null);
+    setStaticImageUri(null);
 
     try {
-      const imageFile = data.baseImage[0] as File;
-      const photoDataUri = await fileToBase64(imageFile);
+      const result = await generateCardAction({
+        masterPrompt: "A beautiful, detailed scene.",
+        personalizedPrompt: data.prompt,
+        aspectRatio: '16:9', // Default to landscape for scenes
+      });
       
-      const result = await generateVideoFromImageAction({
-        imageUrl: photoDataUri,
-        prompt: data.prompt,
+      if (!result || !result.cardDataUri) {
+        throw new Error("The AI failed to generate an image. Please try again.");
+      }
+
+      setStaticImageUri(result.cardDataUri);
+      setGenerationState('idle');
+      setStep('animate');
+      toast({
+        title: 'Scene Generated!',
+        description: "Now, let's bring it to life.",
       });
 
-      setGeneratedVideoUri(result.videoUrl);
-      setGenerationState('done');
-      toast({
-        title: 'Animation Generated!',
-        description: 'Your new video is ready.',
-      });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred.';
       setErrorMessage(message);
       setGenerationState('error');
-      toast({
-        variant: 'destructive',
-        title: 'Generation Failed',
-        description: message,
-      });
-    }
-  };
-  
-  const handleReset = () => {
-    form.reset();
-    setImagePreview(null);
-    setGeneratedVideoUri(null);
-    setGenerationState('idle');
-    if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+      toast({ variant: 'destructive', title: 'Scene Generation Failed', description: message });
     }
   };
 
-  const isLoading = generationState === 'generating';
+  const handleAnimationSubmit = async (data: z.infer<typeof animateFormSchema>) => {
+    if (!staticImageUri) {
+        toast({ variant: 'destructive', title: 'Error', description: 'No base image available to animate.' });
+        return;
+    }
+    setGenerationState('generating_video');
+    setErrorMessage(null);
+
+    try {
+        const result = await generateVideoFromImageAction({
+            imageUrl: staticImageUri,
+            prompt: data.animationPrompt,
+        });
+
+        setAnimatedVideoUri(result.videoUrl);
+        setGenerationState('done');
+        toast({ title: 'Animation Complete!', description: 'Your scene is now alive.' });
+
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'An unknown error occurred.';
+        setErrorMessage(message);
+        setGenerationState('error');
+        toast({ variant: 'destructive', title: 'Animation Failed', description: message });
+    }
+  };
+  
+  const handleStartOver = () => {
+    sceneForm.reset();
+    animateForm.reset();
+    setStep('generate');
+    setGenerationState('idle');
+    setStaticImageUri(null);
+    setAnimatedVideoUri(null);
+    setErrorMessage(null);
+  };
+
+  const isGeneratingImage = generationState === 'generating_image';
+  const isGeneratingVideo = generationState === 'generating_video';
+  const isLoading = isGeneratingImage || isGeneratingVideo;
 
   return (
     <div className="container mx-auto py-8">
       <Card className="w-full max-w-4xl mx-auto">
         <CardHeader>
           <CardTitle className="font-headline text-3xl">Animate Studio</CardTitle>
-          <CardDescription>Upload an image, describe an animation, and watch your creation come to life.</CardDescription>
+          <CardDescription>
+            {step === 'generate'
+              ? 'First, describe the beautiful static scene you want to create.'
+              : 'Your scene is ready. Now, describe how you want to bring it to life.'}
+          </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid md:grid-cols-2 gap-8 items-start">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="baseImage"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>1. Upload an Image</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          ref={fileInputRef}
-                          onChange={handleFileChange}
-                          className="hidden"
-                          disabled={isLoading}
+        
+        {step === 'generate' && (
+             <FormProvider {...sceneForm}>
+                <form onSubmit={sceneForm.handleSubmit(handleSceneSubmit)}>
+                    <CardContent>
+                        <FormField
+                            control={sceneForm.control}
+                            name="prompt"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-lg">Describe Your Scene</FormLabel>
+                                    <FormControl>
+                                        <Textarea
+                                        placeholder="e.g., 'A cozy living room with a fireplace, a birthday cake on the table, and a window showing the night sky.'"
+                                        rows={4}
+                                        {...field}
+                                        disabled={isLoading}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                         />
-                      </FormControl>
-                      <Card 
-                        className="border-2 border-dashed hover:border-primary cursor-pointer aspect-video flex items-center justify-center text-muted-foreground"
-                        onClick={() => fileInputRef.current?.click()}
-                      >
-                        {imagePreview ? (
-                          <Image src={imagePreview} alt="Base image preview" width={400} height={250} className="object-contain h-full w-full rounded-md" />
-                        ) : (
-                          <div className="text-center">
-                            <UploadCloud className="mx-auto h-12 w-12" />
-                            <p>Click to browse or drag & drop</p>
-                          </div>
+                         {generationState === 'error' && (
+                            <Alert variant="destructive" className="mt-4">
+                                <AlertTitle>Error</AlertTitle>
+                                <AlertDescription>{errorMessage}</AlertDescription>
+                            </Alert>
                         )}
-                      </Card>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="prompt"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>2. Describe the Animation</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="e.g., 'make the river flow', 'the person smiles and winks', 'add twinkling stars to the sky'"
-                          rows={3}
-                          {...field}
-                          disabled={isLoading}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <Button type="submit" className="w-full" disabled={isLoading || !imagePreview}>
-                  {isLoading ? (
-                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Animating...</>
-                  ) : (
-                    <><Film className="mr-2 h-4 w-4" /> Generate Video</>
-                  )}
-                </Button>
-              </form>
-            </Form>
-
-            <div className="space-y-4">
-                <Label>Result</Label>
-                <Card className="relative flex items-center justify-center bg-muted/50 border-dashed aspect-video">
-                  {isLoading && (
-                     <div className="text-center text-muted-foreground p-4">
-                        <Loader2 className="mx-auto h-12 w-12 animate-spin mb-2" />
-                        <p>Generating video... This may take up to a minute.</p>
-                     </div>
-                  )}
-                  {generationState === 'done' && generatedVideoUri && (
-                     <video src={generatedVideoUri} controls autoPlay loop className="w-full h-full object-contain rounded-md" />
-                  )}
-                   {generationState === 'idle' && !generatedVideoUri && (
-                     <p className="text-muted-foreground p-4 text-center">Your animated video will appear here.</p>
-                  )}
-                  {generationState === 'error' && (
-                     <Alert variant="destructive">
-                        <AlertTitle>Animation Failed</AlertTitle>
-                        <AlertDescription>
-                           {errorMessage || "An unknown error occurred. The model might be busy. Please try again in a moment."}
-                        </AlertDescription>
-                     </Alert>
-                  )}
-                </Card>
-                {generationState === 'done' && (
-                    <div className="grid grid-cols-2 gap-2">
-                        <Button onClick={handleReset} variant="outline">
-                            <Repeat className="mr-2 h-4 w-4" /> Start Over
+                    </CardContent>
+                    <CardFooter>
+                        <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+                            {isGeneratingImage ? (
+                                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating Scene...</>
+                            ) : (
+                                <><Sparkles className="mr-2 h-4 w-4" /> Generate Scene</>
+                            )}
                         </Button>
-                        <a href={generatedVideoUri!} download="cardcraft-animation.mp4">
-                            <Button className="w-full">
-                                <Download className="mr-2 h-4 w-4" /> Download
+                    </CardFooter>
+                </form>
+             </FormProvider>
+        )}
+
+        {step === 'animate' && staticImageUri && (
+            <div className="grid md:grid-cols-2 gap-8 items-start p-6">
+                <div className="space-y-4">
+                    <Label>Your Canvas</Label>
+                    <Card className="relative aspect-video">
+                        <Image src={staticImageUri} alt="Generated scene" fill className="object-cover rounded-md"/>
+                    </Card>
+                    <FormProvider {...animateForm}>
+                        <form onSubmit={animateForm.handleSubmit(handleAnimationSubmit)} className="space-y-4">
+                           <FormField
+                                control={animateForm.control}
+                                name="animationPrompt"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-lg">Describe the Animation</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                placeholder="e.g., 'Make the fire crackle', 'light the birthday candles', 'add gentle snowfall outside the window'"
+                                                rows={3}
+                                                {...field}
+                                                disabled={isLoading}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <Button type="submit" className="w-full" disabled={isLoading}>
+                                {isGeneratingVideo ? (
+                                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Animating...</>
+                                ) : (
+                                    <><Wand2 className="mr-2 h-4 w-4" /> Animate</>
+                                )}
                             </Button>
-                        </a>
-                    </div>
-                )}
-                 {generationState === 'error' && (
-                    <div className="grid grid-cols-2 gap-2">
-                        <Button onClick={handleReset} variant="outline">
-                            <Repeat className="mr-2 h-4 w-4" /> Try Again
-                        </Button>
-                    </div>
-                )}
+                        </form>
+                    </FormProvider>
+                </div>
+                <div className="space-y-4">
+                    <Label>Final Animation</Label>
+                    <Card className="relative flex items-center justify-center bg-muted/50 border-dashed aspect-video">
+                        {isGeneratingVideo && (
+                            <div className="text-center text-muted-foreground p-4">
+                                <Loader2 className="mx-auto h-12 w-12 animate-spin mb-2" />
+                                <p>Generating video... This may take up to a minute.</p>
+                            </div>
+                        )}
+                        {generationState === 'done' && animatedVideoUri && (
+                            <video src={animatedVideoUri} controls autoPlay loop className="w-full h-full object-contain rounded-md" />
+                        )}
+                        {generationState !== 'generating_video' && !animatedVideoUri &&(
+                            <p className="text-muted-foreground p-4 text-center">Your final animated video will appear here.</p>
+                        )}
+                        {generationState === 'error' && (
+                            <Alert variant="destructive">
+                                <AlertTitle>Animation Failed</AlertTitle>
+                                <AlertDescription>{errorMessage || "An unknown error occurred."}</AlertDescription>
+                            </Alert>
+                        )}
+                    </Card>
+                    
+                    {generationState === 'done' && (
+                        <div className="grid grid-cols-2 gap-2">
+                             <a href={animatedVideoUri!} download="cardcraft-animation.mp4">
+                                <Button className="w-full">
+                                    <Download className="mr-2 h-4 w-4" /> Download
+                                </Button>
+                            </a>
+                        </div>
+                    )}
+                    
+                     <Button onClick={handleStartOver} variant="outline" className="w-full">
+                        <Repeat className="mr-2 h-4 w-4" /> Start Over
+                    </Button>
+                </div>
             </div>
-          </div>
-        </CardContent>
+        )}
+
       </Card>
     </div>
   );

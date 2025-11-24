@@ -1,27 +1,23 @@
+
 'use server';
 
 import { generateAiCardFromPrompt } from '@/ai/flows/generate-ai-card-from-prompt';
-import type { GenerateAiCardFromPromptInput } from '@/ai/flows/generate-ai-card-from-prompt';
-
-import { filterAIContent } from '@/ai/flows/filter-ai-content-for-inappropriate-content';
-import type { FilterAIContentInput } from '@/ai/flows/filter-ai-content-for-inappropriate-content';
-
-import { summarizeAndImproveUserPrompt } from '@/ai/flows/summarize-and-improve-user-prompt';
-import type { SummarizeAndImproveUserPromptInput } from '@/ai/flows/summarize-and-improve-user-prompt';
-
 import { generateCardMessage } from '@/ai/flows/generate-card-message';
-import type { GenerateCardMessageInput } from '@/ai/flows/generate-card-message';
-
-import { generateRefinedPrompt } from '@/ai/flows/generate-refined-prompt';
-import type { GenerateRefinedPromptInput } from '@/ai/flows/generate-refined-prompt';
-
-import { generatePromptFromImage } from '@/ai/flows/generate-prompt-from-image';
-import type { GeneratePromptFromImageInput } from '@/ai/flows/generate-prompt-from-image';
-
 import { generateMemePrompt } from '@/ai/flows/generate-meme-prompt';
-import type { GenerateMemePromptInput } from '@/ai/flows/generate-meme-prompt';
-
+import { generatePromptFromImage } from '@/ai/flows/generate-prompt-from-image';
+import { generateRefinedPrompt } from '@/ai/flows/generate-refined-prompt';
+import { summarizeAndImproveUserPrompt } from '@/ai/flows/summarize-and-improve-user-prompt';
+import { filterAIContent } from '@/ai/flows/filter-ai-content-for-inappropriate-content';
 import { generateVideoFromImage } from '@/ai/flows/generate-video-from-image';
+
+import type { GenerateAiCardFromPromptInput } from '@/ai/flows/generate-ai-card-from-prompt';
+import type { GenerateCardMessageInput } from '@/ai/flows/generate-card-message';
+import type { GenerateMemePromptInput } from '@/ai/flows/generate-meme-prompt';
+import type { GeneratePromptFromImageInput } from '@/ai/flows/generate-prompt-from-image';
+import type { GenerateRefinedPromptInput } from '@/ai/flows/generate-refined-prompt';
+import type { SummarizeAndImproveUserPromptInput } from '@/ai/flows/summarize-and-improve-user-prompt';
+import type { FilterAIContentInput } from '@/ai/flows/filter-ai-content-for-inappropriate-content';
+import type { GenerateVideoFromImageInput } from '@/ai/flows/generate-video-from-image';
 
 
 export async function analyzePromptAction(input: SummarizeAndImproveUserPromptInput) {
@@ -112,7 +108,7 @@ export async function generateMemePromptAction(input: GenerateMemePromptInput) {
     }
 }
 
-export async function generateVideoFromImageAction(input: any) {
+export async function generateVideoFromImageAction(input: GenerateVideoFromImageInput) {
   try {
     // In a real app, you would add premium checks here.
     return await generateVideoFromImage(input);
@@ -122,4 +118,3 @@ export async function generateVideoFromImageAction(input: any) {
     throw new Error(message);
   }
 }
-    

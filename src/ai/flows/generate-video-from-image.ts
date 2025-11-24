@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -12,7 +13,7 @@ import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 import * as fs from 'fs';
 import { Readable } from 'stream';
-import { MediaPart } from 'genkit';
+import type { MediaPart } from 'genkit';
 
 
 const GenerateVideoFromImageInputSchema = z.object({
@@ -23,12 +24,12 @@ const GenerateVideoFromImageInputSchema = z.object({
     ),
   prompt: z.string().describe('A text prompt describing the desired animation (e.g., "make the stars twinkle", "add falling confetti").'),
 });
-type GenerateVideoFromImageInput = z.infer<typeof GenerateVideoFromImageInputSchema>;
+export type GenerateVideoFromImageInput = z.infer<typeof GenerateVideoFromImageInputSchema>;
 
 const GenerateVideoFromImageOutputSchema = z.object({
   videoUrl: z.string().describe('The data URI of the generated video.'),
 });
-type GenerateVideoFromImageOutput = z.infer<typeof GenerateVideoFromImageOutputSchema>;
+export type GenerateVideoFromImageOutput = z.infer<typeof GenerateVideoFromImageOutputSchema>;
 
 
 export async function generateVideoFromImage(
@@ -79,7 +80,7 @@ const generateVideoFromImageFlow = ai.defineFlow(
       ],
       config: {
         durationSeconds: 5,
-        aspectRatio: '9:16', // Default for cards
+        aspectRatio: '16:9', // Default for scenes
         personGeneration: 'allow_adult',
       },
     });
@@ -88,9 +89,11 @@ const generateVideoFromImageFlow = ai.defineFlow(
         throw new Error('Expected the model to return an operation');
     }
 
+    // This can take up to a minute, maybe more.
+    // In a real app, you might want to increase the server action timeout.
     while (!operation.done) {
-        operation = await ai.checkOperation(operation);
         await new Promise((resolve) => setTimeout(resolve, 5000));
+        operation = await ai.checkOperation(operation);
     }
 
     if (operation.error) {
@@ -107,4 +110,3 @@ const generateVideoFromImageFlow = ai.defineFlow(
     return { videoUrl: videoDataUri };
   }
 );
-    
