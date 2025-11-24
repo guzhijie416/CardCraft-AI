@@ -37,7 +37,8 @@ const nextConfig: NextConfig = {
   experimental: {
     // Increase the timeout for server actions
     serverActions: {
-      bodySizeLimit: '4.5mb', // Increase body size limit for image uploads
+      bodySizeLimit: '10mb', // Increase body size limit for image uploads
+      serverActionsTimeout: 120, // 2 minutes
     },
   },
 };

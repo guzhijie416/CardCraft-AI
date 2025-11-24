@@ -19,7 +19,7 @@ export async function generateVideoFromImage(
 }
 
 
-async function downloadVideo(video: MediaPart): Promise<string> {
+async function toBase64(video: MediaPart): Promise<string> {
     const fetch = (await import('node-fetch')).default;
     // Add API key before fetching the video.
     const videoDownloadResponse = await fetch(
@@ -34,7 +34,7 @@ async function downloadVideo(video: MediaPart): Promise<string> {
     }
 
     const buffer = await videoDownloadResponse.buffer();
-    const contentType = videoDownloadResponse.headers.get('content-type') || 'video/mp4';
+    const contentType = video.media?.contentType || videoDownloadResponse.headers.get('content-type') || 'video/mp4';
     return `data:${contentType};base64,${buffer.toString('base64')}`;
 }
 
@@ -72,11 +72,13 @@ const generateVideoFromImageFlow = ai.defineFlow(
     // This can take up to a minute, maybe more.
     // In a real app, you might want to increase the server action timeout.
     while (!operation.done) {
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+        console.log('Checking video generation status...');
+        await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds
         operation = await ai.checkOperation(operation);
     }
 
     if (operation.error) {
+        console.error('Video generation failed:', operation.error);
         throw new Error('failed to generate video: ' + operation.error.message);
     }
     
@@ -85,7 +87,7 @@ const generateVideoFromImageFlow = ai.defineFlow(
         throw new Error('Failed to find the generated video in the operation output');
     }
 
-    const videoDataUri = await downloadVideo(video as MediaPart);
+    const videoDataUri = await toBase64(video as MediaPart);
 
     return { videoUrl: videoDataUri };
   }
