@@ -16,6 +16,13 @@ export async function generateVideoFromImage(
   return generateVideoFromImageFlow(input);
 }
 
+// Helper function to extract content type from a data URI
+function getContentTypeFromDataUri(dataUri: string): string | null {
+  const match = dataUri.match(/^data:(.*?);/);
+  return match ? match[1] : null;
+}
+
+
 const generateVideoFromImageFlow = ai.defineFlow(
   {
     name: 'generateVideoFromImageFlow',
@@ -23,6 +30,12 @@ const generateVideoFromImageFlow = ai.defineFlow(
     outputSchema: GenerateVideoFromImageOutputSchema,
   },
   async (input) => {
+    
+    const contentType = getContentTypeFromDataUri(input.imageUrl);
+    if (!contentType) {
+      throw new Error('Could not determine content type from image data URI.');
+    }
+    
     let { operation } = await ai.generate({
       model: 'googleai/veo-2.0-generate-001',
       prompt: [
@@ -32,6 +45,7 @@ const generateVideoFromImageFlow = ai.defineFlow(
         {
           media: {
             url: input.imageUrl,
+            contentType: contentType, // This is the critical fix
           },
         },
       ],
@@ -63,8 +77,8 @@ const generateVideoFromImageFlow = ai.defineFlow(
         throw new Error('Failed to find the generated video in the operation output');
     }
     
-    // The URL from VEO is temporary. We fetch the raw video data and convert it to a
-    // permanent Base64 Data URI to send to the client. This must be done on the server.
+    // The URL from VEO is temporary and requires an API key. 
+    // We must fetch it on the server and convert it to a permanent Base64 Data URI.
     const fetch = (await import('node-fetch')).default;
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
@@ -84,9 +98,10 @@ const generateVideoFromImageFlow = ai.defineFlow(
     }
 
     const buffer = await videoDownloadResponse.arrayBuffer();
-    const contentType = video.media?.contentType || videoDownloadResponse.headers.get('content-type') || 'video/mp4';
-    const videoDataUri = `data:${contentType};base64,${Buffer.from(buffer).toString('base64')}`;
+    const videoContentType = video.media?.contentType || videoDownloadResponse.headers.get('content-type') || 'video/mp4';
+    const videoDataUri = `data:${videoContentType};base64,${Buffer.from(buffer).toString('base64')}`;
 
     return { videoUrl: videoDataUri };
   }
 );
+
