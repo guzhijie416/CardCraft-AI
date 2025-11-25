@@ -69,7 +69,7 @@ export default function AnimateStudioPage() {
       toast({ title: "Scene created!", description: "Now, let's bring it to life by describing the animation." });
 
     } catch (error) {
-      handleError(error, "The AI failed to generate the static scene. Please try again.");
+      handleError(error, "The AI failed to generate the static scene.");
     }
   };
 
@@ -98,12 +98,15 @@ export default function AnimateStudioPage() {
       toast({ title: 'Animation created!', description: 'Your scene is now a video.' });
 
     } catch (error) {
-       handleError(error, error instanceof Error ? error.message : "An unknown animation error occurred.");
+       const message = error instanceof Error ? error.message : "An AI error occurred during animation. The model may be unavailable or the request may have timed out.";
+       handleError(error, message);
     }
   };
 
   const handleError = (error: unknown, defaultMessage?: string) => {
-    const message = error instanceof Error ? error.message : defaultMessage || 'An unknown error occurred.';
+    console.error("Animation Error Caught:", error);
+    // Use a safe, generic message if the error object is not standard.
+    const message = defaultMessage || 'An unknown error occurred.';
     setErrorMessage(message);
     setGenerationState('error');
     toast({ variant: 'destructive', title: 'Generation Failed', description: message });
