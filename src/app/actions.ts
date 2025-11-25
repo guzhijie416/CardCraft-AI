@@ -99,3 +99,14 @@ export async function generateMemePromptAction(input: GenerateMemePromptInput) {
         throw new Error('Failed to generate the meme prompt.');
     }
 }
+
+export async function generateAnimatedSceneAction(input: GenerateVideoFromImageInput) {
+    try {
+        // Here you would add logic to check for premium status or deduct credits
+        return await generateVideoFromImage(input);
+    } catch (error) {
+        console.error('Error in generateAnimatedSceneAction:', error);
+        const message = error instanceof Error ? error.message : 'Failed to generate the animation. Please try again.';
+        throw new Error(message);
+    }
+}

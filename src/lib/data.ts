@@ -407,6 +407,7 @@ export type AnimationEffect = {
   id: string;
   name: string;
   videoUrl: string;
+  soundUrl: string;
 };
 
 type AnimationEffectCategory = {
@@ -420,30 +421,30 @@ export const animationEffects: AnimationEffectCategory[] = [
         category: 'Atmosphere', 
         icon: Wind, 
         effects: [ 
-            { id: 'snow', name: 'Snow', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/snow_overlay.webm' }, 
-            { id: 'rain', name: 'Rain', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/rain_overlay.webm' } 
+            { id: 'snow', name: 'Snow', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/snow_overlay.webm', soundUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/snow_sound.mp3' }, 
+            { id: 'rain', name: 'Rain', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/rain_overlay.webm', soundUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/rain_sound.mp3' } 
         ] 
     },
     { 
         category: 'Celebration', 
         icon: PartyPopper, 
         effects: [ 
-            { id: 'fireworks', name: 'Fireworks', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/fireworks_overlay.webm' }, 
-            { id: 'confetti', name: 'Confetti', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/confetti_overlay.webm' } 
+            { id: 'fireworks', name: 'Fireworks', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/fireworks_overlay.webm', soundUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/fireworks_sound.mp3' }, 
+            { id: 'confetti', name: 'Confetti', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/confetti_overlay.webm', soundUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/confetti_sound.mp3' } 
         ] 
     },
     { 
         category: 'Elements', 
         icon: Flame, 
         effects: [ 
-            { id: 'fire', name: 'Fire', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/fire_overlay.webm' }, 
+            { id: 'fire', name: 'Fire', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/fire_overlay.webm', soundUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/fire_sound.mp3' }, 
         ] 
     },
     { 
         category: 'Holiday', 
         icon: Sparkle, 
         effects: [ 
-            { id: 'twinkle_lights', name: 'Twinkling Lights', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/twinkle_overlay.webm' },
+            { id: 'twinkle_lights', name: 'Twinkling Lights', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/twinkle_overlay.webm', soundUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/twinkle_sound.mp3' },
         ] 
     },
 ];

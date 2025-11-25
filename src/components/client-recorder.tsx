@@ -24,7 +24,7 @@ export function ClientRecorder({
 
   useEffect(() => {
     // Ensure this only runs on the client
-    if (typeof window === 'undefined' || !('p5' in window)) {
+    if (typeof window === 'undefined' || !(window as any).p5) {
       onRecordingError("p5.js library is not loaded.");
       return;
     }
@@ -97,7 +97,7 @@ export function ClientRecorder({
               cleanup();
             };
             
-            mediaRecorder.onerror = (event) => {
+            mediaRecorder.onerror = (event: any) => {
               console.error('MediaRecorder error:', event);
               onRecordingError('An error occurred during recording.');
               cleanup();
@@ -138,8 +138,10 @@ export function ClientRecorder({
 
     // Return a cleanup function for when the component unmounts
     return () => {
-        p5InstanceRef.current?.remove();
-        p5InstanceRef.current = null;
+        if (p5InstanceRef.current) {
+            p5InstanceRef.current.remove();
+            p5InstanceRef.current = null;
+        }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

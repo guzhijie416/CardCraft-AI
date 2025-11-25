@@ -6,33 +6,32 @@ import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { generateCardAction } from '@/app/actions';
-import { animationEffects, type AnimationEffect } from '@/lib/data';
+import { generateCardAction, generateAnimatedSceneAction } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Wand2, Repeat, Sparkle, Download } from 'lucide-react';
+import { Loader2, Wand2, Repeat, Sparkle, Download, Film } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { ClientRecorder } from '@/components/client-recorder';
-import { cn } from '@/lib/utils';
 
-type Step = 'generate_scene' | 'animate_scene' | 'export_scene';
-type GenerationState = 'idle' | 'generating_image' | 'error';
-type ExportState = 'idle' | 'recording' | 'done' | 'error';
+type Step = 'generate_scene' | 'animate_scene' | 'done';
+type GenerationState = 'idle' | 'generating_image' | 'generating_video' | 'error';
 
 const sceneFormSchema = z.object({
   prompt: z.string().min(10, 'Please describe the scene in at least 10 characters.'),
 });
 
+const animateFormSchema = z.object({
+    animationPrompt: z.string().min(10, 'Please describe the animation in at least 10 characters.'),
+});
+
 export default function AnimateStudioPage() {
   const [step, setStep] = useState<Step>('generate_scene');
   const [generationState, setGenerationState] = useState<GenerationState>('idle');
-  const [exportState, setExportState] = useState<ExportState>('idle');
-
+  
   const [staticImageUri, setStaticImageUri] = useState<string | null>(null);
-  const [selectedEffect, setSelectedEffect] = useState<AnimationEffect | null>(null);
+  const [animatedVideoUrl, setAnimatedVideoUrl] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const { toast } = useToast();
@@ -41,6 +40,12 @@ export default function AnimateStudioPage() {
     resolver: zodResolver(sceneFormSchema),
     defaultValues: { prompt: '' },
   });
+
+  const animateForm = useForm<z.infer<typeof animateFormSchema>>({
+    resolver: zodResolver(animateFormSchema),
+    defaultValues: { animationPrompt: '' },
+  });
+
 
   const handleSceneSubmit = async (data: z.infer<typeof sceneFormSchema>) => {
     setGenerationState('generating_image');
@@ -61,42 +66,90 @@ export default function AnimateStudioPage() {
       setStaticImageUri(imageResult.cardDataUri);
       setStep('animate_scene');
       setGenerationState('idle');
-      toast({ title: "Scene created!", description: "Now, let's bring it to life by adding an effect." });
+      toast({ title: "Scene created!", description: "Now, let's bring it to life by describing the animation." });
 
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'An unknown error occurred.';
-      setErrorMessage(message);
-      setGenerationState('error');
-      toast({ variant: 'destructive', title: 'Generation Failed', description: message });
+      handleError(error, "The AI failed to generate the static scene. Please try again.");
     }
+  };
+
+  const handleAnimateSubmit = async (data: z.infer<typeof animateFormSchema>) => {
+    if (!staticImageUri) {
+        handleError(new Error("Cannot animate without a base image."));
+        return;
+    }
+    setGenerationState('generating_video');
+    setErrorMessage(null);
+    setAnimatedVideoUrl(null);
+
+    try {
+      const videoResult = await generateAnimatedSceneAction({
+        imageUrl: staticImageUri,
+        prompt: data.animationPrompt,
+      });
+
+      if (!videoResult || !videoResult.videoUrl) {
+        throw new Error("The AI failed to generate the animation. Please try again.");
+      }
+      
+      setAnimatedVideoUrl(videoResult.videoUrl);
+      setStep('done');
+      setGenerationState('idle');
+      toast({ title: 'Animation created!', description: 'Your scene is now a video.' });
+
+    } catch (error) {
+       handleError(error, error instanceof Error ? error.message : "An unknown animation error occurred.");
+    }
+  };
+
+  const handleError = (error: unknown, defaultMessage?: string) => {
+    const message = error instanceof Error ? error.message : defaultMessage || 'An unknown error occurred.';
+    setErrorMessage(message);
+    setGenerationState('error');
+    toast({ variant: 'destructive', title: 'Generation Failed', description: message });
   };
 
   const handleStartOver = () => {
     sceneForm.reset();
+    animateForm.reset();
     setStep('generate_scene');
     setGenerationState('idle');
-    setExportState('idle');
-    setSelectedEffect(null);
     setStaticImageUri(null);
+    setAnimatedVideoUrl(null);
     setErrorMessage(null);
   };
   
-  const handleExport = () => {
-    if (!staticImageUri || !selectedEffect) {
-        toast({ variant: 'destructive', title: 'Missing components', description: 'Cannot export without a scene and an effect.' });
-        return;
-    }
-    setExportState('recording');
-    setStep('export_scene');
-    toast({
-        title: 'Recording started!',
-        description: 'Your animation is being recorded in-browser. Please wait...',
-    });
-  }
-
-  const isLoadingImage = generationState === 'generating_image';
+  const isLoading = generationState === 'generating_image' || generationState === 'generating_video';
+  
+  const renderLoadingState = () => (
+    <CardContent className="p-8 flex flex-col items-center justify-center text-center gap-4 min-h-[400px]">
+        <Loader2 className="h-16 w-16 animate-spin text-primary"/>
+        <p className="text-muted-foreground text-lg">
+            {generationState === 'generating_image' ? 'Generating your scene...' : 'Animating your scene...'}
+        </p>
+        <p className="text-sm text-muted-foreground">(This may take up to a minute! Please do not leave the page.)</p>
+    </CardContent>
+  )
 
   const renderContent = () => {
+    if (isLoading) {
+        return renderLoadingState();
+    }
+
+    if (generationState === 'error') {
+         return (
+            <CardContent className="p-8 flex flex-col items-center justify-center text-center gap-4 min-h-[400px]">
+                <Alert variant="destructive">
+                    <AlertTitle>Animation Failed</AlertTitle>
+                    <AlertDescription>{errorMessage}</AlertDescription>
+                </Alert>
+                <Button onClick={handleStartOver} variant="outline" className="mt-4">
+                    <Repeat className="mr-2 h-4 w-4" /> Start Over
+                </Button>
+            </CardContent>
+        );
+    }
+    
     switch (step) {
       case 'generate_scene':
         return (
@@ -118,27 +171,16 @@ export default function AnimateStudioPage() {
                                         placeholder={`e.g., A cozy living room with a stone fireplace on a winter night...`}
                                         rows={4}
                                         {...field}
-                                        disabled={isLoadingImage}
                                         />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
-                         {generationState === 'error' && errorMessage && (
-                            <Alert variant="destructive" className="mt-4">
-                                <AlertTitle>Error</AlertTitle>
-                                <AlertDescription>{errorMessage}</AlertDescription>
-                            </Alert>
-                        )}
                     </CardContent>
                     <CardFooter>
-                        <Button type="submit" className="w-full" size="lg" disabled={isLoadingImage}>
-                            {isLoadingImage ? (
-                                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating Scene...</>
-                            ) : (
-                                <><Wand2 className="mr-2 h-4 w-4" /> Generate Scene</>
-                            )}
+                        <Button type="submit" className="w-full" size="lg">
+                            <Wand2 className="mr-2 h-4 w-4" /> Generate Scene
                         </Button>
                     </CardFooter>
                 </form>
@@ -146,91 +188,66 @@ export default function AnimateStudioPage() {
         );
       case 'animate_scene':
         return (
-             <>
-                <CardHeader>
-                    <Button variant="ghost" onClick={handleStartOver} className="justify-start p-0 h-auto mb-2 text-muted-foreground">&larr; Start Over</Button>
-                    <CardTitle className="font-headline text-3xl">Animate Your Scene</CardTitle>
-                    <CardDescription>Step 2: Choose an animation effect to layer over your scene.</CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-col items-center gap-6">
-                    <Card className="relative w-full aspect-video overflow-hidden border">
-                        {staticImageUri && <Image src={staticImageUri} layout="fill" objectFit="contain" alt="Generated static scene" className="bg-black" />}
-                        {selectedEffect && (
-                            <video
-                                key={selectedEffect.videoUrl}
-                                src={selectedEffect.videoUrl}
-                                autoPlay
-                                loop
-                                muted
-                                playsInline
-                                className="absolute inset-0 w-full h-full object-cover mix-blend-screen"
-                            />
-                        )}
-                    </Card>
-
-                    <div className="w-full space-y-6">
-                        {animationEffects.map(({ category, icon: Icon, effects }) => (
-                            <div key={category}>
-                                <h3 className="text-lg font-semibold flex items-center mb-3"><Icon className="mr-2 h-5 w-5 text-primary"/>{category}</h3>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                                    {effects.map(effect => (
-                                        <Button 
-                                            key={effect.id} 
-                                            variant={selectedEffect?.id === effect.id ? 'default' : 'outline'}
-                                            onClick={() => setSelectedEffect(effect)}>
-                                            {effect.name}
-                                        </Button>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </CardContent>
-                <CardFooter>
-                    <Button onClick={handleExport} className="w-full" size="lg" disabled={!selectedEffect}>
-                       <Sparkle className="mr-2 h-4 w-4" /> Export Video
-                    </Button>
-                </CardFooter>
-             </>
+             <Form {...animateForm}>
+                <form onSubmit={animateForm.handleSubmit(handleAnimateSubmit)}>
+                    <CardHeader>
+                        <Button variant="ghost" onClick={handleStartOver} className="justify-start p-0 h-auto mb-2 text-muted-foreground">&larr; Start Over</Button>
+                        <CardTitle className="font-headline text-3xl">Animate Your Scene</CardTitle>
+                        <CardDescription>Step 2: Describe how the scene should animate.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        {staticImageUri && 
+                            <Card className="relative w-full aspect-video overflow-hidden border">
+                                <Image src={staticImageUri} layout="fill" objectFit="contain" alt="Generated static scene" className="bg-black" />
+                            </Card>
+                        }
+                         <FormField
+                            control={animateForm.control}
+                            name="animationPrompt"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-lg">Animation Description</FormLabel>
+                                    <FormControl>
+                                        <Textarea
+                                        placeholder={`e.g., 'Make the fire in the fireplace flicker gently', 'make the snow fall outside the window'`}
+                                        rows={3}
+                                        {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </CardContent>
+                    <CardFooter>
+                        <Button type="submit" className="w-full" size="lg">
+                           <Film className="mr-2 h-4 w-4" /> Animate Scene
+                        </Button>
+                    </CardFooter>
+                </form>
+             </Form>
         );
-    case 'export_scene':
+    case 'done':
         return (
             <>
                 <CardHeader>
-                     <Button variant="ghost" onClick={() => setStep('animate_scene')} className="justify-start p-0 h-auto mb-2 text-muted-foreground">&larr; Back to Effects</Button>
-                    <CardTitle className="font-headline text-3xl">Finalize & Export</CardTitle>
-                    <CardDescription>Your masterpiece is being recorded...</CardDescription>
+                    <CardTitle className="font-headline text-3xl">Your Animation is Ready!</CardTitle>
+                    <CardDescription>Your masterpiece has been generated.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                   {staticImageUri && selectedEffect && (
-                       <ClientRecorder
-                            baseImage={staticImageUri}
-                            overlayVideo={selectedEffect.videoUrl}
-                            onRecordingComplete={(url) => {
-                                setExportState('done');
-                                toast({
-                                    duration: 10000,
-                                    title: "Recording Complete!",
-                                    description: "Your video is ready for download.",
-                                    action: (
-                                        <a href={url} download={`cardcraft-animation.webm`}>
-                                            <Button><Download className="mr-2 h-4 w-4" /> Download</Button>
-                                        </a>
-                                    )
-                                })
-                            }}
-                            onRecordingError={(err) => {
-                                setExportState('error');
-                                setErrorMessage(err);
-                                toast({ variant: 'destructive', title: 'Export Failed', description: err });
-                            }}
-                        />
+                   {animatedVideoUrl && (
+                        <div className="w-full aspect-video rounded-lg overflow-hidden border bg-black">
+                            <video key={animatedVideoUrl} src={animatedVideoUrl} controls autoPlay loop playsInline className="w-full h-full object-contain" />
+                        </div>
                    )}
                 </CardContent>
-                <CardFooter className={cn("pt-4", exportState === 'done' || exportState === 'error' ? 'flex' : 'hidden')}>
-                     <Button onClick={handleStartOver} variant="outline" className="w-full">
-                        <Repeat className="mr-2 h-4 w-4" /> Create a New Animation
+                <CardFooter className="grid grid-cols-2 gap-2">
+                    <Button onClick={handleStartOver} variant="outline">
+                        <Repeat className="mr-2 h-4 w-4" /> Create Another
                     </Button>
+                     <a href={animatedVideoUrl!} download={`cardcraft-animation.mp4`}>
+                        <Button className="w-full"><Download className="mr-2 h-4 w-4" /> Download Video</Button>
+                    </a>
                 </CardFooter>
             </>
         )
@@ -239,19 +256,10 @@ export default function AnimateStudioPage() {
     }
   }
 
-  const isLoading = isLoadingImage;
   return (
     <div className="container mx-auto py-8">
       <Card className="w-full max-w-4xl mx-auto">
-        {isLoading ? (
-             <CardContent className="p-8 flex flex-col items-center justify-center text-center gap-4 min-h-[400px]">
-                <Loader2 className="h-16 w-16 animate-spin text-primary"/>
-                <p className="text-muted-foreground text-lg">
-                    Generating your scene...
-                </p>
-                <p className="text-sm text-muted-foreground">(This may take a moment! Please do not leave the page.)</p>
-            </CardContent>
-        ) : renderContent()}
+        {renderContent()}
       </Card>
     </div>
   );
