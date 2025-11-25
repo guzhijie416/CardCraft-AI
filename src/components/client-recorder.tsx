@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import p5 from 'p5';
 import { Button } from './ui/button';
 import { Loader2, Sparkle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
+import Image from 'next/image';
 
 interface ClientRecorderProps {
   baseImage: string;
@@ -25,9 +25,11 @@ export function ClientRecorder({
 }: ClientRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const sketchRef = useRef<p5 | null>(null);
+  const sketchRef = useRef<any | null>(null); // Use `any` for p5 instance type
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
     // Cleanup function to remove the p5 instance when the component unmounts
@@ -37,15 +39,23 @@ export function ClientRecorder({
   }, []);
 
   const startRecording = () => {
+    if (typeof window === 'undefined' || !('p5' in window)) {
+        const message = "p5.js library is not available.";
+        setError(message);
+        onRecordingError(message);
+        return;
+    }
+
     onRecordingStart();
     setIsRecording(true);
     setError(null);
-
+    
+    // @ts-ignore p5 is a global
     const sketch = (p: p5) => {
-      let canvas: p5.Renderer;
-      let img: p5.Image;
-      let vid: p5.MediaElement;
-      let song: p5.SoundFile | undefined;
+      let canvas: any; // p5.Renderer
+      let img: any; // p5.Image
+      let vid: any; // p5.MediaElement
+      let song: any | undefined; // p5.SoundFile
       const recordingDuration = 10000; // 10 seconds in milliseconds
       let startTime: number;
 
@@ -61,6 +71,11 @@ export function ClientRecorder({
 
       p.setup = () => {
         canvas = p.createCanvas(1280, 720); // 16:9 aspect ratio
+        if (containerRef.current) {
+            canvas.parent(containerRef.current); // Attach canvas to a div
+        }
+        canvas.elt.style.display = 'none'; // Keep canvas hidden
+
         vid = p.createVideo(overlayVideo, () => {
           vid.loop();
           vid.volume(0);
@@ -145,12 +160,13 @@ export function ClientRecorder({
     };
 
     // Initialize p5.js
-    sketchRef.current = new p5(sketch);
+    // @ts-ignore p5 is a global
+    sketchRef.current = new window.p5(sketch);
   };
 
   return (
     <div className="space-y-4">
-        <div className="relative w-full aspect-video overflow-hidden rounded-lg border bg-black">
+        <div ref={containerRef} className="relative w-full aspect-video overflow-hidden rounded-lg border bg-black">
              <Image src={baseImage} layout="fill" objectFit="contain" alt="Scene preview"/>
             <video
                 key={overlayVideo}
