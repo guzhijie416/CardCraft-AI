@@ -1,8 +1,9 @@
+
 'use client';
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { generateCardAction } from '@/app/actions';
@@ -12,7 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Wand2, Repeat, Sparkle, Wind, PartyPopper, Flame, Download } from 'lucide-react';
+import { Loader2, Wand2, Repeat, Sparkle, Download } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { ClientRecorder } from '@/components/client-recorder';
 import { cn } from '@/lib/utils';
@@ -95,7 +96,7 @@ export default function AnimateStudioPage() {
     switch (step) {
       case 'generate_scene':
         return (
-             <FormProvider {...sceneForm}>
+            <Form {...sceneForm}>
                 <form onSubmit={sceneForm.handleSubmit(handleSceneSubmit)}>
                     <CardHeader>
                         <CardTitle className="font-headline text-3xl">Animate Studio</CardTitle>
@@ -137,7 +138,7 @@ export default function AnimateStudioPage() {
                         </Button>
                     </CardFooter>
                 </form>
-             </FormProvider>
+            </Form>
         );
       case 'animate_scene':
         return (
@@ -223,7 +224,7 @@ export default function AnimateStudioPage() {
                         />
                    )}
                 </CardContent>
-                <CardFooter className={cn("pt-4", exportState === 'done' ? 'flex' : 'hidden')}>
+                <CardFooter className={cn("pt-4", exportState === 'done' || exportState === 'error' ? 'flex' : 'hidden')}>
                      <Button onClick={handleStartOver} variant="outline" className="w-full">
                         <Repeat className="mr-2 h-4 w-4" /> Create a New Animation
                     </Button>

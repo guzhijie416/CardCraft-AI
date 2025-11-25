@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useRef } from 'react';
@@ -19,55 +20,69 @@ export function ClientRecorder({
   onRecordingComplete,
   onRecordingError,
 }: ClientRecorderProps) {
-  const sketchRef = useRef<any | null>(null);
+  const p5InstanceRef = useRef<any | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    let p5instance: any;
+    // Ensure this only runs on the client
+    if (typeof window === 'undefined' || !('p5' in window)) {
+      onRecordingError("p5.js library is not loaded.");
+      return;
+    }
 
-    if (typeof window !== 'undefined' && 'p5' in window) {
-      // @ts-ignore
-      p5instance = new window.p5((p: p5) => {
-        let canvas: any;
-        let img: any;
-        let vid: any;
-        let mediaRecorder: MediaRecorder;
-        const recordedChunks: Blob[] = [];
+    const sketch = (p: any) => {
+      let canvas: any;
+      let img: any;
+      let vid: any;
+      let mediaRecorder: MediaRecorder;
+      let audioContext: AudioContext;
+      let audioStreamDestination: MediaStreamAudioDestinationNode;
 
-        p.preload = () => {
-          img = p.loadImage(baseImage);
-        };
+      const recordedChunks: Blob[] = [];
 
-        p.setup = () => {
-          canvas = p.createCanvas(1280, 720);
-          if (containerRef.current) {
-            canvas.parent(containerRef.current);
-          }
+      p.preload = () => {
+        img = p.loadImage(baseImage);
+        if (soundtrack) {
+            audioRef.current = p.createAudio(soundtrack);
+        }
+      };
 
-          vid = p.createVideo(overlayVideo, () => {
+      p.setup = () => {
+        canvas = p.createCanvas(1280, 720);
+        if (containerRef.current) {
+          canvas.parent(containerRef.current);
+        }
+
+        vid = p.createVideo(overlayVideo, () => {
             vid.loop();
             vid.volume(0);
             vid.hide();
-          });
+        });
 
-          p.frameRate(30);
+        p.frameRate(30);
 
-          try {
-            const stream = (canvas.elt as HTMLCanvasElement).captureStream(30);
-            
-            if (audioRef.current) {
-                const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        // -- Stream Setup --
+        try {
+            const canvasStream = (canvas.elt as HTMLCanvasElement).captureStream(30);
+            let combinedStream: MediaStream;
+
+            if (soundtrack && audioRef.current) {
+                audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
                 const source = audioContext.createMediaElementSource(audioRef.current);
-                const dest = audioContext.createMediaStreamDestination();
-                source.connect(dest);
-                const audioTrack = dest.stream.getAudioTracks()[0];
-                stream.addTrack(audioTrack);
+                audioStreamDestination = audioContext.createMediaStreamDestination();
+                source.connect(audioStreamDestination);
+                source.connect(audioContext.destination); // Play sound through speakers as well if needed
+
+                const audioTrack = audioStreamDestination.stream.getAudioTracks()[0];
+                canvasStream.addTrack(audioTrack);
                 audioRef.current.play();
             }
-
-            mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9,opus' });
             
+            combinedStream = canvasStream;
+            
+            mediaRecorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm; codecs=vp9,opus' });
+
             mediaRecorder.ondataavailable = (event) => {
               if (event.data.size > 0) {
                 recordedChunks.push(event.data);
@@ -78,13 +93,13 @@ export function ClientRecorder({
               const blob = new Blob(recordedChunks, { type: 'video/webm' });
               const url = URL.createObjectURL(blob);
               onRecordingComplete(url);
-              p.remove();
+              cleanup();
             };
             
             mediaRecorder.onerror = (event) => {
               console.error('MediaRecorder error:', event);
               onRecordingError('An error occurred during recording.');
-              p.remove();
+              cleanup();
             };
 
             mediaRecorder.start();
@@ -95,36 +110,44 @@ export function ClientRecorder({
                 }
             }, 10000); // Record for 10 seconds
 
-          } catch (e) {
-            const errMessage = e instanceof Error ? e.message : 'Unknown recording error';
-            console.error('Failed to start MediaRecorder:', e);
-            onRecordingError(`Could not initialize recorder. ${errMessage}`);
-            p.remove();
-          }
-        };
+        } catch (e) {
+          const errMessage = e instanceof Error ? e.message : 'Unknown recording error';
+          console.error('Failed to start MediaRecorder:', e);
+          onRecordingError(`Could not initialize recorder. ${errMessage}`);
+          cleanup();
+        }
+      };
 
-        p.draw = () => {
-          p.background(0);
-          p.image(img, 0, 0, p.width, p.height);
-          p.blendMode(p.SCREEN);
-          p.image(vid, 0, 0, p.width, p.height);
-          p.blendMode(p.BLEND);
-        };
-      });
+      p.draw = () => {
+        p.background(0);
+        p.image(img, 0, 0, p.width, p.height);
+        p.blendMode(p.SCREEN);
+        p.image(vid, 0, 0, p.width, p.height);
+        p.blendMode(p.BLEND);
+      };
+      
+      const cleanup = () => {
+        if(vid) vid.remove();
+        if(audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current = null;
+        }
+        if(audioContext) audioContext.close();
+        p.remove();
+      };
+    };
 
-      sketchRef.current = p5instance;
-    } else {
-        onRecordingError("p5.js library is not available.");
-    }
+    p5InstanceRef.current = new (window as any).p5(sketch);
 
     return () => {
-      sketchRef.current?.remove();
+      // Cleanup when the component unmounts
+      p5InstanceRef.current?.remove();
     };
-  }, [baseImage, overlayVideo, soundtrack, onRecordingComplete, onRecordingError]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="space-y-4">
-      {soundtrack && <audio ref={audioRef} src={soundtrack} loop className="hidden" />}
       <div ref={containerRef} className="relative w-full aspect-video overflow-hidden rounded-lg border bg-black">
         <Image src={baseImage} layout="fill" objectFit="contain" alt="Scene preview" />
          <video
