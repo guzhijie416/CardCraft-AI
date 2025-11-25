@@ -407,7 +407,6 @@ export type AnimationEffect = {
   id: string;
   name: string;
   videoUrl: string;
-  soundUrl?: string;
 };
 
 type AnimationEffectCategory = {
@@ -421,15 +420,15 @@ export const animationEffects: AnimationEffectCategory[] = [
         category: 'Atmosphere', 
         icon: Wind, 
         effects: [ 
-            { id: 'snow', name: 'Snow', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/snow_overlay.webm', soundUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/wind-sound.mp3' }, 
-            { id: 'rain', name: 'Rain', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/rain_overlay.webm', soundUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/rain-sound.mp3' } 
+            { id: 'snow', name: 'Snow', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/snow_overlay.webm' }, 
+            { id: 'rain', name: 'Rain', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/rain_overlay.webm' } 
         ] 
     },
     { 
         category: 'Celebration', 
         icon: PartyPopper, 
         effects: [ 
-            { id: 'fireworks', name: 'Fireworks', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/fireworks_overlay.webm', soundUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/fireworks-sound.mp3' }, 
+            { id: 'fireworks', name: 'Fireworks', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/fireworks_overlay.webm' }, 
             { id: 'confetti', name: 'Confetti', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/confetti_overlay.webm' } 
         ] 
     },
@@ -437,7 +436,7 @@ export const animationEffects: AnimationEffectCategory[] = [
         category: 'Elements', 
         icon: Flame, 
         effects: [ 
-            { id: 'fire', name: 'Fire', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/fire_overlay.webm', soundUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/fire-sound.mp3' }, 
+            { id: 'fire', name: 'Fire', videoUrl: 'https://storage.googleapis.com/cardcraft-ai-assets/fire_overlay.webm' }, 
         ] 
     },
     { 

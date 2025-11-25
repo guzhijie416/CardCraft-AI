@@ -8,7 +8,6 @@ import Image from 'next/image';
 interface ClientRecorderProps {
   baseImage: string;
   overlayVideo: string;
-  soundtrack?: string;
   onRecordingComplete: (url: string) => void;
   onRecordingError: (error: string) => void;
 }
@@ -16,13 +15,12 @@ interface ClientRecorderProps {
 export function ClientRecorder({
   baseImage,
   overlayVideo,
-  soundtrack,
   onRecordingComplete,
   onRecordingError,
 }: ClientRecorderProps) {
   const p5InstanceRef = useRef<any | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const isRecordingStarted = useRef(false);
 
   useEffect(() => {
     // Ensure this only runs on the client
@@ -30,58 +28,61 @@ export function ClientRecorder({
       onRecordingError("p5.js library is not loaded.");
       return;
     }
+    
+    // Prevent re-initialization on re-renders
+    if (p5InstanceRef.current) {
+        return;
+    }
 
     const sketch = (p: any) => {
       let canvas: any;
       let img: any;
       let vid: any;
       let mediaRecorder: MediaRecorder;
-      let audioContext: AudioContext;
-      let audioStreamDestination: MediaStreamAudioDestinationNode;
-
       const recordedChunks: Blob[] = [];
 
+      // Cleanup function to be called on success, error, or unmount
+      const cleanup = () => {
+        if (vid) vid.remove();
+        if (p) p.remove();
+        p5InstanceRef.current = null;
+      };
+
       p.preload = () => {
-        img = p.loadImage(baseImage);
-        if (soundtrack) {
-            audioRef.current = p.createAudio(soundtrack);
+        try {
+          img = p.loadImage(baseImage);
+          vid = p.createVideo(overlayVideo);
+        } catch (e) {
+          const errMessage = e instanceof Error ? e.message : 'Failed to load media assets.';
+          onRecordingError(`Preload failed: ${errMessage}`);
+          cleanup();
         }
       };
 
       p.setup = () => {
+        // If preload failed, the component might try to setup.
+        if (!img || !vid) {
+            return;
+        }
+
         canvas = p.createCanvas(1280, 720);
         if (containerRef.current) {
           canvas.parent(containerRef.current);
         }
 
-        vid = p.createVideo(overlayVideo, () => {
-            vid.loop();
-            vid.volume(0);
-            vid.hide();
-        });
+        vid.loop();
+        vid.volume(0);
+        vid.hide();
 
         p.frameRate(30);
 
-        // -- Stream Setup --
+        if (isRecordingStarted.current) return;
+        isRecordingStarted.current = true;
+
         try {
-            const canvasStream = (canvas.elt as HTMLCanvasElement).captureStream(30);
-            let combinedStream: MediaStream;
-
-            if (soundtrack && audioRef.current) {
-                audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-                const source = audioContext.createMediaElementSource(audioRef.current);
-                audioStreamDestination = audioContext.createMediaStreamDestination();
-                source.connect(audioStreamDestination);
-                source.connect(audioContext.destination); // Play sound through speakers as well if needed
-
-                const audioTrack = audioStreamDestination.stream.getAudioTracks()[0];
-                canvasStream.addTrack(audioTrack);
-                audioRef.current.play();
-            }
+            const stream = (canvas.elt as HTMLCanvasElement).captureStream(30);
             
-            combinedStream = canvasStream;
-            
-            mediaRecorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm; codecs=vp9,opus' });
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
 
             mediaRecorder.ondataavailable = (event) => {
               if (event.data.size > 0) {
@@ -104,11 +105,12 @@ export function ClientRecorder({
 
             mediaRecorder.start();
 
+            // Record for 10 seconds, then stop
             setTimeout(() => {
-                if (mediaRecorder.state === 'recording') {
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
                     mediaRecorder.stop();
                 }
-            }, 10000); // Record for 10 seconds
+            }, 10000);
 
         } catch (e) {
           const errMessage = e instanceof Error ? e.message : 'Unknown recording error';
@@ -119,29 +121,25 @@ export function ClientRecorder({
       };
 
       p.draw = () => {
+        // Don't draw if setup failed
+        if (!img || !vid) {
+            p.background(0); // Draw a black background to indicate failure
+            return;
+        };
         p.background(0);
         p.image(img, 0, 0, p.width, p.height);
         p.blendMode(p.SCREEN);
         p.image(vid, 0, 0, p.width, p.height);
         p.blendMode(p.BLEND);
       };
-      
-      const cleanup = () => {
-        if(vid) vid.remove();
-        if(audioRef.current) {
-            audioRef.current.pause();
-            audioRef.current = null;
-        }
-        if(audioContext) audioContext.close();
-        p.remove();
-      };
     };
 
     p5InstanceRef.current = new (window as any).p5(sketch);
 
+    // Return a cleanup function for when the component unmounts
     return () => {
-      // Cleanup when the component unmounts
-      p5InstanceRef.current?.remove();
+        p5InstanceRef.current?.remove();
+        p5InstanceRef.current = null;
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -149,17 +147,8 @@ export function ClientRecorder({
   return (
     <div className="space-y-4">
       <div ref={containerRef} className="relative w-full aspect-video overflow-hidden rounded-lg border bg-black">
-        <Image src={baseImage} layout="fill" objectFit="contain" alt="Scene preview" />
-         <video
-            key={overlayVideo}
-            src={overlayVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover mix-blend-screen opacity-50"
-        />
-        <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center text-white p-4">
+        {/* The p5 canvas will be inserted here */}
+         <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center text-white p-4">
             <Loader2 className="h-8 w-8 animate-spin mb-4" />
             <p className="text-lg font-semibold">Recording Your Animation...</p>
             <p className="text-sm text-center">Please wait. This process happens in your browser and will take about 10 seconds.</p>

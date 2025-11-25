@@ -82,6 +82,10 @@ export default function AnimateStudioPage() {
   };
   
   const handleExport = () => {
+    if (!staticImageUri || !selectedEffect) {
+        toast({ variant: 'destructive', title: 'Missing components', description: 'Cannot export without a scene and an effect.' });
+        return;
+    }
     setExportState('recording');
     setStep('export_scene');
     toast({
@@ -202,7 +206,6 @@ export default function AnimateStudioPage() {
                        <ClientRecorder
                             baseImage={staticImageUri}
                             overlayVideo={selectedEffect.videoUrl}
-                            soundtrack={selectedEffect.soundUrl}
                             onRecordingComplete={(url) => {
                                 setExportState('done');
                                 toast({
