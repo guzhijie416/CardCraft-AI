@@ -1,16 +1,13 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { Button } from './ui/button';
-import { Loader2, Sparkle } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from './ui/alert';
+import { useEffect, useRef } from 'react';
+import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 
 interface ClientRecorderProps {
   baseImage: string;
   overlayVideo: string;
   soundtrack?: string;
-  onRecordingStart: () => void;
   onRecordingComplete: (url: string) => void;
   onRecordingError: (error: string) => void;
 }
@@ -19,187 +16,132 @@ export function ClientRecorder({
   baseImage,
   overlayVideo,
   soundtrack,
-  onRecordingStart,
   onRecordingComplete,
   onRecordingError,
 }: ClientRecorderProps) {
-  const [isRecording, setIsRecording] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const sketchRef = useRef<any | null>(null); // Use `any` for p5 instance type
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const recordedChunksRef = useRef<Blob[]>([]);
+  const sketchRef = useRef<any | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // Cleanup function to remove the p5 instance when the component unmounts
+    let p5instance: any;
+
+    if (typeof window !== 'undefined' && 'p5' in window) {
+      // @ts-ignore
+      p5instance = new window.p5((p: p5) => {
+        let canvas: any;
+        let img: any;
+        let vid: any;
+        let mediaRecorder: MediaRecorder;
+        const recordedChunks: Blob[] = [];
+
+        p.preload = () => {
+          img = p.loadImage(baseImage);
+        };
+
+        p.setup = () => {
+          canvas = p.createCanvas(1280, 720);
+          if (containerRef.current) {
+            canvas.parent(containerRef.current);
+          }
+
+          vid = p.createVideo(overlayVideo, () => {
+            vid.loop();
+            vid.volume(0);
+            vid.hide();
+          });
+
+          p.frameRate(30);
+
+          try {
+            const stream = (canvas.elt as HTMLCanvasElement).captureStream(30);
+            
+            if (audioRef.current) {
+                const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+                const source = audioContext.createMediaElementSource(audioRef.current);
+                const dest = audioContext.createMediaStreamDestination();
+                source.connect(dest);
+                const audioTrack = dest.stream.getAudioTracks()[0];
+                stream.addTrack(audioTrack);
+                audioRef.current.play();
+            }
+
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9,opus' });
+            
+            mediaRecorder.ondataavailable = (event) => {
+              if (event.data.size > 0) {
+                recordedChunks.push(event.data);
+              }
+            };
+
+            mediaRecorder.onstop = () => {
+              const blob = new Blob(recordedChunks, { type: 'video/webm' });
+              const url = URL.createObjectURL(blob);
+              onRecordingComplete(url);
+              p.remove();
+            };
+            
+            mediaRecorder.onerror = (event) => {
+              console.error('MediaRecorder error:', event);
+              onRecordingError('An error occurred during recording.');
+              p.remove();
+            };
+
+            mediaRecorder.start();
+
+            setTimeout(() => {
+                if (mediaRecorder.state === 'recording') {
+                    mediaRecorder.stop();
+                }
+            }, 10000); // Record for 10 seconds
+
+          } catch (e) {
+            const errMessage = e instanceof Error ? e.message : 'Unknown recording error';
+            console.error('Failed to start MediaRecorder:', e);
+            onRecordingError(`Could not initialize recorder. ${errMessage}`);
+            p.remove();
+          }
+        };
+
+        p.draw = () => {
+          p.background(0);
+          p.image(img, 0, 0, p.width, p.height);
+          p.blendMode(p.SCREEN);
+          p.image(vid, 0, 0, p.width, p.height);
+          p.blendMode(p.BLEND);
+        };
+      });
+
+      sketchRef.current = p5instance;
+    } else {
+        onRecordingError("p5.js library is not available.");
+    }
+
     return () => {
       sketchRef.current?.remove();
     };
-  }, []);
-
-  const startRecording = () => {
-    if (typeof window === 'undefined' || !('p5' in window)) {
-        const message = "p5.js library is not available.";
-        setError(message);
-        onRecordingError(message);
-        return;
-    }
-
-    onRecordingStart();
-    setIsRecording(true);
-    setError(null);
-    
-    // @ts-ignore p5 is a global
-    const sketch = (p: p5) => {
-      let canvas: any; // p5.Renderer
-      let img: any; // p5.Image
-      let vid: any; // p5.MediaElement
-      let song: any | undefined; // p5.SoundFile
-      const recordingDuration = 10000; // 10 seconds in milliseconds
-      let startTime: number;
-
-      p.preload = () => {
-        img = p.loadImage(baseImage);
-        if (soundtrack) {
-          // @ts-ignore
-          p.soundFormats('mp3');
-          // @ts-ignore
-          song = p.loadSound(soundtrack);
-        }
-      };
-
-      p.setup = () => {
-        canvas = p.createCanvas(1280, 720); // 16:9 aspect ratio
-        if (containerRef.current) {
-            canvas.parent(containerRef.current); // Attach canvas to a div
-        }
-        canvas.elt.style.display = 'none'; // Keep canvas hidden
-
-        vid = p.createVideo(overlayVideo, () => {
-          vid.loop();
-          vid.volume(0);
-          vid.hide();
-        });
-        p.frameRate(30);
-
-        try {
-          const stream = (canvas.elt as HTMLCanvasElement).captureStream(30);
-          
-          if (song) {
-             const audioContext = p.getAudioContext();
-             const audioDestination = audioContext.createMediaStreamDestination();
-             // @ts-ignore
-             song.connect(audioDestination);
-             const audioTracks = audioDestination.stream.getAudioTracks();
-             if (audioTracks.length > 0) {
-                 stream.addTrack(audioTracks[0]);
-             }
-          }
-
-          mediaRecorderRef.current = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
-          recordedChunksRef.current = [];
-
-          mediaRecorderRef.current.ondataavailable = (event) => {
-            if (event.data.size > 0) {
-              recordedChunksRef.current.push(event.data);
-            }
-          };
-
-          mediaRecorderRef.current.onstop = () => {
-            const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
-            const url = URL.createObjectURL(blob);
-            onRecordingComplete(url);
-            setIsRecording(false);
-            p.remove(); // Clean up the p5 sketch
-          };
-          
-          mediaRecorderRef.current.onerror = (event) => {
-            console.error('MediaRecorder error:', event);
-            setError('An error occurred during recording.');
-            onRecordingError('An error occurred during recording.');
-            setIsRecording(false);
-          };
-
-          mediaRecorderRef.current.start();
-          if (song) {
-            // @ts-ignore
-            song.play();
-          }
-          startTime = p.millis();
-
-        } catch (e) {
-            const errMessage = e instanceof Error ? e.message : 'Unknown recording error';
-            console.error('Failed to start MediaRecorder:', e);
-            setError(`Could not initialize recorder. ${errMessage}`);
-            onRecordingError(`Could not initialize recorder. ${errMessage}`);
-            setIsRecording(false);
-        }
-      };
-
-      p.draw = () => {
-        p.background(0);
-        p.image(img, 0, 0, p.width, p.height);
-
-        // Overlay video
-        p.blendMode(p.SCREEN); // Use SCREEN or ADD for better blending of light effects
-        p.image(vid, 0, 0, p.width, p.height);
-        p.blendMode(p.BLEND); // Reset blend mode
-
-        // Stop recording after duration
-        if (p.millis() - startTime > recordingDuration) {
-          if (mediaRecorderRef.current?.state === 'recording') {
-            mediaRecorderRef.current.stop();
-            if(song){
-                // @ts-ignore
-                song.stop();
-            }
-          }
-        }
-      };
-    };
-
-    // Initialize p5.js
-    // @ts-ignore p5 is a global
-    sketchRef.current = new window.p5(sketch);
-  };
+  }, [baseImage, overlayVideo, soundtrack, onRecordingComplete, onRecordingError]);
 
   return (
     <div className="space-y-4">
-        <div ref={containerRef} className="relative w-full aspect-video overflow-hidden rounded-lg border bg-black">
-             <Image src={baseImage} layout="fill" objectFit="contain" alt="Scene preview"/>
-            <video
-                key={overlayVideo}
-                src={overlayVideo}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="absolute inset-0 w-full h-full object-cover mix-blend-screen"
-            />
-            {isRecording && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                    <div className="text-white text-center">
-                        <Loader2 className="h-8 w-8 animate-spin mx-auto mb-2" />
-                        <p>Recording in progress...</p>
-                    </div>
-                </div>
-            )}
+      {soundtrack && <audio ref={audioRef} src={soundtrack} loop className="hidden" />}
+      <div ref={containerRef} className="relative w-full aspect-video overflow-hidden rounded-lg border bg-black">
+        <Image src={baseImage} layout="fill" objectFit="contain" alt="Scene preview" />
+         <video
+            key={overlayVideo}
+            src={overlayVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover mix-blend-screen opacity-50"
+        />
+        <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center text-white p-4">
+            <Loader2 className="h-8 w-8 animate-spin mb-4" />
+            <p className="text-lg font-semibold">Recording Your Animation...</p>
+            <p className="text-sm text-center">Please wait. This process happens in your browser and will take about 10 seconds.</p>
         </div>
-        <Button onClick={startRecording} disabled={isRecording} className="w-full" size="lg">
-            {isRecording ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-                <Sparkle className="mr-2 h-4 w-4" />
-            )}
-            Export Video
-        </Button>
-        {error && (
-             <Alert variant="destructive" className="mt-4">
-                <AlertTitle>Export Failed</AlertTitle>
-                <AlertDescription>{error}</AlertDescription>
-            </Alert>
-        )}
+      </div>
     </div>
   );
 }

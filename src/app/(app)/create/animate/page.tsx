@@ -12,9 +12,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Wand2, Repeat, Sparkle, Wind, PartyPopper, Flame, Music, Download } from 'lucide-react';
+import { Loader2, Wand2, Repeat, Sparkle, Wind, PartyPopper, Flame, Download } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { ClientRecorder } from '@/components/client-recorder';
+import { cn } from '@/lib/utils';
 
 type Step = 'generate_scene' | 'animate_scene' | 'export_scene';
 type GenerationState = 'idle' | 'generating_image' | 'error';
@@ -81,6 +82,7 @@ export default function AnimateStudioPage() {
   
   const handleExport = () => {
     setExportState('recording');
+    setStep('export_scene');
     toast({
         title: 'Recording started!',
         description: 'Your animation is being recorded in-browser. Please wait...',
@@ -145,8 +147,8 @@ export default function AnimateStudioPage() {
                     <CardTitle className="font-headline text-3xl">Animate Your Scene</CardTitle>
                     <CardDescription>Step 2: Choose an animation effect to layer over your scene.</CardDescription>
                 </CardHeader>
-                <CardContent className="flex flex-col items-center gap-4">
-                    <Card className="relative w-full aspect-video overflow-hidden">
+                <CardContent className="flex flex-col items-center gap-6">
+                    <Card className="relative w-full aspect-video overflow-hidden border">
                         {staticImageUri && <Image src={staticImageUri} layout="fill" objectFit="contain" alt="Generated static scene" className="bg-black" />}
                         {selectedEffect && (
                             <video
@@ -180,8 +182,8 @@ export default function AnimateStudioPage() {
                     </div>
                 </CardContent>
                 <CardFooter>
-                    <Button onClick={() => setStep('export_scene')} className="w-full" size="lg" disabled={!selectedEffect}>
-                       <Music className="mr-2 h-4 w-4" /> Next: Add Music & Export
+                    <Button onClick={handleExport} className="w-full" size="lg" disabled={!selectedEffect}>
+                       <Sparkle className="mr-2 h-4 w-4" /> Export Video
                     </Button>
                 </CardFooter>
              </>
@@ -192,7 +194,7 @@ export default function AnimateStudioPage() {
                 <CardHeader>
                      <Button variant="ghost" onClick={() => setStep('animate_scene')} className="justify-start p-0 h-auto mb-2 text-muted-foreground">&larr; Back to Effects</Button>
                     <CardTitle className="font-headline text-3xl">Finalize & Export</CardTitle>
-                    <CardDescription>Your masterpiece is ready! Click export to create the video file.</CardDescription>
+                    <CardDescription>Your masterpiece is being recorded...</CardDescription>
                 </CardHeader>
                 <CardContent>
                    {staticImageUri && selectedEffect && (
@@ -200,10 +202,10 @@ export default function AnimateStudioPage() {
                             baseImage={staticImageUri}
                             overlayVideo={selectedEffect.videoUrl}
                             soundtrack={selectedEffect.soundUrl}
-                            onRecordingStart={handleExport}
                             onRecordingComplete={(url) => {
                                 setExportState('done');
                                 toast({
+                                    duration: 10000,
                                     title: "Recording Complete!",
                                     description: "Your video is ready for download.",
                                     action: (
@@ -216,11 +218,12 @@ export default function AnimateStudioPage() {
                             onRecordingError={(err) => {
                                 setExportState('error');
                                 setErrorMessage(err);
+                                toast({ variant: 'destructive', title: 'Export Failed', description: err });
                             }}
                         />
                    )}
                 </CardContent>
-                <CardFooter>
+                <CardFooter className={cn("pt-4", exportState === 'done' ? 'flex' : 'hidden')}>
                      <Button onClick={handleStartOver} variant="outline" className="w-full">
                         <Repeat className="mr-2 h-4 w-4" /> Create a New Animation
                     </Button>
@@ -232,7 +235,7 @@ export default function AnimateStudioPage() {
     }
   }
 
-  const isLoading = isLoadingImage || exportState === 'recording';
+  const isLoading = isLoadingImage;
   return (
     <div className="container mx-auto py-8">
       <Card className="w-full max-w-4xl mx-auto">
@@ -240,7 +243,7 @@ export default function AnimateStudioPage() {
              <CardContent className="p-8 flex flex-col items-center justify-center text-center gap-4 min-h-[400px]">
                 <Loader2 className="h-16 w-16 animate-spin text-primary"/>
                 <p className="text-muted-foreground text-lg">
-                    {generationState === 'generating_image' ? 'Generating your scene...' : 'Recording your animation...'}
+                    Generating your scene...
                 </p>
                 <p className="text-sm text-muted-foreground">(This may take a moment! Please do not leave the page.)</p>
             </CardContent>
