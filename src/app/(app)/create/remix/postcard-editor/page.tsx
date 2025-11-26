@@ -11,23 +11,25 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 
 // --- Style Definitions ---
 // Level 1: Frames
-type FrameStyle = 'none' | 'classic' | 'polaroid' | 'postcard-back' | 'film-strip';
+export type PostcardStyle = 'none' | 'classic' | 'polaroid' | 'postcard-back' | 'film-strip';
 const frameStyles = [
-  { id: 'classic' as FrameStyle, name: 'The Classic', description: 'Simple, elegant, timeless. A clean border for a professional look.' },
-  { id: 'polaroid' as FrameStyle, name: 'Instant Memory', description: 'The iconic retro frame. Add a handwritten caption for a nostalgic touch.' },
-  { id: 'postcard-back' as FrameStyle, name: 'Flip & Write', description: 'A classic postcard back, with a stamp and address lines.' },
-  { id: 'film-strip' as FrameStyle, name: 'Photo Reel', description: 'Frame your moment in a cinematic film strip.' },
+  { id: 'classic' as PostcardStyle, name: 'The Classic', description: 'Simple, elegant, timeless. A clean border for a professional look.' },
+  { id: 'polaroid' as PostcardStyle, name: 'Instant Memory', description: 'The iconic retro frame. Add a handwritten caption for a nostalgic touch.' },
+  { id: 'postcard-back' as PostcardStyle, name: 'Flip & Write', description: 'A classic postcard back, ready for your message, address, and stamp.' },
+  { id: 'film-strip' as PostcardStyle, name: 'Photo Reel', description: 'Frame your moment in a cinematic film strip.' },
 ];
 
 // Level 2: Stickers (for future use)
 const stickerStyles = [
-    { id: 'stamp', name: 'Official Stamp', description: 'Add a postage stamp and a custom postmark.' },
-    { id: 'greetings', name: 'Location Tags', description: 'Choose from "Greetings From..." titles.' },
-    { id: 'caption', name: 'Personal Touches', description: 'Add a handwritten phrase like "Wish you were here!".' }
+    { id: 'stamp', name: 'Official Stamp', description: 'Make it official! Add a beautiful postage stamp and a custom postmark from your location.' },
+    { id: 'greetings', name: 'Location Tags', description: 'Choose from beautiful, pre-designed "Greetings From..." titles to set the scene.' },
+    { id: 'caption', name: 'Personal Touches', description: 'Add a heartfelt, handwritten phrase like "Wish you were here!" or "Best Day Ever."' }
 ]
 
 // Level 3: Magic Styles (for future use)
@@ -40,7 +42,7 @@ const magicStyles = [
 
 export default function PostcardEditorPage() {
   const [photoDataUri, setPhotoDataUri] = useState<string | null>(null);
-  const [selectedFrame, setSelectedFrame] = useState<FrameStyle>('classic');
+  const [selectedFrame, setSelectedFrame] = useState<PostcardStyle>('classic');
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
 
@@ -80,7 +82,7 @@ export default function PostcardEditorPage() {
     );
   }
   
-  const getFrameClassName = (frame: FrameStyle) => {
+  const getFrameClassName = (frame: PostcardStyle) => {
     switch (frame) {
       case 'classic':
         return 'bg-white p-4 shadow-lg border';
@@ -216,7 +218,25 @@ export default function PostcardEditorPage() {
                             <CardDescription>Add fun, decorative elements to add personality.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                             {stickerStyles.map((style) => (
+                            <Card className="opacity-50 cursor-not-allowed">
+                                <CardHeader>
+                                    <CardTitle className="text-lg flex justify-between items-center">Official Stamp <Badge variant="outline">Coming Soon</Badge></CardTitle>
+                                    <CardDescription>Make it official! Add a beautiful postage stamp and a custom postmark from your location.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="grid sm:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="city-preview">City</Label>
+                                            <Input id="city-preview" placeholder="Paris" disabled />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="date-preview">Date</Label>
+                                            <Input id="date-preview" placeholder="July 26, 2024" disabled />
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                             {stickerStyles.filter(s => s.id !== 'stamp').map((style) => (
                                 <Card key={style.id} className="opacity-50 cursor-not-allowed">
                                     <CardHeader>
                                     <CardTitle className="text-lg flex justify-between items-center">{style.name} <Badge variant="outline">Coming Soon</Badge></CardTitle>

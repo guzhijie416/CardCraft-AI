@@ -56,12 +56,14 @@ export default function PostcardFinishPage() {
       case 'classic':
         return 'bg-white p-4 shadow-lg';
       case 'polaroid':
-        return 'bg-white p-4 pb-16 shadow-lg relative';
+        return 'bg-white p-4 pb-20 shadow-lg relative'; // Increased bottom padding
       case 'none':
       default:
         return 'relative';
     }
   };
+
+  const frameClass = getFrameClassName();
 
   return (
     <div className="container mx-auto py-8">
@@ -119,7 +121,7 @@ export default function PostcardFinishPage() {
                 <CardTitle>Live Preview</CardTitle>
             </CardHeader>
             <CardContent>
-                <div className={cn("w-full max-w-md mx-auto transition-all duration-300", getFrameClassName())}>
+                <div className={cn("w-full max-w-md mx-auto transition-all duration-300", frameClass)}>
                     <div className="relative w-full aspect-[4/3] bg-muted">
                         <Image
                             src={photoDataUri}
@@ -127,12 +129,13 @@ export default function PostcardFinishPage() {
                             fill
                             className="object-cover"
                         />
-                        {/* Message Overlay */}
+                        {/* Polaroid-style caption */}
                         {message && style === 'polaroid' && (
-                            <div className="absolute bottom-4 left-4 right-4 text-center">
-                                <p className="font-caveat text-xl text-black">{message}</p>
+                            <div className="absolute -bottom-16 left-0 right-0 text-center px-4">
+                                <p className="font-caveat text-2xl text-black">{message}</p>
                             </div>
                         )}
+                         {/* Centered message for 'classic' and other styles */}
                          {message && style !== 'polaroid' && (
                             <div className="absolute inset-0 bg-black/20 flex items-center justify-center p-4">
                                <p className="text-white font-body text-lg text-center shadow-lg">{message}</p>
