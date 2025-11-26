@@ -36,6 +36,12 @@ export default function PostcardEditorPage() {
       router.push('/create/remix/postcard');
     }
   }, [router]);
+  
+  const handleNext = () => {
+    // Placeholder navigation. In a real app, this would go to the next editor step.
+    router.push('/create'); 
+  };
+
 
   if (!isClient || !photoDataUri) {
     return (
@@ -119,7 +125,7 @@ export default function PostcardEditorPage() {
             </div>
         </CardContent>
         <CardFooter className="flex-col gap-4">
-            <Button size="lg" className="w-full">
+            <Button size="lg" className="w-full" onClick={handleNext}>
                 <Wand className="mr-2 h-4 w-4" />
                 Next: Add Text & Stamps
             </Button>
