@@ -29,32 +29,29 @@ export function StampGenerator({ onStampGenerated }: StampGeneratorProps) {
       return;
     }
 
-    const sketch = (p: any) => {
-      let font: any;
-      let circleImg: any;
-      const canvasSize = 300;
+    // If an old instance exists, remove it before creating a new one.
+    if (p5InstanceRef.current) {
+        p5InstanceRef.current.remove();
+    }
 
-      p.preload = () => {
-        // Using a built-in font that looks stamp-like to avoid ttf loading complexities
-        font = p.loadFont('https://fonts.gstatic.com/s/oswald/v40/TK3_WkUHHAIjg75cFRf3bXL8LICs1_Fv.woff2');
-        // A placeholder for the circle, ideally this would be a transparent PNG
-        circleImg = p.loadImage('https://picsum.photos/seed/postmark/300/300'); 
-      };
+    const sketch = (p: any) => {
+      const canvasSize = 300;
 
       p.setup = () => {
         const canvas = p.createCanvas(canvasSize, canvasSize);
-        p.background(255); // White background
+        p.background(255, 0); // Transparent background
 
-        // Draw a placeholder circle if the image fails, or use it for shape
-        p.stroke(0, 50); // transparent black
+        // --- Drawing Logic ---
+        // Draw the outer and inner circles for the postmark
+        p.stroke(51, 51, 51, 200); // Semi-transparent dark gray
         p.noFill();
         p.strokeWeight(12);
         p.circle(p.width / 2, p.height / 2, 280);
+        p.strokeWeight(4);
         p.circle(p.width / 2, p.height / 2, 180);
 
-
-        // --- Text Drawing Logic ---
-        p.textFont(font);
+        // Set text properties
+        p.textFont('Arial, sans-serif');
         p.fill(51, 51, 51); // #333 dark gray
         p.noStroke();
         p.textAlign(p.CENTER, p.CENTER);
@@ -65,11 +62,13 @@ export function StampGenerator({ onStampGenerated }: StampGeneratorProps) {
 
         // Draw curved city text
         p.textSize(30);
-        const radius = 110;
+        const radius = 110; // Radius for the text curve
         const cityText = city.toUpperCase();
-        const angleStep = (p.PI * 0.8) / (cityText.length - 1);
-        const startAngle = -p.PI * 0.9;
         
+        // Prevent division by zero if text is short
+        const angleStep = cityText.length > 1 ? (p.PI * 0.8) / (cityText.length - 1) : 0;
+        const startAngle = -p.PI / 2 - (angleStep * (cityText.length-1) / 2);
+
         p.push();
         p.translate(p.width / 2, p.height / 2);
         for (let i = 0; i < cityText.length; i++) {
@@ -80,25 +79,36 @@ export function StampGenerator({ onStampGenerated }: StampGeneratorProps) {
           p.pop();
         }
         p.pop();
-        
         // --- End Drawing Logic ---
         
         // Convert canvas to data URI and pass it to parent
         const dataUri = canvas.elt.toDataURL('image/png');
-        onStampGenerated(dataUri);
-        setIsGenerating(false);
-
-        // Clean up the p5 instance
-        p.remove();
-        p5InstanceRef.current = null;
+        
+        // Use a short timeout to ensure the UI updates before the callback
+        setTimeout(() => {
+            onStampGenerated(dataUri);
+            setIsGenerating(false);
+            // Clean up the p5 instance
+            if (p5InstanceRef.current) {
+                p5InstanceRef.current.remove();
+                p5InstanceRef.current = null;
+            }
+        }, 100);
       };
     };
 
-    // Only create a new instance if one doesn't exist
-    if (!p5InstanceRef.current) {
-        p5InstanceRef.current = new (window as any).p5(sketch, sketchRef.current!);
-    }
+    // Create the new p5 instance
+    p5InstanceRef.current = new (window as any).p5(sketch, sketchRef.current!);
   };
+
+  // Cleanup effect to remove p5 instance on unmount
+  useEffect(() => {
+    return () => {
+        if (p5InstanceRef.current) {
+            p5InstanceRef.current.remove();
+        }
+    }
+  }, []);
 
   return (
     <>
