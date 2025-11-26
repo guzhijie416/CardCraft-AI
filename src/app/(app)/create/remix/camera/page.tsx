@@ -43,7 +43,7 @@ export default function PostcardCameraPage() {
         stream = await navigator.mediaDevices.getUserMedia({ video: true });
         setHasCameraPermission(true);
 
-        // **THE FIX**: Assign the stream to the video element's srcObject
+        // Assign the stream to the video element's srcObject
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
@@ -67,6 +67,8 @@ export default function PostcardCameraPage() {
         stream.getTracks().forEach(track => track.stop());
       }
     };
+  // The dependency array ensures this effect runs when isClient becomes true.
+  // It is the correct place to handle hardware access.
   }, [isClient, toast]);
 
   const takePhoto = () => {
