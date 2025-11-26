@@ -184,7 +184,7 @@ export default function PostcardFinishPage() {
                          {/* Centered message for 'classic' and other styles */}
                          {message && style !== 'polaroid' && (
                             <div className="absolute inset-0 bg-black/20 flex items-center justify-center p-4">
-                               <p className="text-white font-body text-lg text-center shadow-lg">{message}</p>
+                               <p className="font-body text-lg text-center shadow-lg text-white">{message}</p>
                             </div>
                          )}
 
