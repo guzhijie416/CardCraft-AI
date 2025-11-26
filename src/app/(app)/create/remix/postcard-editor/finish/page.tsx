@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -12,6 +12,9 @@ import { Loader2, Download, Send, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import type { PostcardStyle } from '../page';
+import { toPng } from 'html-to-image';
+import { useToast } from '@/hooks/use-toast';
+
 
 // Dummy stamp data
 const stamps = [
@@ -26,7 +29,11 @@ export default function PostcardFinishPage() {
   const [message, setMessage] = useState('');
   const [selectedStamp, setSelectedStamp] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
+
+  const previewRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -41,6 +48,42 @@ export default function PostcardFinishPage() {
       router.push('/create/remix/postcard');
     }
   }, [router]);
+
+  const handleDownload = useCallback(() => {
+    if (!previewRef.current) {
+        toast({
+            variant: 'destructive',
+            title: 'Download Error',
+            description: 'Could not find the postcard preview to download.',
+        });
+        return;
+    }
+    
+    setIsDownloading(true);
+
+    toPng(previewRef.current, { cacheBust: true, pixelRatio: 2 }) // pixelRatio for higher quality
+      .then((dataUrl) => {
+        const link = document.createElement('a');
+        link.download = 'cardcraft-postcard.png';
+        link.href = dataUrl;
+        link.click();
+        setIsDownloading(false);
+        toast({
+            title: 'Download Started!',
+            description: 'Your postcard is being downloaded.',
+        })
+      })
+      .catch((err) => {
+        console.error(err);
+        toast({
+            variant: 'destructive',
+            title: 'Download Failed',
+            description: 'Sorry, there was an error creating the image file.',
+        });
+        setIsDownloading(false);
+      });
+  }, [previewRef, toast]);
+
 
   if (!isClient || !photoDataUri) {
     return (
@@ -111,7 +154,10 @@ export default function PostcardFinishPage() {
             </div>
           </CardContent>
           <CardFooter className="grid grid-cols-2 gap-2">
-            <Button variant="outline"><Download className="mr-2 h-4 w-4" /> Download</Button>
+            <Button variant="outline" onClick={handleDownload} disabled={isDownloading}>
+                {isDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+                Download
+            </Button>
             <Button><Send className="mr-2 h-4 w-4" /> Share Postcard</Button>
           </CardFooter>
         </Card>
@@ -121,7 +167,7 @@ export default function PostcardFinishPage() {
                 <CardTitle>Live Preview</CardTitle>
             </CardHeader>
             <CardContent>
-                <div className={cn("w-full max-w-md mx-auto transition-all duration-300", frameClass)}>
+                <div ref={previewRef} className={cn("w-full max-w-md mx-auto transition-all duration-300", frameClass)}>
                     <div className="relative w-full aspect-[4/3] bg-muted">
                         <Image
                             src={photoDataUri}
