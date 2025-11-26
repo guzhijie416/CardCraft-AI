@@ -272,7 +272,7 @@ export default function PostcardEditorPage() {
                         <CardHeader>
                             <CardTitle>Level 3: Apply Magic Styles</CardTitle>
                             <CardDescription>Use AI to transform your photo with powerful styles and effects.</CardDescription>
-                        </Header>
+                        </CardHeader>
                          <CardContent className="space-y-4">
                              {magicStyles.map((style) => (
                                 <Card key={style.id} className="opacity-50 cursor-not-allowed">
