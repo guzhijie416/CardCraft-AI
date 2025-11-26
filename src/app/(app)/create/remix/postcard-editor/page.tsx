@@ -11,7 +11,7 @@ import { Loader2, Sparkles, Wand, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
-type PostcardStyle = 'none' | 'classic' | 'polaroid';
+export type PostcardStyle = 'none' | 'classic' | 'polaroid';
 
 const postcardStyles = [
   { id: 'none' as PostcardStyle, name: 'No Style' },
@@ -31,15 +31,14 @@ export default function PostcardEditorPage() {
     if (storedImage) {
       setPhotoDataUri(storedImage);
     } else {
-      // If no image is found, redirect back to the start of the postcard flow.
-      // This can happen if the user navigates here directly.
       router.push('/create/remix/postcard');
     }
   }, [router]);
   
   const handleNext = () => {
-    // Placeholder navigation. In a real app, this would go to the next editor step.
-    router.push('/create'); 
+    // Store the selected style and navigate to the final editor
+    sessionStorage.setItem('postcardStyle', selectedStyle);
+    router.push('/create/remix/postcard-editor/finish'); 
   };
 
 
