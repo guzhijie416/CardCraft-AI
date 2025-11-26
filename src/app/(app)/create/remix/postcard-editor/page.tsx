@@ -77,7 +77,6 @@ export default function PostcardEditorPage() {
     setIsStampDialogOpen(false);
   };
 
-
   if (!isClient || !photoDataUri) {
     return (
       <div className="container mx-auto py-8 text-center">
