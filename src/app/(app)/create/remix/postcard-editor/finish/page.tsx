@@ -16,18 +16,11 @@ import { toPng } from 'html-to-image';
 import { useToast } from '@/hooks/use-toast';
 
 
-// Dummy stamp data
-const stamps = [
-  { id: 'stamp-1', url: 'https://picsum.photos/seed/stamp1/100/100', alt: 'Flower Stamp' },
-  { id: 'stamp-2', url: 'https://picsum.photos/seed/stamp2/100/100', alt: 'Bird Stamp' },
-  { id: 'stamp-3', url: 'https://picsum.photos/seed/stamp3/100/100', alt: 'Mountain Stamp' },
-];
-
 export default function PostcardFinishPage() {
   const [photoDataUri, setPhotoDataUri] = useState<string | null>(null);
   const [style, setStyle] = useState<PostcardStyle>('none');
   const [message, setMessage] = useState('');
-  const [selectedStamp, setSelectedStamp] = useState<string | null>(null);
+  const [stampDataUri, setStampDataUri] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const router = useRouter();
@@ -39,10 +32,14 @@ export default function PostcardFinishPage() {
     setIsClient(true);
     const storedImage = sessionStorage.getItem('postcardImage');
     const storedStyle = sessionStorage.getItem('postcardStyle') as PostcardStyle | null;
+    const storedStamp = sessionStorage.getItem('postcardStamp');
     
     if (storedImage && storedStyle) {
       setPhotoDataUri(storedImage);
       setStyle(storedStyle);
+      if (storedStamp) {
+        setStampDataUri(storedStamp);
+      }
     } else {
       // Redirect if data is missing
       router.push('/create/remix/postcard');
@@ -100,13 +97,81 @@ export default function PostcardFinishPage() {
         return 'bg-white p-4 shadow-lg';
       case 'polaroid':
         return 'bg-white p-4 pb-20 shadow-lg relative'; // Increased bottom padding
+      case 'postcard-back':
+        return 'bg-[#F9F5E8] p-4 shadow-lg';
+      case 'film-strip':
+        return 'bg-black p-2 border-4 border-black relative';
       case 'none':
       default:
         return 'relative';
     }
   };
-
+  
   const frameClass = getFrameClassName();
+
+  const PostcardPreview = () => {
+
+    if (style === 'postcard-back') {
+        return (
+            <div ref={previewRef} className={cn("w-full max-w-md mx-auto transition-all duration-300", frameClass)}>
+                <div className="relative w-full aspect-[4/3] bg-transparent flex justify-between gap-4">
+                    <div className='w-1/2'>
+                        <div className="h-full p-2 font-caveat text-xl">
+                            {message || 'Write your message here...'}
+                        </div>
+                    </div>
+                    <div className='w-1/2 flex flex-col justify-between items-end border-l border-black/30 pl-4 py-2'>
+                        <div className='w-20 h-20 border border-black/30 flex items-center justify-center text-xs text-black/30 relative'>
+                            {stampDataUri ? <Image src={stampDataUri} alt="stamp" fill className="object-contain p-1" /> : 'Stamp'}
+                        </div>
+                        <div className='w-full text-right text-xs text-black/60'>
+                           <p>Address line 1</p>
+                           <p>Address line 2</p>
+                           <p>City, Postal</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    return (
+        <div ref={previewRef} className={cn("w-full max-w-md mx-auto transition-all duration-300", frameClass)}>
+            <div className="relative w-full aspect-[4/3] bg-muted">
+                <Image
+                    src={photoDataUri}
+                    alt="Your postcard photo"
+                    fill
+                    className="object-cover"
+                />
+                {/* Polaroid-style caption */}
+                {message && style === 'polaroid' && (
+                    <div className="absolute -bottom-16 left-0 right-0 text-center px-4">
+                        <p className="font-caveat text-2xl text-black">{message}</p>
+                    </div>
+                )}
+                 {/* Centered message for 'classic' and other styles */}
+                 {message && style !== 'polaroid' && (
+                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center p-4">
+                       <p className="font-body text-lg text-center shadow-lg text-white">{message}</p>
+                    </div>
+                 )}
+
+                {/* Stamp Overlay */}
+                {stampDataUri && style !== 'postcard-back' && (
+                    <Image 
+                        src={stampDataUri}
+                        alt="Postmark stamp"
+                        width={80}
+                        height={80}
+                        className="absolute top-2 right-2"
+                    />
+                )}
+            </div>
+        </div>
+    )
+  }
+
 
   return (
     <div className="container mx-auto py-8">
@@ -122,7 +187,7 @@ export default function PostcardFinishPage() {
         <Card>
           <CardHeader>
             <CardTitle className="font-headline">Final Touches</CardTitle>
-            <CardDescription>Add a message and a stamp to complete your postcard.</CardDescription>
+            <CardDescription>Add a message to complete your postcard.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
@@ -134,23 +199,6 @@ export default function PostcardFinishPage() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
               />
-            </div>
-            <div className="space-y-2">
-              <Label>Choose a Stamp</Label>
-              <div className="flex gap-2">
-                {stamps.map(stamp => (
-                  <button 
-                    key={stamp.id}
-                    className={cn(
-                        "rounded-md overflow-hidden border-2 transition-all",
-                        selectedStamp === stamp.id ? 'border-primary ring-2 ring-primary' : 'border-transparent'
-                    )}
-                    onClick={() => setSelectedStamp(stamp.id)}
-                  >
-                    <Image src={stamp.url} alt={stamp.alt} width={60} height={60} className="object-cover" />
-                  </button>
-                ))}
-              </div>
             </div>
           </CardContent>
           <CardFooter className="grid grid-cols-2 gap-2">
@@ -167,39 +215,7 @@ export default function PostcardFinishPage() {
                 <CardTitle>Live Preview</CardTitle>
             </CardHeader>
             <CardContent>
-                <div ref={previewRef} className={cn("w-full max-w-md mx-auto transition-all duration-300", frameClass)}>
-                    <div className="relative w-full aspect-[4/3] bg-muted">
-                        <Image
-                            src={photoDataUri}
-                            alt="Your postcard photo"
-                            fill
-                            className="object-cover"
-                        />
-                        {/* Polaroid-style caption */}
-                        {message && style === 'polaroid' && (
-                            <div className="absolute -bottom-16 left-0 right-0 text-center px-4">
-                                <p className="font-caveat text-2xl text-black">{message}</p>
-                            </div>
-                        )}
-                         {/* Centered message for 'classic' and other styles */}
-                         {message && style !== 'polaroid' && (
-                            <div className="absolute inset-0 bg-black/20 flex items-center justify-center p-4">
-                               <p className="font-body text-lg text-center shadow-lg text-white">{message}</p>
-                            </div>
-                         )}
-
-                        {/* Stamp Overlay */}
-                        {selectedStamp && (
-                            <Image 
-                                src={stamps.find(s => s.id === selectedStamp)!.url}
-                                alt={stamps.find(s => s.id === selectedStamp)!.alt}
-                                width={50}
-                                height={50}
-                                className="absolute top-2 right-2 border-2 border-white shadow-md"
-                            />
-                        )}
-                    </div>
-                </div>
+                <PostcardPreview />
             </CardContent>
         </Card>
       </div>

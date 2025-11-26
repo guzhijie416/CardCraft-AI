@@ -11,8 +11,9 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { StampGenerator } from '@/components/ui/stamp-generator';
 
 
 // --- Style Definitions ---
@@ -21,7 +22,7 @@ export type PostcardStyle = 'none' | 'classic' | 'polaroid' | 'postcard-back' | 
 const frameStyles = [
   { id: 'classic' as PostcardStyle, name: 'The Classic', description: 'Simple, elegant, timeless. A clean border for a professional look.' },
   { id: 'polaroid' as PostcardStyle, name: 'Instant Memory', description: 'The iconic retro frame. Add a handwritten caption for a nostalgic touch.' },
-  { id: 'postcard-back' as PostcardStyle, name: 'Flip & Write', description: 'A classic postcard back, ready for your message, address, and stamp.' },
+  { id: 'postcard-back' as PostcardStyle, name: 'Flip & Write', description: 'A classic postcard back, with a message area and stamp.' },
   { id: 'film-strip' as PostcardStyle, name: 'Photo Reel', description: 'Frame your moment in a cinematic film strip.' },
 ];
 
@@ -44,6 +45,8 @@ export default function PostcardEditorPage() {
   const [photoDataUri, setPhotoDataUri] = useState<string | null>(null);
   const [selectedFrame, setSelectedFrame] = useState<PostcardStyle>('classic');
   const [isClient, setIsClient] = useState(false);
+  const [stampDataUri, setStampDataUri] = useState<string | null>(null);
+  const [isStampDialogOpen, setIsStampDialogOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -60,9 +63,18 @@ export default function PostcardEditorPage() {
   }, [isClient, router]);
   
   const handleNext = () => {
-    // Store the selected style and navigate to the final editor
     sessionStorage.setItem('postcardStyle', selectedFrame);
-    router.push('/create/remix/postcard-editor/finish'); 
+    if (stampDataUri) {
+      sessionStorage.setItem('postcardStamp', stampDataUri);
+    } else {
+      sessionStorage.removeItem('postcardStamp');
+    }
+    router.push('/create/remix/postcard-editor/finish');
+  };
+
+  const handleStampGenerated = (dataUri: string) => {
+    setStampDataUri(dataUri);
+    setIsStampDialogOpen(false);
   };
 
 
@@ -114,7 +126,11 @@ export default function PostcardEditorPage() {
                      <div className='border-b border-black/30 pb-2 mb-2'></div>
                 </div>
                 <div className='w-1/2 flex flex-col justify-between items-end border-l border-black/30 pl-4'>
-                    <div className='w-12 h-12 border border-black/30 flex items-center justify-center text-xs text-black/30'>Stamp</div>
+                    <div className='w-16 h-16 border-2 border-dashed border-black/30 flex items-center justify-center text-xs text-black/30 relative'>
+                       {stampDataUri ? (
+                            <Image src={stampDataUri} alt="Generated stamp" fill className="object-contain p-1" />
+                        ) : "Stamp"}
+                    </div>
                     <div className='w-full text-right'>
                         <div className='border-b border-black/30 pb-1 mb-1'></div>
                         <div className='border-b border-black/30 pb-1 mb-1'></div>
@@ -135,6 +151,9 @@ export default function PostcardEditorPage() {
                     fill
                     className="object-cover"
                 />
+                 {stampDataUri && (
+                    <Image src={stampDataUri} alt="Stamp" width={80} height={80} className="absolute top-2 right-2 opacity-90" />
+                 )}
                  {selectedFrame === 'film-strip' && (
                     <div className="absolute -left-8 top-0 bottom-0 w-6 bg-black flex flex-col justify-around items-center">
                         {[...Array(6)].map((_, i) => <div key={i} className="w-2 h-2 bg-white/50 rounded-sm" />)}
@@ -218,24 +237,25 @@ export default function PostcardEditorPage() {
                             <CardDescription>Add fun, decorative elements to add personality.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <Card className="opacity-50 cursor-not-allowed">
-                                <CardHeader>
-                                    <CardTitle className="text-lg flex justify-between items-center">Official Stamp <Badge variant="outline">Coming Soon</Badge></CardTitle>
-                                    <CardDescription>Make it official! Add a beautiful postage stamp and a custom postmark from your location.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                    <div className="grid sm:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="city-preview">City</Label>
-                                            <Input id="city-preview" placeholder="Paris" disabled />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="date-preview">Date</Label>
-                                            <Input id="date-preview" placeholder="July 26, 2024" disabled />
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                            <AlertDialog open={isStampDialogOpen} onOpenChange={setIsStampDialogOpen}>
+                                <AlertDialogTrigger asChild>
+                                    <Card className="cursor-pointer hover:border-primary">
+                                        <CardHeader>
+                                            <CardTitle className="text-lg flex justify-between items-center">Official Stamp</CardTitle>
+                                            <CardDescription>Make it official! Add a beautiful postage stamp and a custom postmark from your location.</CardDescription>
+                                        </CardHeader>
+                                    </Card>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Create Your Custom Postmark</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This stamp will be generated in your browser.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <StampGenerator onStampGenerated={handleStampGenerated} />
+                                </AlertDialogContent>
+                            </AlertDialog>
                              {stickerStyles.filter(s => s.id !== 'stamp').map((style) => (
                                 <Card key={style.id} className="opacity-50 cursor-not-allowed">
                                     <CardHeader>
@@ -253,7 +273,7 @@ export default function PostcardEditorPage() {
                         <CardHeader>
                             <CardTitle>Level 3: Apply Magic Styles</CardTitle>
                             <CardDescription>Use AI to transform your photo with powerful styles and effects.</CardDescription>
-                        </CardHeader>
+                        </Header>
                          <CardContent className="space-y-4">
                              {magicStyles.map((style) => (
                                 <Card key={style.id} className="opacity-50 cursor-not-allowed">
