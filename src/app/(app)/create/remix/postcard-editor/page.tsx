@@ -172,7 +172,7 @@ export default function PostcardEditorPage() {
             )}
         </div>
     )
-  }
+  };
 
   return (
     <div className="container mx-auto py-8">
