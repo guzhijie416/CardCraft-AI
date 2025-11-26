@@ -11,13 +11,15 @@ import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 export default function PostcardCameraPage() {
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null); // NEW: State to hold the MediaStream
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const router = useRouter();
   const { toast } = useToast();
 
+  // Effect 1: Request Camera Permission and get the MediaStream
   useEffect(() => {
-    let stream: MediaStream | null = null;
+    let currentLocalStream: MediaStream | null = null; // Local variable for cleanup
 
     const getCameraPermission = async () => {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -31,11 +33,10 @@ export default function PostcardCameraPage() {
       }
 
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        currentLocalStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        setCameraStream(currentLocalStream); // Store the stream in state
         setHasCameraPermission(true);
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
+        // Do NOT assign srcObject here directly, as videoRef.current might still be null
       } catch (error) {
         console.error('Error accessing camera:', error);
         setHasCameraPermission(false);
@@ -49,28 +50,57 @@ export default function PostcardCameraPage() {
 
     getCameraPermission();
 
+    // Cleanup function: stop the camera tracks when component unmounts or effect re-runs
     return () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
+      if (currentLocalStream) {
+        currentLocalStream.getTracks().forEach(track => track.stop());
       }
     };
-  }, [toast]);
+  }, [toast]); // Dependencies for this effect: only toast
+
+  // Effect 2: Assign the stream to the video element once both are available
+  useEffect(() => {
+    if (videoRef.current && cameraStream) {
+      videoRef.current.srcObject = cameraStream;
+      // The `autoplay` attribute should start playback, but `play()` can be added for robustness:
+      // videoRef.current.play().catch(e => console.error("Video play failed:", e));
+    }
+  }, [videoRef.current, cameraStream]); // Dependencies: videoRef.current and cameraStream
+
 
   const takePhoto = () => {
-    if (videoRef.current && canvasRef.current) {
+    // Only attempt if cameraStream is active and video element is ready
+    if (videoRef.current && canvasRef.current && cameraStream) {
       const video = videoRef.current;
       const canvas = canvasRef.current;
       
+      // Ensure videoWidth/videoHeight are not 0 before drawing
+      if (video.videoWidth === 0 || video.videoHeight === 0) {
+          console.warn("Video stream dimensions are 0, cannot take photo yet.");
+          toast({
+              variant: 'destructive',
+              title: 'Camera Not Ready',
+              description: 'Please wait for the camera stream to load.',
+          });
+          return;
+      }
+
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       
       const context = canvas.getContext('2d');
       if (context) {
         context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-        const dataUri = canvas.toDataURL('image/jpeg');
+        const dataUri = canvas.toDataURL('image/jpeg', 0.9); // Added quality for better compression
         sessionStorage.setItem('postcardImage', dataUri);
         router.push('/create/remix/postcard-editor');
       }
+    } else {
+        toast({
+            variant: 'destructive',
+            title: 'Camera Not Ready',
+            description: 'Cannot take photo: Camera stream or video element not available.',
+        });
     }
   };
 
@@ -105,10 +135,17 @@ export default function PostcardCameraPage() {
                     </Alert>
                 </div>
             )}
+            {/* NEW: Overlay for when camera is allowed but stream hasn't loaded */}
+            {hasCameraPermission === true && !cameraStream && (
+                 <div className="absolute inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50 text-white">
+                    <Loader2 className="mx-auto h-8 w-8 animate-spin" />
+                    <p className="ml-2">Loading camera stream...</p>
+                </div>
+            )}
           </div>
 
           <div className="mt-4 flex justify-center">
-            <Button onClick={takePhoto} size="lg" disabled={!hasCameraPermission}>
+            <Button onClick={takePhoto} size="lg" disabled={!hasCameraPermission || !cameraStream}>
               <Camera className="mr-2 h-5 w-5" />
               Take Photo
             </Button>
