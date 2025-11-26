@@ -18,6 +18,7 @@ export default function PostcardCameraPage() {
   const { toast } = useToast();
 
   useEffect(() => {
+    // This component relies heavily on browser APIs, so we ensure it only runs on the client.
     setIsClient(true);
   }, []);
 
@@ -25,6 +26,7 @@ export default function PostcardCameraPage() {
     if (!isClient) return;
 
     let stream: MediaStream | null = null;
+
     const getCameraPermission = async () => {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         toast({
@@ -35,10 +37,13 @@ export default function PostcardCameraPage() {
         setHasCameraPermission(false);
         return;
       }
+
       try {
+        // Request access to the camera
         stream = await navigator.mediaDevices.getUserMedia({ video: true });
         setHasCameraPermission(true);
 
+        // **THE FIX**: Assign the stream to the video element's srcObject
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
@@ -55,8 +60,12 @@ export default function PostcardCameraPage() {
 
     getCameraPermission();
 
+    // Cleanup function: This will be called when the component unmounts.
     return () => {
-        stream?.getTracks().forEach(track => track.stop());
+      if (stream) {
+        // Stop all tracks in the stream to turn off the camera
+        stream.getTracks().forEach(track => track.stop());
+      }
     };
   }, [isClient, toast]);
 
@@ -65,21 +74,28 @@ export default function PostcardCameraPage() {
       const video = videoRef.current;
       const canvas = canvasRef.current;
       
-      // Set canvas dimensions to match video to ensure correct capture
+      // Set canvas dimensions to match the video's intrinsic size to ensure a correct capture
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       
       const context = canvas.getContext('2d');
       if (context) {
+        // Draw the current video frame onto the hidden canvas
         context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+        
+        // Convert the canvas content to a Data URL (JPEG format)
         const dataUri = canvas.toDataURL('image/jpeg');
         
+        // Store the image in session storage to pass to the next page
         sessionStorage.setItem('postcardImage', dataUri);
+        
+        // Navigate to the editor
         router.push('/create/remix/postcard-editor');
       }
     }
   };
 
+  // While waiting for client-side hydration and camera permission
   if (!isClient || hasCameraPermission === null) {
     return (
       <div className="container mx-auto py-8 text-center">
@@ -98,14 +114,19 @@ export default function PostcardCameraPage() {
         </CardHeader>
         <CardContent>
           <div className="relative aspect-video w-full rounded-md overflow-hidden border bg-muted">
+            {/* The video element that will display the camera feed */}
             <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
+            
+            {/* A hidden canvas for capturing the photo */}
             <canvas ref={canvasRef} className="hidden" />
+
+            {/* Show an error message if camera access was denied */}
             {hasCameraPermission === false && (
                 <div className="absolute inset-0 flex items-center justify-center p-4">
                     <Alert variant="destructive">
                     <AlertTitle>Camera Access Required</AlertTitle>
                     <AlertDescription>
-                        Please allow camera access in your browser to use this feature.
+                        Please allow camera access in your browser to use this feature. You may need to refresh the page after granting permission.
                     </AlertDescription>
                     </Alert>
                 </div>
